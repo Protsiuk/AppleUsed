@@ -1,0 +1,19 @@
+# python binary files
+*.pyc
+
+# IDE files
+.idea
+
+# Virtual environment
+ENV
+
+# database
+*.sqlite3
+
+# media files
+media
+
+# Local environment
+local_settings.py
+
+
