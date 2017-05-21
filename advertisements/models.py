@@ -7,6 +7,7 @@ class Advertisement(models.Model):
     title = models.CharField(max_length=255)
     price = models.CharField(max_length=255)
     type_equipment = models.CharField(max_length=255)
+    phone_user = models.CharField(max_length=20)
     body = models.TextField()
     image = models.FileField(upload_to=get_file_path)
     author = models.ForeignKey(User)

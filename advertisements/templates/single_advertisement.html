@@ -1,0 +1,15 @@
+{% extends "frame.html" %}
+
+
+<div class="container">
+    {% block content %}
+        <b><h4>Создание объявления</h4></b><br>
+
+    {{ Advertisement.title }}<br>
+    Likes:{{ publication.get_likes_count }}<br>
+    <a href="{% url 'like_single_publication' publication_id=publication.id %}">LIKE</a>
+    <hr>
+    <b>Comment to {{ publication.title }}:</b><br>
+
+    {% endblock %}
+</div>

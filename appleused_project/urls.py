@@ -11,6 +11,6 @@ urlpatterns = [
     url(r'^$', main_page, name='main'),
 
     url(r'accounts/', include('accounts.urls')),
-    # url(r'publications/', include('publications.urls')),
+    url(r'advertisements/', include('advertisements.urls')),
 
 ]# + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
