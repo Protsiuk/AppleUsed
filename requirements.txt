@@ -1,4 +1,5 @@
 Django==1.11.1
 django-solo==1.1.2
 djangorestframework==3.6.3
+olefile==0.44
 pytz==2017.2

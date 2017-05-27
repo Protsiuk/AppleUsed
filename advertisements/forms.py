@@ -8,5 +8,5 @@ class AdvertisementForm(forms.Form):
     image = forms.FileField()
 
 
-# class PublicationCommentForm(forms.Form):
-#     text = forms.CharField(widget=forms.Textarea())
+class AdvertisementMessageForm(forms.Form):
+    text = forms.CharField(widget=forms.Textarea())

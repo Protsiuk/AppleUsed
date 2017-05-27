@@ -1,6 +1,7 @@
 from django.db import models
 from accounts.models import User
 from utils import get_file_path
+# from solo.models import SingletonModel
 
 
 class Advertisement(models.Model):
@@ -27,12 +28,24 @@ class Advertisement(models.Model):
 #     user = models.ForeignKey(User)
 
 
-# class PublicationComment (models.Model):
-#     publication = models.ForeignKey(Publication, related_name="comments")
-#     user = models.ForeignKey(User)
-#     text = models.TextField()
-#     added = models.DateTimeField(auto_now_add=True)
+
+class AdvertisementMesage (models.Model):
+    advertisement = models.ForeignKey(Advertisement, related_name="comments")
+    user = models.ForeignKey(User)
+    text = models.TextField()
+    added = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        return self.text[:50]
+
 #
+# class SiteConfiguration(SingletonModel):
+#     site_name = models.CharField(max_length=255, default='Site Name')
+#     maintenance_mode = models.BooleanField(default=False)
 #
-#     def __str__(self):
-#         return self.text[:50]
+#     def __unicode__(self):
+#         return u"Site Configuration"
+#
+#     class Meta:
+#         verbose_name = "Site Configuration"

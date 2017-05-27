@@ -2,7 +2,7 @@
 """
 
 from django.conf.urls import url
-from advertisements.views import advertisements, single_advertisement# like_single_publication, \
+from advertisements.views import advertisements, single_advertisement#, new_advertisement # like_single_publication, \
     # GetSingleAdvertisementView, CreateAdvertisementView #publications_as_json,
 
 urlpatterns = [
