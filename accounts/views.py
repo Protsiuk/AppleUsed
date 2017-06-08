@@ -26,7 +26,7 @@ def sign_in(request):
         return HttpResponseRedirect(reverse("main"))
     else:
         form = LoginForm()
-        if request.method == "main":
+        if request.method == "POST":
             form = LoginForm(request.POST)
             if form.is_valid():
                 data = form.cleaned_data

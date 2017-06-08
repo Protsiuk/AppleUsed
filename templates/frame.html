@@ -22,7 +22,8 @@
         <a href="{% url 'main' %}" class="brand-logo">AppleUsed</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
             {% if request.user.is_authenticated %}
-                <li><a href="{% url 'logout' %}">Выйти</a></li>
+                Вы авторизированы под ником <b>{{ request.user.username }}</b>
+                <li><b><a href="{% url 'logout' %}">Выйти</a></b></li>
             {% else %}
                 <li><a href="{% url 'login' %}">Войти</a></li>
             {% endif %}

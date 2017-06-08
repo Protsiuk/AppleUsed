@@ -5,11 +5,7 @@
 
 
 {% block content %}
-{#    <form action="{% url 'advertisements' %}" method="POST" enctype="multipart/form-data">#}
-{#        {% csrf_token %}#}
-{#        {{ form }}#}
-{#        <input type="submit">#}
-{#    </form>>#}
+
     <p>Последние объявления на сайте:</p>
 
     {% for advertisement in advertisements %}
@@ -37,7 +33,7 @@
             {%  if  page_num == '...' %}
                 {{ page_num }}
             {% else %}
-                <a href="?page={{ page_num }}">{{ page_num }}</a>
+                <a href="?page={{ page_num }}">{{ page_num }} </a>
             {% endif %}
         {% endfor %}
 

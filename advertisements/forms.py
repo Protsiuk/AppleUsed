@@ -9,4 +9,6 @@ class AdvertisementForm(forms.Form):
 
 
 class AdvertisementMessageForm(forms.Form):
+    email_visitor = forms.EmailField(max_length=50)
     text = forms.CharField(widget=forms.Textarea())
+
