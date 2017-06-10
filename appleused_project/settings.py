@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # project apps
     'accounts',
     'advertisements',
+    'send_email',
 
     # 3-d generation
     'solo',
@@ -148,12 +149,19 @@ AUTH_USER_MODEL = 'accounts.User'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # email server settings
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'your-username@gmail.com'
-EMAIL_HOST_PASSWORD = 'Application spectific password(for eg: smbumqjiurmqrywn)'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = 'your-username@gmail.com'
+# EMAIL_HOST_PASSWORD = 'Application spectific password(for eg: smbumqjiurmqrywn)'
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = True
 # --------------------------------------------------
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'Your gmail email'
+EMAIL_HOST_PASSWORD = 'Your gmail password'
+DEFAULT_FROM_EMAIL = 'Your name'
+DEFAULT_TO_EMAIL = 'Your email'
 
 # REST FRAMEWORK
 REST_FRAMEWORK = {

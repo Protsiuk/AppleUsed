@@ -64,7 +64,7 @@ def single_advertisement(request, advertisement_id):
     advertisement = get_object_or_404(Advertisement, pk=advertisement_id)
     # print("проверка", advertisement)
     form = AdvertisementMessageForm()
-    # send_mail('тема письма', 'само тело письма.', 'd.protsiuk@gmail.com',
+    # send_email('тема письма', 'само тело письма.', 'd.protsiuk@gmail.com',
     #           ['procent83@ukr.net'])
     if request.method == "POST":
         form = AdvertisementMessageForm(request.POST)
