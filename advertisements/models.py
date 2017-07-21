@@ -10,13 +10,18 @@ class Advertisement(models.Model):
     type_equipment = models.CharField(max_length=255)
     phone_author = models.CharField(max_length=20)
     body = models.TextField()
-    image = models.FileField(upload_to=get_file_path)
+    image = models.ImageField("фото", upload_to=get_file_path, default='', blank=True)
+    # image = models.FileField(upload_to=get_file_path)
     author = models.ForeignKey(User)
     added = models.DateTimeField(auto_now_add=True)
 
 
     def __str__(self):
         return str(self.id)
+
+
+    # class Meta:
+    #     ordering = ["-added"]
 
 
 #     def get_views_count(self):

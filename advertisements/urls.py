@@ -8,7 +8,14 @@ from advertisements.views import advertisements, single_advertisement #, new_adv
 urlpatterns = [
 
     url(r'^$', advertisements, name='advertisements'),
+
+    # url(r'^order_price_expensive/', advertisements_sorted_expensive, name='advertisements_price_up'),
+    # url(r'^order_price_down/', advertisements_order_price_down, name='advertisements_price_down'),
+    # # url(r'^order_price_up/', advertisements_order_price_up, name='advertisements_price_up'),
+    # url(r'^find_(?P<title>)/', advertisements_order_price_down, name='advertisements_price_down'),
+
     url(r'^(?P<advertisement_id>[\d]+)$', single_advertisement, name='single_advertisement'),
+
     # url(r'^(?P<advertisement_id>[\d]+)$', new_advertisement, name='new_advertisement'),
 
     # url(r'^(?P<advertisement_id>[\d]+)/like$', like_single_publication, name='like_single_publication'),
