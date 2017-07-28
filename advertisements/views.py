@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.core.mail import send_mail, mail_admins
+
 
 
 
@@ -45,21 +45,6 @@ from utils import gen_page_list
 """
 
 
-def advertisements_filter(request):
-    advertisements = Advertisement.objects.all()
-
-    if request.method == "GET":
-        form_filter = AdvertisementFilterForm(request.GET)
-        # form = AdvertisementForm(request.GET)
-        # if form.is_valid():
-        #     if form.cleaned_data["min_price"]:
-        #         advertisements = advertisements.filter(price__gte=form.cleaned_data['min_price'])
-        #
-        #     if form.cleaned_data["max_price"]:
-        #         advertisements = advertisements.filter(price__lte=form.cleaned_data['max_price'])
-
-        return render(request, "advertisements.html", {"form": form_filter,
-                                                       "advertiments": advertisements})
                 # return render(request, "advertisements.html", {"advertisements": advertisements,
                 #                                                "form": form,
                 #                                                "page_nums": page_nums})
@@ -72,33 +57,22 @@ def advertisements_filter(request):
             #                              author=request.user)
 
 def advertisements(request):
-    form = AdvertisementForm()
-    if request.method == "POST":
-        form = AdvertisementForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = form.cleaned_data
-            AdvertisementMessage.objects.create(title=data.get("title"),
-                                         body=data.get("body"),
-                                         image=data.get("image"),
-                                         price=data.get("price"),
-                                         type_equipment=data.get("type_equipment"),
-                                         author=request.user)
-            """#views.py
-def some_view(request):
-    ....
-    if 'sort_by' in request.GET:
-        sort_by = request.GET['sort_by']
-    else:
-        sort_by = None
-    ....
+    # form = AdvertisementFilterForm()
+    form_filter = AdvertisementFilterForm(request.GET)
+    # form = AdvertisementForm()
+    advertisements = Advertisement.objects.all()
+    if form_filter.is_valid():
+        if form_filter.cleaned_data["min_price"]:
+            advertisements = advertisements.filter(price__gte=form_filter.cleaned_data['min_price'])
 
-#template.html
-<a href="?page={{ content.next_page_number }}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">Следующая страница</a>
-"""
-    advertisements = Advertisement.objects.order_by("-added")
+        if form_filter.cleaned_data["max_price"]:
+            advertisements = advertisements.filter(price__lte=form_filter.cleaned_data['max_price'])
+
+        if form_filter.cleaned_data["ordering"]:
+            advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
 
     # pagination of pages
-    paginator = Paginator(advertisements, 1)
+    paginator = Paginator(advertisements, 5)
     page = request.GET.get('page', 1)
     # print(paginator.num_pages, "pages number")
     try:
@@ -112,8 +86,58 @@ def some_view(request):
     page_nums = gen_page_list(int(page), paginator.num_pages)
 
     return render(request, "advertisements.html", {"advertisements": advertisements,
-                                                 "form": form,
+                                                 "form_filter": form_filter,
                                                  "page_nums": page_nums})
+
+
+
+# def advertisements(request):
+#     form = AdvertisementForm()
+#
+#     if request.method == "POST":
+#         form = AdvertisementForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             data = form.cleaned_data
+#             Advertisement.objects.create(title=data.get("title"),
+#                                          body=data.get("body"),
+#                                          image=data.get("image"),
+#                                          price=data.get("price"),
+#                                          type_equipment=data.get("type_equipment"),
+#                                          author=request.user)
+
+""" #views.py
+def some_view(request):
+    ....
+    if 'sort_by' in request.GET:
+        sort_by = request.GET['sort_by']
+    else:
+        sort_by = None
+    ....
+
+#template.html
+<a href="?page={{ content.next_page_number }}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">Следующая страница</a>
+"""
+    # advertisements = Advertisement.objects.order_by("-added")
+
+
+
+    # # pagination of pages
+    # paginator = Paginator(advertisements, 5)
+    # page = request.GET.get('page', 1)
+    # # print(paginator.num_pages, "pages number")
+    # try:
+    #     advertisements = paginator.page(page)
+    # except PageNotAnInteger:
+    #     # If page is not an integer, deliver first page.
+    #     advertisements = paginator.page(1)
+    # except EmptyPage:
+    #     # If page is out of range (e.g. 9999), deliver last page of results.
+    #     advertisements = paginator.page(paginator.num_pages)
+    # page_nums = gen_page_list(int(page), paginator.num_pages)
+    #
+    # return render(request, "advertisements.html", {"advertisements": advertisements,
+    #                                              "form": form,
+    #                                              "page_nums": page_nums})
 
 
 def new_advertisement(request):
@@ -142,10 +166,10 @@ def single_advertisement(request, advertisement_id):
         if form.is_valid():
             print('тема письма будет', advertisement.title)
             """test send email"""
-            email_visitor = form.cleaned_data['email_visitor']
-            title = advertisement.title#("title")
-            text = form.cleaned_data['text']
-            email_author = advertisement.author.email
+            # email_visitor = form.cleaned_data['email_visitor']
+            # title = advertisement.title#("title")
+            # text = form.cleaned_data['text']
+            # email_author = advertisement.author.email
 
             # server = smtplib.SMTP("smtp.gmail.com 587)
             # server.ehlo()

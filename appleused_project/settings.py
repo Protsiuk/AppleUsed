@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     # project apps
     'accounts',
     'advertisements',
-    'send_email',
+    # 'send_email',
 
     # 3-d generation
     'solo',
@@ -58,7 +58,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    # 'django.contrib.send_email.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 

@@ -13,17 +13,44 @@
 {#{% endblock order %}#}
 
 {% block content %}
+            <input type="text" maxlength="256" name="find" placeholder="Введите название желаемого товара">
+            <input type="submit" value="Искать">
 
+    <form action="" method="GET">
+        {% csrf_token %}
+        {{ form_filter.as_p }}
+        <input type="submit" value="фильтровать">
+    </form>
+
+{#    <form action="" method="get">#}
+{#        <input type="radio" name="filter" id="-price" value="по убыванию цены" />#}
+{#        <label for="-price">по убыванию цены</label><br/>#}
+{#        <input type="radio" name="filter" id="price" value="по возростанию цены"/>#}
+{#        <label for="price">по возростанию цены</label><br/>#}
+{#        <input type="radio" name="filter" id="-added" value="по дате добавления"/>#}
+{#            <input type="radio" name="flavor" value="-added"/>#}
+{#        <label for="-added">по дате добавления</label><br/>#}
+{#        <input type="submit" value="отсортировать"/>#}
+{#    </form>#}
+{#    <input name="sort" type="radio"> по возростанию цены#}
+{#    <input name="sort" type="radio"> по убыванию цены#}
     <p>Последние объявления на сайте:</p>
-    <div class="sorted_advertisements">
-        <p>Фильтрация по цене:</p>
-        <form action="" method="GET" >
+{#    <div class="filter_price">#}
+{#        <p>Фильтрация по цене:</p>#}
+{#        <form action="" method="GET" enctype="multipart/form-data">#}
 {#            {% csrf_token %}#}
-            {{ form.as_p }}
-            <input type="submit" value="поиск">
-        </form>
+{#            {{ form.as_p }}#}
+{#            <form action="task_1.1.html" name="home_work_1_Protsiuk"; method="post"; enctype="multipart/form-data">#}
+{#            <input type="text"; name="firstname"; placeholder="Enter your Firstname">#}
+{#            <input type="text" name="lastname"; placeholder="Enter your Lastname">#}
+{#            <input type="email" name="email"; placeholder="Enter your email">#}
+{##}
+{#            <input type="submit" value="Фильтровать">#}
+{#        </form>#}
+{##}
+{#    </div>#}
 
-    </div>
+
 {#		<ul class="order-select-gallery sort-order-type" id="order-select-gallery">#}
 {#		<li class="list-label">#}
 {#			Сортировать по:#}

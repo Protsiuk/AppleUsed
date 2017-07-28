@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href={% static "css/style.css" %} />
     <title>{% block title %} AppleUsed {% endblock title %}</title>
-
+{#    <title>{% block title %}<img src="{% static 'img/apple_icon.ico' %}"> AppleUsed {% endblock title %}</title>#}
      <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
     <!--Import jQuery before materialize.js-->
@@ -33,7 +33,7 @@
 
 <div class="container">
    {% block content %}
-    {% endblock content %}
+   {% endblock content %}
 </div>
 
 <div class="constanta_low">
