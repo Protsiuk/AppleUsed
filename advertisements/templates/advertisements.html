@@ -13,8 +13,12 @@
 {#{% endblock order %}#}
 
 {% block content %}
-            <input type="text" maxlength="256" name="find" placeholder="Введите название желаемого товара">
-            <input type="submit" value="Искать">
+    <form action="" method="GET">
+{#        {% csrf_token %}#}
+        <input type="text" name="find" placeholder="Введите название желаемой продукции Apple">
+        <input type="submit" value="Искать">
+    </form>
+
 
     <form action="" method="GET">
         {% csrf_token %}

@@ -57,19 +57,17 @@ from utils import gen_page_list
             #                              author=request.user)
 
 def advertisements(request):
+    print(request.GET)
     # form = AdvertisementFilterForm()
     form_filter = AdvertisementFilterForm(request.GET)
+
     # form = AdvertisementForm()
     advertisements = Advertisement.objects.all()
+    if request.GET.get("find"):
+        advertisements = find_title(request, advertisements)
+
     if form_filter.is_valid():
-        if form_filter.cleaned_data["min_price"]:
-            advertisements = advertisements.filter(price__gte=form_filter.cleaned_data['min_price'])
-
-        if form_filter.cleaned_data["max_price"]:
-            advertisements = advertisements.filter(price__lte=form_filter.cleaned_data['max_price'])
-
-        if form_filter.cleaned_data["ordering"]:
-            advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
+        advertisements = filter_list(request, form_filter, advertisements)
 
     # pagination of pages
     paginator = Paginator(advertisements, 5)
@@ -90,8 +88,25 @@ def advertisements(request):
                                                  "page_nums": page_nums})
 
 
+def filter_list(request, form_filter, advertisements):
+    if form_filter.cleaned_data["min_price"]:
+        advertisements = advertisements.filter(price__gte=form_filter.cleaned_data['min_price'])
 
-# def advertisements(request):
+    if form_filter.cleaned_data["max_price"]:
+        advertisements = advertisements.filter(price__lte=form_filter.cleaned_data['max_price'])
+
+    if form_filter.cleaned_data["ordering"]:
+        advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
+    return (advertisements)
+    # return {"advertisements": advertisements, "form_filter": form_filter}
+
+
+def find_title(request, advertisements):
+    find = request.GET.get("find")
+    # print(request.GET)
+    advertisements = advertisements.filter(title__icontains=find)
+    return (advertisements)
+
 #     form = AdvertisementForm()
 #
 #     if request.method == "POST":
