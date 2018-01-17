@@ -3,13 +3,11 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
 
-
-
-
 from advertisements.forms import AdvertisementForm, AdvertisementMessageForm, AdvertisementFilterForm
 from advertisements.models import Advertisement, AdvertisementMessage
 
 from utils import gen_page_list
+
 
 """def advertisements(request):
     form = AdvertisementForm()
@@ -57,7 +55,7 @@ from utils import gen_page_list
             #                              author=request.user)
 
 def advertisements(request):
-    print(request.GET)
+    # print ('ZAPROS'+request.GET)
     # form = AdvertisementFilterForm()
     form_filter = AdvertisementFilterForm(request.GET)
 
@@ -69,8 +67,12 @@ def advertisements(request):
     if form_filter.is_valid():
         advertisements = filter_list(request, form_filter, advertisements)
 
+    # if request.GET.get("find"):
+    #     advertisements = find_title(request, advertisements)
+    advertisements = advertisements.order_by("-added")
+    # advertisements = Advertisement.objects.order_by("-added")
     # pagination of pages
-    paginator = Paginator(advertisements, 5)
+    paginator = Paginator(advertisements, 3)
     page = request.GET.get('page', 1)
     # print(paginator.num_pages, "pages number")
     try:
@@ -89,16 +91,42 @@ def advertisements(request):
 
 
 def filter_list(request, form_filter, advertisements):
+    print(request.GET, "it was REQUEST")
     if form_filter.cleaned_data["min_price"]:
         advertisements = advertisements.filter(price__gte=form_filter.cleaned_data['min_price'])
 
     if form_filter.cleaned_data["max_price"]:
         advertisements = advertisements.filter(price__lte=form_filter.cleaned_data['max_price'])
 
-    if form_filter.cleaned_data["ordering"]:
-        advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
+    # if form_filter.cleaned_data["ordering"]:
+    #     advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
     return (advertisements)
+
     # return {"advertisements": advertisements, "form_filter": form_filter}
+
+# def ordering_list(request, form_filter, advertisements):
+#     advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
+#     return (advertisements)
+
+
+def ordering_list(request):
+    print('request самые дешевые')
+    advertisements = Advertisement.objects.all()
+    form_filter = AdvertisementFilterForm(request.GET)
+    if request.GET.get("GET/advertisements/order_price_inexpensive/"):
+        print('самые дешевые')
+        advertisements = Advertisement.objects.order_by("-price")
+        return render(request, "advertisements_sorted_inexpensive.html", {"advertisements": advertisements,
+                                                                        "form_filter": form_filter})
+    elif request.GET.get("/advertisements/order_price_expensive/"):
+        advertisements = Advertisement.objects.order_by("price")
+        return render(request, "advertisements_sorted_expensive.html", {"advertisements": advertisements})
+
+
+
+
+    # advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
+    # return (advertisements)
 
 
 def find_title(request, advertisements):
@@ -107,8 +135,14 @@ def find_title(request, advertisements):
     advertisements = advertisements.filter(title__icontains=find)
     return (advertisements)
 
-#     form = AdvertisementForm()
+
+# def ordering_list(request, advertisements):
+#     ordering = request.GET.get("ordering")
+#     advertisements = Advertisement.objects.order_by(ordering)
 #
+#     return (advertisements)
+#----------------------------------------------------------------
+
 #     if request.method == "POST":
 #         form = AdvertisementForm(request.POST, request.FILES)
 #         if form.is_valid():
@@ -227,4 +261,32 @@ def single_advertisement(request, advertisement_id):
                                                        "form": form})
 
 
+def advertisements_expensive(request):
+    # print ('ZAPROS'+request.GET)
+    form = AdvertisementFilterForm()
+    form_filter = AdvertisementFilterForm(request.GET)
 
+    # form = AdvertisementForm()
+    advertisements = Advertisement.objects.all()
+
+    advertisements = advertisements.order_by("-price")
+
+    # pagination of pages
+    paginator = Paginator(advertisements, 10)
+    page = request.GET.get('page', 1)
+    # print(paginator.num_pages, "pages number")
+    try:
+        advertisements = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        advertisements = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        advertisements = paginator.page(paginator.num_pages)
+    page_nums = gen_page_list(int(page), paginator.num_pages)
+
+    return render(request, "advertisements_sorted_inexpensive.html", {"advertisements": advertisements,
+                                                   "form_filter": form_filter,
+                                                   "page_nums": page_nums})
+
+    # GET /advertisements/order_price_inexpensive

@@ -12,6 +12,7 @@ urlpatterns = [
 
     url(r'accounts/', include('accounts.urls')),
     url(r'advertisements/', include('advertisements.urls')),
+    # url(r'home')?, home_pages, name='home'
    # url(r'send_email/', include('send_email.urls')),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

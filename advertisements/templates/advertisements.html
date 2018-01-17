@@ -1,43 +1,52 @@
-{% extends 'frame.html' %}
+{% extends 'base.html' %}
 
 {% load humanize %}
 {% load russion_datas %}
 
-{#{% block order %}#}
-{#    <p>Фильтрация по цене:</p>#}
-{#    <form action="{% url 'advertisements' %}" method="GET">#}
-{#        {% csrf_token %}#}
-{#        {{ form_order }}#}
-{#            <input type="submit" class="order_find">поиск</input>#}
-{#    </form>#}
-{#{% endblock order %}#}
-
 {% block content %}
+
     <form action="" method="GET">
 {#        {% csrf_token %}#}
         <input type="text" name="find" placeholder="Введите название желаемой продукции Apple">
         <input type="submit" value="Искать">
-    </form>
-
-
-    <form action="" method="GET">
-        {% csrf_token %}
         {{ form_filter.as_p }}
         <input type="submit" value="фильтровать">
     </form>
 
-{#    <form action="" method="get">#}
-{#        <input type="radio" name="filter" id="-price" value="по убыванию цены" />#}
+    <div class="sorted_advertisements">
+        <ul class="order-select-gallery sort-order-type" id="order-select-gallery">
+		<li class="list-label">
+			Сортировать по:
+		</li>
+		<li>
+            <a class="ordering" href="{% url 'advertisements_sorted_inexpensive' %}">сначала самые дешевые </a>
+
+{#			<a class="link selected" data-type="created_at:desc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=created_at%3Adesc"><span>Найновіші</span></a>#}
+		</li>
+        <li>
+            <a class="ordering" href="{% url 'advertisements_sorted_expensive' %}">сначала самые дорогие</a>
+{#                <a class="link " data-type="filter_float_price:asc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=filter_float_price%3Aasc"><span>Найдешевші</span></a>#}
+        </li>
+{#            <li>#}
+{#                <a href="{% url 'advertisements_inexpensive' %}">сначала самые дешовые</a>#}
+{#                <a class="link " data-type="filter_float_price:desc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=filter_float_price%3Adesc"><span>Найдорожчі</span></a>#}
+{#            </li>#}
+        </ul>
+    </div>
+{##}
+    <form action="" method="get">
+{#    <a name="order" id="-price" href="{% url 'advertisements' %}" >   по убыванию цены</a>#}
+{#        <a href="{% url 'advertisements' %}" >  по возростанию цены</a>#}
+
+        {#        <input type="radio" name="order" id="-price" value="по убыванию цены" />#}
 {#        <label for="-price">по убыванию цены</label><br/>#}
-{#        <input type="radio" name="filter" id="price" value="по возростанию цены"/>#}
+{#        <input type="radio" name="order" id="price" value="по взнерщт ьфтфпуюозростанию цены"/>#}
 {#        <label for="price">по возростанию цены</label><br/>#}
-{#        <input type="radio" name="filter" id="-added" value="по дате добавления"/>#}
-{#            <input type="radio" name="flavor" value="-added"/>#}
+{#        <input type="radio" name="order" id="-added" value="по дате добавления"/>#}
 {#        <label for="-added">по дате добавления</label><br/>#}
 {#        <input type="submit" value="отсортировать"/>#}
-{#    </form>#}
-{#    <input name="sort" type="radio"> по возростанию цены#}
-{#    <input name="sort" type="radio"> по убыванию цены#}
+    </form>
+
     <p>Последние объявления на сайте:</p>
 {#    <div class="filter_price">#}
 {#        <p>Фильтрация по цене:</p>#}
@@ -54,37 +63,16 @@
 {##}
 {#    </div>#}
 
-
-{#		<ul class="order-select-gallery sort-order-type" id="order-select-gallery">#}
-{#		<li class="list-label">#}
-{#			Сортировать по:#}
-{#		</li>#}
-{#		<li>#}
-{#            <a> сначала самые новые </a>#}
-{##}
-{#			<a class="link selected" data-type="created_at:desc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=created_at%3Adesc"><span>Найновіші</span></a>#}
-{#		</li>#}
-{#            <li>#}
-{#				<a href="{% url 'advertisements_price_up' %}">сначала самые дорогие</a>#}
-{#                <a class="link " data-type="filter_float_price:asc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=filter_float_price%3Aasc"><span>Найдешевші</span></a>#}
-{#            </li>#}
-{#            <li>#}
-{#                <a href="{% url 'advertisements_price_inexpensive' %}">сначала самые дешовые</a>#}
-{#                <a class="link " data-type="filter_float_price:desc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=filter_float_price%3Adesc"><span>Найдорожчі</span></a>#}
-{#            </li>#}
-{#        </ul>#}
-{#    </div>#}
-
     {% for advertisement in advertisements %}
         <hr>
         <div class="advertisement">
             <img src="{{ advertisement.image.url }}" width="100">
             <a href="{% url 'single_advertisement' advertisement_id=advertisement.id %}">{{ advertisement.title }}</a>
-{#            <a class="title_advertisement" >{{ advertisement.title }} </a>#}
+    {#            <a class="title_advertisement" >{{ advertisement.title }} </a>#}
             <div align="right"><b class="price">{{ advertisement.price }} USD</b></div>
             <b>Добавлено {{ advertisement.added | russian_date}}</b>
 
-{#        This is the advertisement created was {{ advertisement.author.first_name }}<br>#}
+    {#        This is the advertisement created was {{ advertisement.author.first_name }}<br>#}
 
         <hr>
         </div>
@@ -92,8 +80,8 @@
 
     <div class="pagination">
     <span class="step-links">
-        {% if publications.has_previous %}
-            <a href="page={{ publications.previous_page_number }}"><-</a>
+        {% if advertisements.has_previous %}
+            <a href="page={{ advertisements.previous_page_number }}"><-</a>
         {% endif %}
 
         {% for page_num in page_nums %}
@@ -104,12 +92,12 @@
             {% endif %}
         {% endfor %}
 
-{#            <span class="current">#}
-{#                Page {{ publications.number }} of {{ publications.paginator.num_pages }}.#}
-{#            </span>#}
+    {#            <span class="current">#}
+    {#                Page {{ publications.number }} of {{ publications.paginator.num_pages }}.#}
+    {#            </span>#}
 
-        {% if publications.has_next %}
-            <a href="?page={{ publications.next_page_number }}">-></a>
+        {% if advertisements.has_next %}
+            <a href="?page={{ advertisements.next_page_number }}">-></a>
         {% endif %}
     </span>
     </div>

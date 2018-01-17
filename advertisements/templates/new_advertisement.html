@@ -1,4 +1,4 @@
-{% extends "frame.html" %}
+{% extends "base.html" %}
 
 
 <div class="container">
@@ -28,7 +28,7 @@
 
         <style type="text/css" >{margin: 0 auto}</style>
         <button type="submit" class="waves-effect waves-light btn">добавить объявление </button>
-            <a href="?page={% url 'new_advertisement' %}" >-</a>
+            <a href="?page={% url 'create_advertisement' %}" >-</a>
 {#            <a href="?page={{ publications.next_page_number }}">-></a>#}
 
     {% endblock %}

@@ -14,6 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
 
 </head>
+
+
 <body>
 
 <nav>
@@ -21,20 +23,32 @@
         <img src="{% static 'img/apple_logo.gif' %}" width="50" height="50">
         <a href="{% url 'main' %}" class="brand-logo">AppleUsed</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
+{#        {% if form.errors %}#}
+{#            <p> Your username and password didn't math</p>#}
+{#        {% endif %}#}
             {% if request.user.is_authenticated %}
-                Вы авторизированы под ником <b>{{ request.user.username }}</b>
+                <span> Добро пожаловать <b>{{ request.user.username }}</b></span>
                 <li><b><a href="{% url 'logout' %}">Выйти</a></b></li>
             {% else %}
-                <li><a href="{% url 'login' %}">Войти</a></li>
+                <li><a href="{% url 'login' %}">Авторизоваться</a></li>
             {% endif %}
         </ul>
     </div>
 </nav>
+ <a href="{% url 'advertisements' %}">Перейти к списку объявлений</a>
+
+{##}
+{#    {% block content %}#}
+{#        <a href="{% url 'advertisements' %}">Перейти к списку объявлений</a>#}
+{#    {% endblock content %}#}
+
 
 <div class="container">
-   {% block content %}
-   {% endblock content %}
+    {% block content %}
+        <a href="{% url 'advertisements' %}">Перейти к списку объявлений</a>
+    {% endblock content %}
 </div>
+
 
 <div class="constanta_low">
 
@@ -51,4 +65,5 @@
 </footer>
 
 </body>
+
 </html>

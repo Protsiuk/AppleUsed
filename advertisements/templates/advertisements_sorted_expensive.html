@@ -8,7 +8,7 @@
 			Сортировать по:
 		</li>
 		<li>
-            <a href="{% url 'advertisements_find' %}">сначала самые новые </a>
+            <a class="link selected" href="{% url 'advertisements_sorted_inexpensive' %}">сначала самые дешевые </a>
 
 {#			<a class="link selected" data-type="created_at:desc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=created_at%3Adesc"><span>Найновіші</span></a>#}
 		</li>
@@ -16,10 +16,10 @@
 				<a>сначала самые дорогие</a>
 {#                <a class="link " data-type="filter_float_price:asc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=filter_float_price%3Aasc"><span>Найдешевші</span></a>#}
             </li>
-            <li>
-                <a href="{% url 'advertisements_inexpensive' %}">сначала самые дешовые</a>
-                <a class="link " data-type="filter_float_price:desc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=filter_float_price%3Adesc"><span>Найдорожчі</span></a>
-            </li>
+{#            <li>#}
+{#                <a href="{% url 'advertisements_inexpensive' %}">сначала самые дешовые</a>#}
+{#                <a class="link " data-type="filter_float_price:desc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=filter_float_price%3Adesc"><span>Найдорожчі</span></a>#}
+{#            </li>#}
         </ul>
     </div>
     {% for advertisement in advertisements %}
@@ -39,8 +39,8 @@
 
     <div class="pagination">
     <span class="step-links">
-        {% if publications.has_previous %}
-            <a href="page={{ publications.previous_page_number }}"><-</a>
+        {% if advertisements.has_previous %}
+            <a href="page={{ advertisements.previous_page_number }}"><-</a>
         {% endif %}
 
         {% for page_num in page_nums %}
@@ -52,8 +52,8 @@
         {% endfor %}
 
 
-        {% if publications.has_next %}
-            <a href="?page={{ publications.next_page_number }}">-></a>
+        {% if advertisements.has_next %}
+            <a href="?page={{ advertisements.next_page_number }}">-></a>
         {% endif %}
     </span>
     </div>

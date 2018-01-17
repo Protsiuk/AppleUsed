@@ -1,9 +1,9 @@
-{% extends "frame.html" %}
+{% extends "base.html" %}
 
 {% load humanize %}
 {% load russion_datas %}
 
-    {% block title %} AppleUsed, {{ advertisement.title }} {% endblock title %}
+    {% block title %} {{ advertisement.title }}, AppleUsed {% endblock title %}
 
     {% block content %}
         <div class="fotter">
