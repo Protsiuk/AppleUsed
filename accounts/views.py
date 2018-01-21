@@ -140,30 +140,35 @@ class UserLoginView(APIView):
 #     return render(request, 'personaldetails.html', {'profile': profile,'user':user})
 
 
-# @login(request='POST', user=User.is_authenticated)
+# @login(request=GET, user=User.is_authenticated)
+# @login_required(redirect_field_name='my_redirect_field')
 
-# @login_required(login_url="/main/")
+
+# @login_required(login_url="/advertisements/")
 def registrationView(request):
-    form = RegistrationForm(request.POST or None)
-    if request.POST and form.is_valid():
-        user = User.objects.create_user(username=form.cleaned_data['username'],
-                                        email=form.cleaned_data['email'],
-                                        password=form.cleaned_data['password'])
-        # print(user.objects.get['email'])
-        user.save()
-        # user = User.objects.get()
-        return HttpResponseRedirect(reverse("profile"))
+    if User.is_authenticated:
+        return HttpResponseRedirect(reverse('advertisements'))
+    else:
+        form = RegistrationForm(request.POST or None)
+        if request.POST and form.is_valid():
+            user = User.objects.create_user(username=form.cleaned_data['username'],
+                                            email=form.cleaned_data['email'],
+                                            password=form.cleaned_data['password'])
+            # print(user.objects.get['email'])
+            user.save()
+            # user = User.objects.get()
+            return HttpResponseRedirect(reverse("profile"))
     return render(request, 'registration.html', {'form': form})
 
 
 def profileUser(request):
     print('это профиль')
     form = RegistrationForm(request.POST or None)
-    # if request.POST and form.is_valid():
-    #     user = User.objects.create_user(username=form.cleaned_data['email'], email=form.cleaned_data['email'], password=form.cleaned_data['password'])
-    #     user.save()
-    #     # user = User.objects.get()
-    #     return HttpResponseRedirect(reverse("profile"))
+    if request.POST and form.is_valid():
+        user = User.objects.create_user(username=form.cleaned_data['email'], email=form.cleaned_data['email'], password=form.cleaned_data['password'])
+        user.save()
+        # user = User.objects.get()
+        return HttpResponseRedirect(reverse("profile"))
     return render(request, 'registration.html', {'form': form})
 
 

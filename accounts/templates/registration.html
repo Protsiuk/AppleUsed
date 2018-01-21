@@ -2,31 +2,30 @@
 
 <div class="registrtion-user">
     {% block content %}
-
-            <form class="col s12" action="{% url 'registration' %}" method="post">
-                {% csrf_token %}
-                <ul class='form-errors'>
-                    {% for error in form.non_field_errors %}
-                        <li>{{ error|escape }}</li>
-                    {% endfor %}
-                </ul>
+        <form class="col s12" action="{% url 'registration' %}" method="post">
+            {% csrf_token %}
+            <ul class='form-errors'>
+                {% for error in form.non_field_errors %}
+                    <li>{{ error|escape }}</li>
+                {% endfor %}
+            </ul>
 {##}
-                <div class="input-field col s6">
-                    <label for="{{ form.username.id_for_label }}"></label>
-                    <p>Имя пользователя:</p>
-                    {{ form.username }}
-                    <label for="{{ form.email.id_for_label }}"></label>
-                    <p>Email:</p>
-                    {{ form.email }}
-                    <label for="{{ form.password.id_for_label }}"></label>
-                    <p>Пароль:</p>
-                    {{ form.password }}<br>
-                    <label for="{{ form.passwordConfirm.id_for_label }}"></label><br>
-                    <p>Подтвердить пароль:</p>
-                    {{ form.passwordConfirm }}
-                    <button type="submit" class="waves-effect waves-light btn">Зарегистрироваться</button>
+            <div class="input-field col s6">
+                <label for="{{ form.username.id_for_label }}"></label>
+                <p>Имя пользователя:</p>
+                {{ form.username }}
+                <label for="{{ form.email.id_for_label }}"></label>
+                <p>Email:</p>
+                {{ form.email }}
+                <label for="{{ form.password.id_for_label }}"></label>
+                <p>Пароль:</p>
+                {{ form.password }}<br>
+                <label for="{{ form.passwordConfirm.id_for_label }}"></label><br>
+                <p>Подтвердить пароль:</p>
+                {{ form.passwordConfirm }}
+                <button type="submit" class="waves-effect waves-light btn">Зарегистрироваться</button>
 {#                    {{ form.as_p }}#}
-                </div>
+            </div>
 {##}
 {#                <div class="input-field col s6">#}
 {#                    <input placeholder="Password" id="">#}
@@ -38,7 +37,7 @@
 {#                    <input placeholder="Password Confirm" id="">#}
 {#                    <label for="{{ form.password.id_for_label }}">Password Confirm</label>#}
 {#                    {{ form.passwordConfirm }}#}
-                </div>
+{#                </div>#}
 {#                <button type="submit" class="waves-effect waves-light btn">Войти</button>#}
 {##}
             </form>

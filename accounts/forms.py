@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth import authenticate
 from accounts.models import User
 # from django.contrib.auth.models import User
-# from accounts import
 
 
 class LoginForm(forms.Form):
@@ -30,8 +29,7 @@ class LoginForm(forms.Form):
 
 class ForgotPasswordForm(forms.Form):
     email = forms.EmailField()
-    eml = forms.EmailField()
-    # password = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
+    password = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
 
     # password = forms.CharField(widget=forms.FilePathField, required=True)
 
