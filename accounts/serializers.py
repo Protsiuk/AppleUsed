@@ -1,3 +1,4 @@
+"""
 from rest_framework import serializers
 from accounts.models import User
 
@@ -20,8 +21,10 @@ class LoginSerializer(serializers.Serializer):
         password = attrs.get("password")
 
         user = authenticate(email=email, password=password)
+        print(email)
         if not user:
             raise serializers.ValidationError("Sorry, invalid credentials.")
 
         attrs["user"] = user
         return attrs
+"""

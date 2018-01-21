@@ -24,6 +24,17 @@ class WebsiteSettings(models.Model):
     about = models.TextField(max_length=510)
 
 
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    city = models.CharField(max_length=255, default='')
+    phone = models.IntegerField(default=False)
+
+    def create_profile(sender, **kwargs):
+        if kwargs['created']:
+            user_profile = UserProfile.objects.create(user=kwargs['instance'])
+
+    # post_save.connnect(create_profile, sender=User)
+
 # # Create your models here.
 # class Member (models.Model):
 #     username = models.CharField(max_length= 255)

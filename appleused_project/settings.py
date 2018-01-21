@@ -49,6 +49,8 @@ INSTALLED_APPS = [
     'solo',
     'rest_framework',
     'rest_framework.authtoken',
+    'password_reset',
+
 
 ]
 
@@ -147,6 +149,8 @@ AUTH_USER_MODEL = 'accounts.User'
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+AUTH_PROFILE_MODULE = 'list.UserProfile'
 
 # email server settings
 # EMAIL_HOST = 'smtp.gmail.com'

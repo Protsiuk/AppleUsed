@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+<div class="registrtion-user">
+    {% block content %}
+
+            <form class="col s12" action="{% url 'registration' %}" method="post">
+                {% csrf_token %}
+                <ul class='form-errors'>
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error|escape }}</li>
+                    {% endfor %}
+                </ul>
+{##}
+                <div class="input-field col s6">
+                    <label for="{{ form.username.id_for_label }}"></label>
+                    <p>Имя пользователя:</p>
+                    {{ form.username }}
+                    <label for="{{ form.email.id_for_label }}"></label>
+                    <p>Email:</p>
+                    {{ form.email }}
+                    <label for="{{ form.password.id_for_label }}"></label>
+                    <p>Пароль:</p>
+                    {{ form.password }}<br>
+                    <label for="{{ form.passwordConfirm.id_for_label }}"></label><br>
+                    <p>Подтвердить пароль:</p>
+                    {{ form.passwordConfirm }}
+                    <button type="submit" class="waves-effect waves-light btn">Зарегистрироваться</button>
+{#                    {{ form.as_p }}#}
+                </div>
+{##}
+{#                <div class="input-field col s6">#}
+{#                    <input placeholder="Password" id="">#}
+{#                    <label for="{{ form.password.id_for_label }}">Password</label>#}
+{#                    {{ form.password }}#}
+{#                </div>#}
+{##}
+{#                <div class="input-field col s6">#}
+{#                    <input placeholder="Password Confirm" id="">#}
+{#                    <label for="{{ form.password.id_for_label }}">Password Confirm</label>#}
+{#                    {{ form.passwordConfirm }}#}
+                </div>
+{#                <button type="submit" class="waves-effect waves-light btn">Войти</button>#}
+{##}
+            </form>
+{#        {% endif %}#}
+    {% endblock content %}
+</div>

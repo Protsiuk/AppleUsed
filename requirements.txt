@@ -1,4 +1,6 @@
 Django==1.11.1
+django-password-reset==1.0
+django-profiles==0.2
 django-solo==1.1.2
 djangorestframework==3.6.3
 olefile==0.44

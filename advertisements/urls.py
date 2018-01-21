@@ -13,7 +13,7 @@ urlpatterns = [
     url(r'^order_price_expensive/', ordering_list, name='advertisements_sorted_expensive'),
     url(r'^order_price_inexpensive/', advertisements, name='advertisements_sorted_inexpensive'),
     # url(r'^order_price_down/', advertisements_order_price_down, name='advertisements_price_down'),
-    # # url(r'^order_price_up/', advertisem ents_order_price_up, name='advertisements_price_up'),
+    # # url(r'^order_price_up/', advertisements_order_price_up, name='advertisements_price_up'),
     # url(r'^find_(?P<title>)/', advertisements_order_price_down, name='advertisements_price_down'),
 
     url(r'^(?P<advertisement_id>[\d]+)$', single_advertisement, name='single_advertisement'),

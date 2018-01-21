@@ -3,7 +3,7 @@
 <div class="row">
     {% block content %}
         {% if request.user.is_authenticated %}
-            nhfkfkz
+            <p align="center">Вы уже авторизованы. Хотите выйти?</p>
         {% else %}
             <form class="col s12" action="{% url 'login' %}" method="post">
                 {% csrf_token %}
@@ -26,6 +26,8 @@
                     {{ form.password }}
                 </div>
                 <button type="submit" class="waves-effect waves-light btn">Войти</button>
+                <a href="">Забыли пароль</a>
+                 <p align="center">Еще нет акаунта?<a href="{% url 'registration' %}">Регистрация</a></p>
 
     {#            {% for error in form.non_field_errors %}#}
     {#                    <strong>{{ error|escape }}</strong>#}
