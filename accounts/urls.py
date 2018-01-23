@@ -1,12 +1,14 @@
 from django.conf.urls import url
 
-from accounts.views import sign_out, sign_in, registrationView, profileUser #, UserLoginView
+from accounts.views import sign_out, sign_in, registrationView, profileUserViews, editProfileUserViews #, UserLoginView
 
 urlpatterns = [
     url(r'^logout/$', sign_out, name='logout'),
     url(r'^login/$', sign_in, name='login'),
     url(r'^registration/$', registrationView, name='registration'),
-    url(r'^profileuser/$', profileUser, name='profile_user'),
+    url(r'^profile-user/$', profileUserViews, name='profile_user'),
+
+    url(r'^edit-profile-user/$', editProfileUserViews, name='edit_profile_user'),
 
     # url(r'^change-password/$', ChangePasswordViews, name='Change_password'),
     # url(r'^change-password-done/$', ChangePasswordDoneViews, name='Change_password'),

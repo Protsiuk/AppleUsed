@@ -29,9 +29,9 @@ class UserProfile(models.Model):
     city = models.CharField(max_length=255, default='')
     phone = models.IntegerField(default=False)
 
-    def create_profile(sender, **kwargs):
-        if kwargs['created']:
-            user_profile = UserProfile.objects.create(user=kwargs['instance'])
+    # def create_profile(sender, **kwargs):
+    #     if kwargs['created']:
+    #         user_profile = UserProfile.objects.create(user=kwargs['instance'])
 
     # post_save.connnect(create_profile, sender=User)
 

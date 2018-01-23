@@ -1,9 +1,10 @@
-from django.shortcuts import render, HttpResponseRedirect
+from django.shortcuts import render, HttpResponseRedirect, HttpResponse, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.core.urlresolvers import reverse
 # from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required
-# from django import forms
+from django.contrib.auth.forms import UserChangeForm
+
 
 # from rest_framework.views import APIView
 # from rest_framework.response import Response
@@ -11,9 +12,9 @@ from django.contrib.auth.decorators import login_required
 # from password_reset import
 
 # from accounts.serializers import LoginSerializer
-from accounts.forms import LoginForm, RegistrationForm, ForgotPasswordForm
+from accounts.forms import LoginForm, RegistrationForm, ProfileUserForm, ForgotPasswordForm
 
-from accounts.models import User
+from accounts.models import User, UserProfile
 
 
 def main_page(request):
@@ -161,15 +162,46 @@ def registrationView(request):
     return render(request, 'registration.html', {'form': form})
 
 
-def profileUser(request):
-    print('это профиль')
-    form = RegistrationForm(request.POST or None)
-    if request.POST and form.is_valid():
-        user = User.objects.create_user(username=form.cleaned_data['email'], email=form.cleaned_data['email'], password=form.cleaned_data['password'])
-        user.save()
-        # user = User.objects.get()
-        return HttpResponseRedirect(reverse("profile"))
-    return render(request, 'registration.html', {'form': form})
+@login_required
+def profileUserViews(request):
+    user = request.user
+    if request.GET:
+        return user
+    return render(request, 'profile-user.html', {'user': user})
+
+
+# @login_required
+# def editProfileUserViews(request):
+#     user = request.user
+#     if request.POST:
+#         form = ProfileUserForm(request.POST)
+#         user = User.objects.update(first_name=form.cleaned_data['first_name'],
+#                                    last_name=form.cleaned_data['last_name'],
+#                                    # phone=form.cleaned_data['last_name'],
+#                                    city=form.cleaned_data['city'],
+#                                             email=form.cleaned_data['email'],
+#                                             password=form.cleaned_data['password'])
+#     return render(request, 'edit-profile-user.html', {'form': form})
+
+
+@login_required
+def editProfileUserViews(request):
+    # user = request.user
+    if request.POST:
+        form = UserChangeForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('/accounts/profile-user/'))
+    else:
+        form = UserChangeForm(instance=request.user)
+        return render(request, 'edit-profile-user.html', {'form': form})
+
+    # return render(request, 'edit-profile-user.html', {'form': form})
+
+
+# def create_profile(sender, **kwargs):
+#     if kwargs['created']:
+#         user_profile = UserProfile.objects.create(user=kwargs['instance'])
 
 
 # post_save.connnect(create_profile, sender=User)

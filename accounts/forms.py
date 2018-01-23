@@ -92,7 +92,6 @@ class RegistrationForm(forms.Form):
             cleaned_data = super(RegistrationForm, self).clean()
             password = cleaned_data.get("password")
             passwordConfirm = cleaned_data.get('passwordConfirm')
-
             if password != passwordConfirm:
                 raise forms.ValidationError("Password does not match, try again.")
             return cleaned_data
@@ -132,3 +131,9 @@ class RegistrationForm(forms.Form):
 #             return cleaned_data
 #         except:
 #             raise forms.ValidationError("Error")
+
+class ProfileUserForm(forms.Form):
+    username = forms.CharField(max_length=50)
+    email = forms.EmailField(max_length=50)
+    password = forms.CharField(widget=forms.PasswordInput(render_value=False))#label=('Пароль'),
+    passwordConfirm = forms.CharField(label=('Пароль повторно'), widget=forms.PasswordInput(render_value=False))

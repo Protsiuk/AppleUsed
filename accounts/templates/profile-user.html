@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+<title>{% block title %} Личный кабинет {{ user.username }} {% endblock title %}</title>
+{% block content %}
+{#        <form class="col s12" action="{% url 'profile_user' %}" method="GET">#}
+    {% csrf_token %}
+    <div class="input-field col s6">
+        <b>Личный кабинет</b>
+        <p>Имя пользователя: <b>{{ user.first_name }}</b></p>
+        <p>Фамилия пользователя: <b>{{ user.last_name }}</b></p>
+        <p>Email: <b>{{ user.email }}</b></p>
+        <a href="{% url 'edit_profile_user' %}" class="href-on-page">Редатировать</a>
+    </div>
+{% endblock content %}

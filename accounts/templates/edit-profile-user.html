@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+<title>{% block title %} Редактирование профиля {{ user.username }} {% endblock title %}</title>
+{% block content %}
+{#        <form class="col s12" action="{% url 'profile_user' %}" method="GET">#}
+    {% csrf_token %}
+    <div class="input-field col s6">
+        <label for="{{ form.first_name.id_for_label }}"></label>
+        <p><b>Имя:</b> {{ form.first_name }}</p>
+        <label for="{{ form.last_name.id_for_label }}"></label>
+        <p><b>Фамилия:</b> {{ form.first_name }}</p>
+        <label for="{{ form.city.id_for_label }}"></label>
+        <p><b>Фамилия:</b> {{ form.city }}</p>
+        <label for="{{ form.email.id_for_label }}"></label>
+        <p><b></b>Email:</b> {{ form.email }}</p>
+        <label for="{{ form.password.id_for_label }}"></label>
+{#        <p>Пароль:</p>#}
+        <a href="" class="href-on-page">Изменить пароль</a>
+        <br>
+        <br>
+{#        <a href="{% url 'change_password' %}" class="href-on-page">Изменить пароль</a>#}
+{#            {{ form.password }}<br>#}
+{#            <label for="{{ form.passwordConfirm.id_for_label }}"></label><br>#}
+{#            <p>Подтвердить пароль:</p>#}
+{#            {{ form.passwordConfirm }}#}
+        <button type="submit" class="waves-effect waves-light btn">Сохранить</button>
+    </div>
+{% endblock content %}
