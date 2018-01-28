@@ -12,9 +12,9 @@ from django.contrib.auth.forms import UserChangeForm
 # from password_reset import
 
 # from accounts.serializers import LoginSerializer
-from accounts.forms import LoginForm, RegistrationForm, ProfileUserForm, ForgotPasswordForm
+from accounts.forms import LoginForm, RegistrationForm, ProfileUserForm, EditProfileUserForm#, ForgotPasswordForm
 
-from accounts.models import User, UserProfile
+from accounts.models import User
 
 
 def main_page(request):
@@ -146,28 +146,43 @@ class UserLoginView(APIView):
 
 
 # @login_required(login_url="/advertisements/")
+# @should_be_anonymous(redirect_url=reverse_lazy('office'))
 def registrationView(request):
-    if User.is_authenticated:
-        return HttpResponseRedirect(reverse('advertisements'))
-    else:
-        form = RegistrationForm(request.POST or None)
-        if request.POST and form.is_valid():
+    # if User.is_authenticated:
+    form = RegistrationForm(request.POST or None)
+    if request.user.is_anonymous() and request.POST:
+        if form.is_valid():
             user = User.objects.create_user(username=form.cleaned_data['username'],
                                             email=form.cleaned_data['email'],
                                             password=form.cleaned_data['password'])
             # print(user.objects.get['email'])
             user.save()
             # user = User.objects.get()
-            return HttpResponseRedirect(reverse("profile"))
+            return HttpResponseRedirect(reverse("profile_user"))
     return render(request, 'registration.html', {'form': form})
-
+    # return HttpResponseRedirect(reverse('profile_user'))
+"""
+    if request.user.is_authenticated():
+        return HttpResponseRedirect(reverse('profile_user'))
+    elif request.POST:
+        form = RegistrationForm(request.POST or None)
+        if form.is_valid():
+            user = User.objects.create_user(username=form.cleaned_data['username'],
+                                            email=form.cleaned_data['email'],
+                                            password=form.cleaned_data['password'])
+            # print(user.objects.get['email'])
+            user.save()
+            # user = User.objects.get()
+            return HttpResponseRedirect(reverse("profile_user"))
+    return render(request, 'registration.html', {'form': form})
+"""
 
 @login_required
 def profileUserViews(request):
-    user = request.user
-    if request.GET:
-        return user
-    return render(request, 'profile-user.html', {'user': user})
+    # user = request.user
+    # if request.GET:
+    #     return user
+    return render(request, 'profile-user.html', {'user': request.user})
 
 
 # @login_required
@@ -188,13 +203,15 @@ def profileUserViews(request):
 def editProfileUserViews(request):
     # user = request.user
     if request.POST:
-        form = UserChangeForm(request.POST, instance=request.user)
+        form = EditProfileUserForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
-            return redirect(reverse('/accounts/profile-user/'))
+            return redirect(reverse('profile-user.html'))
+        # return render(request, 'profile-user.html', {'user': user})
     else:
         form = UserChangeForm(instance=request.user)
-        return render(request, 'edit-profile-user.html', {'form': form})
+        return render(request, 'edit-profile-user.html', {'form' : form})
+        # return redirect(reverse("edit-profile-user"))
 
     # return render(request, 'edit-profile-user.html', {'form': form})
 

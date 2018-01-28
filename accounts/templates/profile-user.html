@@ -7,6 +7,7 @@
         <b>Личный кабинет</b>
         <p>Имя пользователя: <b>{{ user.first_name }}</b></p>
         <p>Фамилия пользователя: <b>{{ user.last_name }}</b></p>
+        <p>Город: <b>{{ user.city }}</b></p>
         <p>Email: <b>{{ user.email }}</b></p>
         <a href="{% url 'edit_profile_user' %}" class="href-on-page">Редатировать</a>
     </div>

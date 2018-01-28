@@ -26,8 +26,10 @@ class WebsiteSettings(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    city = models.CharField(max_length=255, default='')
-    phone = models.IntegerField(default=False)
+    city = models.CharField(default='', blank=True, null=True, max_length=255)
+    # city = models.ForeignKey(City,related_name='city', blank=True, null=True, help_text=_('Select your City')
+    # location = models.ForeignKey(Country, related_name='location', blank=True, null=True, help_text=_('Select your Location'))
+    phone = models.IntegerField(default=0)
 
     # def create_profile(sender, **kwargs):
     #     if kwargs['created']:

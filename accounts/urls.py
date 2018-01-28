@@ -8,12 +8,14 @@ urlpatterns = [
     url(r'^registration/$', registrationView, name='registration'),
     url(r'^profile-user/$', profileUserViews, name='profile_user'),
 
-    url(r'^edit-profile-user/$', editProfileUserViews, name='edit_profile_user'),
+    url(r'^profile-user/edit/$', editProfileUserViews, name='edit_profile_user'),
+    # url(r"^verify-email/$", email_verification_sent, name="account_email_verification_sent"),
+
+    # url(r'^verify-email/$', VerifyEmailView.as_view(), name='rest_verify_email'),
+    # url(r'^email-verification/$', TemplateView.as_view(template_name="email_verification.html"), name='email-verification'),
 
     # url(r'^change-password/$', ChangePasswordViews, name='Change_password'),
-    # url(r'^change-password-done/$', ChangePasswordDoneViews, name='Change_password'),
-
-    # url(r'^password_reset/$',PasswordResetView, name='password_reset'),
+    # url(r'^change-password-done/$', ChangePasswordDon   # url(r'^password_reset/$',PasswordResetView, name='password_reset'),
     # url(r'^password_reset/done/$', PasswordResetDoneView, name='password_reset_done'),
     # url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
     #     PasswordResetConfirmView,name='password_reset_confirm'),
