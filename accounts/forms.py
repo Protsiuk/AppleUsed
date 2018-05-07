@@ -2,7 +2,9 @@ from django import forms
 from django.contrib.auth import authenticate
 from accounts.models import User
 # from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.forms import UserChangeForm#, UserCreationForm
+
+# from registration.forms import RegistrationForm
 
 class LoginForm(forms.Form):
     email = forms.EmailField()
@@ -55,7 +57,6 @@ class ForgotPasswordForm(forms.Form):
     #         raise forms.ValidationError("User not Exist!")
 
 
-
         # user = authenticate(username='email', password='password')
         # print(user)
 
@@ -65,8 +66,11 @@ class ForgotPasswordForm(forms.Form):
     # password = forms.CharField(min_length=10, max_length=20, widget=forms.TextInput(atr={"class": "password"}))
 
 
-class RegistrationForm(forms.Form):
+class UserRegistrationForm(forms.Form):
+
     username = forms.CharField(max_length=50)#(label=(u'Имя Пользователя'))
+    # first_name = forms.CharField(max_length=50)#(label=(u'Имя Пользователя')
+    # last_name = forms.CharField(max_length=50)  # (label=(u'Имя Пользователя')
     email = forms.EmailField(max_length=50)#(label=(u'Email'))
     password = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
     passwordConfirm = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
@@ -75,7 +79,15 @@ class RegistrationForm(forms.Form):
     #                                                               'class':'form-control input-perso'}))
 
         # (label=('Пароль повторно'), widget=forms.PasswordInput(render_value=False))
-
+    class Meta:
+        model = User
+        # fields = (
+        #     'first_name',
+        #     'last_name',
+        #     'email',
+        #     'password1',
+        #     'password2'
+        # )
     # class Meta:
     #     model = user
     #     # Don't show user drop down.
@@ -93,13 +105,13 @@ class RegistrationForm(forms.Form):
             User.objects.get(email=email)
         except User.DoesNotExist:
             return email
-        raise forms.ValidationError("Данный Email уже есть в базе данных. "
+        raise forms.ValidationError("Данный Email уже есть в нашей базе."
                                     "Попробуйте использовать другой Email или пройдите процедуру востановления пароля.")
 
 
     def clean(self):
         try:
-            cleaned_data = super(RegistrationForm, self).clean()
+            cleaned_data = super(UserRegistrationForm, self).clean()
             password = cleaned_data.get("password")
             passwordConfirm = cleaned_data.get('passwordConfirm')
             if password != passwordConfirm:
@@ -107,6 +119,17 @@ class RegistrationForm(forms.Form):
             return cleaned_data
         except ValueError:
             raise forms.ValidationError("Error. Пожалуйста проверте еще раз данные")
+
+
+    def save(self, commit=True):
+        user = super(UserRegistrationForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+        # user.first_name = self.cleaned_data['First name']
+        # user.last_name = self.cleaned_data['Last name']
+
+        if commit:
+            user.save()
+        return user
 
 
 """class RegistrationForm(forms.Form):
@@ -210,4 +233,21 @@ class EditProfileUserForm(UserChangeForm):
             'phone',
         }
 
+#--------------------------------------------------------------
+# class UserRegistrationForm(RegistrationForm):
+#     first_name = forms.CharField(max_length=30, label=("First name"))
+#     last_name = forms.CharField(max_length=30, label=("Last name"))
+#
+#     class Meta:
+#         model = User
+#         fields = ("email", "first_name", "last_name")
 
+
+#--------------------------------------------------------------
+# class UserRegistrationForm(UserCreationForm):
+#     first_name = forms.CharField(max_length=30, label=("First name"))
+#     last_name = forms.CharField(max_length=30, label=("Last name"))
+#
+#     class Meta:
+#         model = User
+#         fields = ("email", "first_name", "last_name")

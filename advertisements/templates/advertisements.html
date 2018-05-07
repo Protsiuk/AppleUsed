@@ -4,37 +4,45 @@
 {% load russion_datas %}
 
 {% block content %}
-
-    <form action="" method="GET">
-{#        {% csrf_token %}#}
         <input type="text" name="find" placeholder="Введите название желаемой продукции Apple">
         <input type="submit" value="Искать">
-        {{ form_filter.as_p }}
+    <form action="" method="GET">
+{#        {% csrf_token %}#}
+
+            {{ form_filter.as_p }}
         <input type="submit" value="фильтровать">
     </form>
-
-    <div class="sorted_advertisements">
-        <ul class="order-select-gallery sort-order-type" id="order-select-gallery">
-		<li class="list-label">
-			Сортировать по:
-		</li>
-		<li>
-            <a class="ordering" href="{% url 'advertisements_sorted_inexpensive' %}">сначала самые дешевые </a>
-
+{##}
+{#    <form action="" method="GET">#}
+{#        {% csrf_token %}#}
+{#        {{ form_filter.as_p }}#}
+{#        <input type="submit" value="фильтровать">#}
+{#    </form>#}
+{#    <div class="sorted_advertisements">#}
+{#        <ul class="order-select-gallery sort-order-type" id="order-select-gallery">#}
+{#		<li class="list-label">#}
+{#			Сортировать по:#}
+{#		</li>#}
+{#		<li>#}
+{#            <a class="ordering" name="inexpensive" href="{% url 'advertisements_sorted_inexpensive' %}">сначала самые дешевые </a>#}
+{##}
 {#			<a class="link selected" data-type="created_at:desc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=created_at%3Adesc"><span>Найновіші</span></a>#}
-		</li>
-        <li>
-            <a class="ordering" href="{% url 'advertisements_sorted_expensive' %}">сначала самые дорогие</a>
+{#		</li>#}
+{#        <li>#}
+{#            <a class="ordering" name="expensive" href="{% url 'advertisements_sorted_expensive' %}">сначала самые дорогие</a>#}
 {#                <a class="link " data-type="filter_float_price:asc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=filter_float_price%3Aasc"><span>Найдешевші</span></a>#}
-        </li>
+{#        </li>#}
+
+
 {#            <li>#}
 {#                <a href="{% url 'advertisements_inexpensive' %}">сначала самые дешовые</a>#}
 {#                <a class="link " data-type="filter_float_price:desc" data-url="https://www.olx.ua/uk/list/?search%5Buser_id%5D=59880452&search%5Border%5D=filter_float_price%3Adesc"><span>Найдорожчі</span></a>#}
 {#            </li>#}
-        </ul>
-    </div>
+{#        </ul>#}
+{#    </div>#}
 {##}
-    <form action="" method="get">
+
+{#    <form action="" method="get">#}
 {#    <a name="order" id="-price" href="{% url 'advertisements' %}" >   по убыванию цены</a>#}
 {#        <a href="{% url 'advertisements' %}" >  по возростанию цены</a>#}
 
@@ -45,7 +53,7 @@
 {#        <input type="radio" name="order" id="-added" value="по дате добавления"/>#}
 {#        <label for="-added">по дате добавления</label><br/>#}
 {#        <input type="submit" value="отсортировать"/>#}
-    </form>
+{#    </form>#}
 
     <p>Последние объявления на сайте:</p>
 {#    <div class="filter_price">#}
@@ -102,24 +110,4 @@
     </span>
     </div>
 
-
-{#    <div class="pagination">#}
-{##}
-{#    {% if advertisements.has_previous %}#}
-{#        <a href="?page={{ advertisements.previous_page_number }}">←</a>#}
-{#    {% endif %}#}
-{##}
-{#    {% for num in advertisements.paginator.page_range %}#}
-{#        {% if num == advertisements.number %}#}
-{#            <span class="current"><b>{{ num }}</b></span>#}
-{#        {% else %}#}
-{#            <a href="?page={{ num }}"> {{ num }}</a>#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-{##}
-{#    {% if advertisement_list.has_next %}#}
-{#        <a href="?page={{ advertisements_list.next_page_number }}">→</a>#}
-{#    {% endif %}#}
-{##}
-{#    </div>#}
 {% endblock content %}

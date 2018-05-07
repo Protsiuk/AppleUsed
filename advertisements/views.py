@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 
 from advertisements.forms import AdvertisementForm, AdvertisementMessageForm, AdvertisementFilterForm
 from advertisements.models import Advertisement, AdvertisementMessage
@@ -62,17 +63,29 @@ def advertisements(request):
     # form = AdvertisementForm()
     advertisements = Advertisement.objects.all()
     if request.GET.get("find"):
-        advertisements = find_title(request, advertisements)
+        advertisements = find_advertisements(request, advertisements)
+
+    # elif request.GET.get("inxpensive"):
+    #     # advertisements = filter_list(request, form_filter, advertisements)
+    #     advertisements = advertisements.order_by("-price")
 
     if form_filter.is_valid():
-        advertisements = filter_list(request, form_filter, advertisements)
+        if form_filter.cleaned_data['min_price']:
+            advertisements = advertisements.filter(price__gte=form_filter.cleaned_data['min_price'])
+
+        if form_filter.cleaned_data['max_price']:
+            advertisements = advertisements.filter(price__lte=form_filter.cleaned_data['max_price'])
+
+        if form_filter.cleaned_data['ordering']:
+            advertisements = advertisements.order_by(form_filter.cleaned_data['ordering'])
+        # advertisements = filter_list(request, form_filter, advertisements)
 
     # if request.GET.get("find"):
     #     advertisements = find_title(request, advertisements)
     advertisements = advertisements.order_by("-added")
     # advertisements = Advertisement.objects.order_by("-added")
     # pagination of pages
-    paginator = Paginator(advertisements, 3)
+    paginator = Paginator(advertisements, 5)
     page = request.GET.get('page', 1)
     # print(paginator.num_pages, "pages number")
     try:
@@ -90,6 +103,7 @@ def advertisements(request):
                                                  "page_nums": page_nums})
 
 
+#---------------------------
 def filter_list(request, form_filter, advertisements):
     print(request.GET, "it was REQUEST")
     if form_filter.cleaned_data["min_price"]:
@@ -98,9 +112,11 @@ def filter_list(request, form_filter, advertisements):
     if form_filter.cleaned_data["max_price"]:
         advertisements = advertisements.filter(price__lte=form_filter.cleaned_data['max_price'])
 
-    # if form_filter.cleaned_data["ordering"]:
-    #     advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
+    if form_filter.cleaned_data["ordering"]:
+        advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
+
     return (advertisements)
+#----------------------------------
 
     # return {"advertisements": advertisements, "form_filter": form_filter}
 
@@ -109,18 +125,18 @@ def filter_list(request, form_filter, advertisements):
 #     return (advertisements)
 
 
-def ordering_list(request):
-    print('request самые дешевые')
-    advertisements = Advertisement.objects.all()
-    form_filter = AdvertisementFilterForm(request.GET)
-    if request.GET.get("GET/advertisements/order_price_inexpensive/"):
-        print('самые дешевые')
-        advertisements = Advertisement.objects.order_by("-price")
-        return render(request, "advertisements_sorted_inexpensive.html", {"advertisements": advertisements,
-                                                                        "form_filter": form_filter})
-    elif request.GET.get("/advertisements/order_price_expensive/"):
-        advertisements = Advertisement.objects.order_by("price")
-        return render(request, "advertisements_sorted_expensive.html", {"advertisements": advertisements})
+# def ordering_list(request, advertisements):
+#     # print('request самые дешевые')
+#     advertisements = Advertisement.objects.all()
+#     form_filter = AdvertisementFilterForm(request.GET)
+#     if request.GET.get("GET/advertisements/order_price_inexpensive/"):
+#         print('самые дешевые')
+#         advertisements = Advertisement.objects.order_by("-price")
+#         return render(request, "advertisements_sorted_inexpensive.html", {"advertisements": advertisements,
+#                                                                         "form_filter": form_filter})
+#     elif request.GET.get("/advertisements/order_price_expensive/"):
+#         advertisements = Advertisement.objects.order_by("price")
+#         return render(request, "advertisements_sorted_expensive.html", {"advertisements": advertisements})
 
 
 
@@ -129,7 +145,7 @@ def ordering_list(request):
     # return (advertisements)
 
 
-def find_title(request, advertisements):
+def find_advertisements(request, advertisements):
     find = request.GET.get("find")
     # print(request.GET)
     advertisements = advertisements.filter(title__icontains=find)
@@ -188,20 +204,26 @@ def some_view(request):
     #                                              "form": form,
     #                                              "page_nums": page_nums})
 
-
-def new_advertisement(request):
+@login_required(login_url="/accounts/login/")
+def create_advertisement(request):
     form = AdvertisementForm()
     if request.method == "POST":
         form = AdvertisementForm(request.POST, request.FILES)
         if form.is_valid():
+            # form.save()
             data = form.cleaned_data
+            # data = form
             Advertisement.objects.create(title=data.get("title"),
                                          body=data.get("body"),
                                          image=data.get("image"),
                                          price=data.get("price"),
                                          type_equipment=data.get("type_equipment"),
-                                         author=request.user)
-    advertisements = Advertisement.objects.all()
+                                         author=request.user,
+                                         phone_author=data.get("phone_author"))
+            advertisements = Advertisement.objects.all()
+            return render(request, 'send_advertisement_success.html')
+    return render(request, 'create_advertisement.html', {'form': form})
+    # return HttpResponseRedirect(reverse("advertisements"))
 
 
 def single_advertisement(request, advertisement_id):

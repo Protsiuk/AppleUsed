@@ -1,20 +1,35 @@
 from django.db import models
 
 from django.contrib.auth.models import AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
 
 # from utils import get_file_path
 
 
 class User(AbstractUser):
-    email = models.EmailField(max_length=255, unique=True)
+    # username = models.CharField('username', max_length=255)
+    email = models.EmailField('email', max_length=255, unique=True)
     # photo = models.FileField(upload_to=get_file_path)
+    # locations = models.CharField('locations', max_length=255)
     birth_day = models.DateField(blank=True, null=True)
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+    REQUIRED_FIELDS = []
+    # REQUIRED_FIELDS = ['email', 'password']
 
     class Meta:
         swappable = "AUTH_USER_MODEL"
+
+    # def email_user(self, *args, **kwargs):
+    #     send_mail(
+    #         '{}'.format(args[0]),
+    #         '{}'.format(args[1]),
+    #         '{}'.format(args[2]),
+    #         [self.email],
+    #         fail_silently=False,
+    #     )
 
 
 class WebsiteSettings(models.Model):
@@ -25,7 +40,7 @@ class WebsiteSettings(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, related_name='profile')
     city = models.CharField(default='', blank=True, null=True, max_length=255)
     # city = models.ForeignKey(City,related_name='city', blank=True, null=True, help_text=_('Select your City')
     # location = models.ForeignKey(Country, related_name='location', blank=True, null=True, help_text=_('Select your Location'))
@@ -36,6 +51,16 @@ class UserProfile(models.Model):
     #         user_profile = UserProfile.objects.create(user=kwargs['instance'])
 
     # post_save.connnect(create_profile, sender=User)
+
+    @receiver(post_save, sender=User)
+    def create_user_profile(sender, instance, created, **kwargs):
+        if created:
+            UserProfile.objects.create(user=instance)
+
+    @receiver(post_save, sender=User)
+    def save_user_profile(sender, instance, **kwargs):
+        # instance.UserProfile.save()
+        instance.profile.save()
 
 # # Create your models here.
 # class Member (models.Model):

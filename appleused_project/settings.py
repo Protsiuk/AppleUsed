@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '51+!8wr#+fg@$@6+78-2@6r02q9h*o)+_rdsl4s(o2utea8362'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -50,8 +50,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'password_reset',
-
-
+    'rest_auth',
+    #'registration',
 ]
 
 MIDDLEWARE = [
@@ -60,8 +60,11 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'django.contrib.send_email.middleware.MessageMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django.contrib.send_email.middleware.MessageMiddleware',
+
+    # 'django.contrib.send_email',
 ]
 
 ROOT_URLCONF = 'appleused_project.urls'
@@ -94,6 +97,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'USER':'sqlite3',
+        "PASSWORD":'test123'
     }
 }
 
@@ -121,6 +126,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -146,6 +152,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 AUTH_USER_MODEL = 'accounts.User'
+# AUTH_USER_MODEL = 'auth.User'
+
+# ACCOUNT_ACTIVATION_DAYS = 3
 
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -159,13 +168,17 @@ AUTH_PROFILE_MODULE = 'list.UserProfile'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
 # --------------------------------------------------
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'Your gmail email'
-EMAIL_HOST_PASSWORD = 'Your gmail password'
+from .email_info import EMAIL_HOST, EMAIL_USE_TLS, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
+EMAIL_USE_TLS = EMAIL_USE_TLS
+EMAIL_HOST = EMAIL_HOST
+EMAIL_PORT = EMAIL_PORT
+EMAIL_HOST_USER = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 DEFAULT_FROM_EMAIL = 'Your name'
 DEFAULT_TO_EMAIL = 'Your email'
+
+# EMAIL_HOST = 'localhost'
+# EMAIL_PORT = 1025
 
 # REST FRAMEWORK
 REST_FRAMEWORK = {
@@ -176,3 +189,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     )
 }
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass

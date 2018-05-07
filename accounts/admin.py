@@ -10,15 +10,22 @@ from solo.admin import SingletonModelAdmin
 class CustomUserAdmin(UserAdmin):
     add_fieldsets = ((None, {
         'classes': ('wide',),
-        'fields': ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')}
+        'fields': ('first_name', 'last_name', 'email', 'password1', 'password2')}
                       ),
                      )
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (None, {'fields': ('email', 'password')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Important data'), {'fields': ('last_login', 'date_joined')}),
     )
+
+    # fieldsets = (
+    #     (None, {'fields': ('username', 'password')}),
+    #     (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+    #     (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+    #     (_('Important data'), {'fields': ('last_login', 'date_joined')}),
+    # )
     list_filter = ('is_staff', 'is_superuser', 'is_active')
 
 
@@ -26,4 +33,4 @@ class CustomUserAdmin(UserAdmin):
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(WebsiteSettings, SingletonModelAdmin)
 
-
+# ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')
