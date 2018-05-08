@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+
+<div class="container">
+    {% block content %}
+        <b><h4>Создание объявления</h4></b><br>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+{#            <input type="text" name="find" placeholder="Введите название желаемой продукции Apple">#}
+{#            <input type="submit" value="Искать">#}
+            {{ form.as_p }}
+{#            <button type="submit" class="send_message btn">Отправитть сообщение</button>#}
+
+{#            {% if %}#}
+{##}
+{#                <button type="submit" class="waves-effect waves-light btn">Отправить объявление </button>#}
+{#            {% endif %}#}
+             <button type="submit" class="waves-effect waves-light btn">Отправить объявление </button>
+        </form>
+
+{#            {% if request.user.is_authenticated %}#}
+{#                <div class="new_advertisement">#}
+{#                    {{ Advertisement.title }}<br>#}
+{#                    {{ Advertisement.price }}<br>#}
+{#                    {{ Advertisement.type_equipment }}<br>#}
+{#                </div>#}
+{#            {% else %}#}
+{#                <li><a href="{% url 'login' %}">Войти</a></li>#}
+{#            {% endif %}#}
+
+
+
+{#    {{ Advertisement.title }}<br>    #}
+{#    Likes:{{ ad.get_likes_count }}<br>#}
+{#    <a href="{% url 'like_single_publication' publication_id=publication.id %}">LIKE</a>#}
+{#    <hr>#}
+{#    <b>Comment to {{ publication.title }}:</b><br>#}
+{#    {% for comment in publication.comments.all %}#}
+{#        <img src="{{ user.photo.url }}" width="30" height="30">#}
+{#        {{ comment.user.get_full_name }}{{ comment.added }} <br>#}
+{#        {{ comment.text }}<br>#}
+
+
+{#        <style type="text/css" >{margin: 0 auto}</style>#}
+{#        <button type="submit" class="waves-effect waves-light btn">добавить объявление </button>#}
+{#            <a href="?page={% url 'create_advertisement' %}" >-</a>#}
+{#            <a href="?page={{ publications.next_page_number }}">-></a>#}
+
+    {% endblock %}
+</div>
