@@ -55,6 +55,8 @@ from utils import gen_page_list
             #                              type_equipment=data.get("type_equipment"),
             #                              author=request.user)
 
+
+
 def advertisements(request):
     # print ('ZAPROS'+request.GET)
     # form = AdvertisementFilterForm()
@@ -62,14 +64,17 @@ def advertisements(request):
 
     # form = AdvertisementForm()
     advertisements = Advertisement.objects.all()
-    if request.GET.get("find"):
-        advertisements = find_advertisements(request, advertisements)
-
-    # elif request.GET.get("inxpensive"):
-    #     # advertisements = filter_list(request, form_filter, advertisements)
-    #     advertisements = advertisements.order_by("-price")
+    if request.GET.get("serch"):
+        find = request.GET.get("serch")
+        # advertisements = find_advertisements(request, advertisements)
+        advertisements = advertisements.filter(title__icontains=find)
 
     if form_filter.is_valid():
+        # if form_filter.cleaned_data["find"]:
+        #     print(True)
+        #     find = request.GET.get("find")
+        #     # advertisements = find_advertisements(request, advertisements)
+        #     advertisements = advertisements.filter(title__icontains=find)
         if form_filter.cleaned_data['min_price']:
             advertisements = advertisements.filter(price__gte=form_filter.cleaned_data['min_price'])
 
@@ -82,7 +87,8 @@ def advertisements(request):
 
     # if request.GET.get("find"):
     #     advertisements = find_title(request, advertisements)
-    advertisements = advertisements.order_by("-added")
+    # advertisements = advertisements.order_by("-added")
+
     # advertisements = Advertisement.objects.order_by("-added")
     # pagination of pages
     paginator = Paginator(advertisements, 5)
@@ -145,8 +151,9 @@ def filter_list(request, form_filter, advertisements):
     # return (advertisements)
 
 
-def find_advertisements(request, advertisements):
+def serch_advertisements(request, advertisements):
     find = request.GET.get("find")
+
     # print(request.GET)
     advertisements = advertisements.filter(title__icontains=find)
     return (advertisements)

@@ -20,19 +20,15 @@ class AdvertisementForm(forms.Form):
 
 
 class AdvertisementFilterForm(forms.Form):
+    serch = forms.CharField(label="Поиск", required=False)
+    # widget = forms.TextInput(attrs={'placeholder': 'Введите название желаемой продукции Apple'}))
     min_price = forms.IntegerField(label="от", required=False)
     max_price = forms.IntegerField(label="до", required=False)
     ordering = forms.ChoiceField(label='Сортировать', required=False, choices=[
         ['-added', 'самые новые'],
-        ['-price', 'по возрастанию цены'],
-        ['price', 'по убыванию цены'],
+        ['-price', 'по убыванию цены'],
+        ['price', 'по возрастанию цены']
     ])
-    # from_town = forms.CharField(max_length=100)
-    # ordering = forms.ChoiceField(label='сортування', required=False, choices=[
-    #     ['title', 'по алфавіту'],
-    #     ['price', 'від найдешевших'],
-    #     ['-price', 'від найдорожчих'],
-    # ])
 
 
 class AdvertisementMessageForm(forms.Form):

@@ -4,14 +4,30 @@
 {% load russion_datas %}
 
 {% block content %}
-        <input type="text" name="find" placeholder="Введите название желаемой продукции Apple">
-        <input type="submit" value="Искать">
     <form action="" method="GET">
+{#      <nav>#}
+{#        <div class="nav-wrapper">#}
+{#          <form>#}
+{#            <div class="input-field">#}
+{#              <input id="search" type="search" required>#}
+{#              <label class="label-icon" for="search"><i class="material-icons">search</i></label>#}
+{#              <i class="material-icons">close</i>#}
+{#            </div>#}
+{#          </form>#}
+{#        </div>#}
+{#      </nav>#}
+{#        <input type="text" name="serch" placeholder="Введите название желаемой продукции Apple">#}
+{#        <input type="submit" value="Искать">#}
+
 {#        {% csrf_token %}#}
 
+
             {{ form_filter.as_p }}
-        <input type="submit" value="фильтровать">
+
+        <input type="submit" value="Искать">
     </form>
+
+
 {##}
 {#    <form action="" method="GET">#}
 {#        {% csrf_token %}#}

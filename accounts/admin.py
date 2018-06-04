@@ -7,12 +7,13 @@ from accounts.models import User, WebsiteSettings
 from solo.admin import SingletonModelAdmin
 
 
-class CustomUserAdmin(UserAdmin):
-    add_fieldsets = ((None, {
-        'classes': ('wide',),
-        'fields': ('first_name', 'last_name', 'email', 'password1', 'password2')}
-                      ),
-                     )
+class CustomUserAdmin(admin.ModelAdmin):
+    # add_fieldsets = ((None, {
+    #     'classes': ('wide',),
+    #     'fields': ('first_name', 'last_name', 'email', 'password1', 'password2', 'date_joined')}
+    #                   ),
+    #                  )
+    list_display = ('username', 'first_name', "last_name", 'date_joined', 'last_login', 'is_active', 'is_staff')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
