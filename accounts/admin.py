@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from accounts.models import User, WebsiteSettings
+from accounts.models import User, WebsiteSettings, UserProfile
 
 from solo.admin import SingletonModelAdmin
 
@@ -29,9 +29,21 @@ class CustomUserAdmin(admin.ModelAdmin):
     # )
     list_filter = ('is_staff', 'is_superuser', 'is_active')
 
+# class UserProfileAdmin(admin.ModelAdmin):
+#     # model = UserProfile
+#     username = User.get_username(self)
+#     list_filter = ('city', 'phone', 'user_id')
+#     list_display = ('city', 'phone', 'user_id')
+
+    # list_display = ('username', 'first_name', "last_name", 'city', 'phone', 'date_joined', 'last_login', 'is_active', 'is_staff')
+
+    # ordering = ["name"]
+
 
 # Register your models here.
 admin.site.register(User, CustomUserAdmin)
+# admin.site.register(UserProfile, UserProfileAdmin)
+admin.site.register(UserProfile)
 admin.site.register(WebsiteSettings, SingletonModelAdmin)
 
 # ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')

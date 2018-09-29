@@ -69,6 +69,7 @@ def advertisements(request):
         # advertisements = find_advertisements(request, advertisements)
         advertisements = advertisements.filter(title__icontains=find)
 
+
     if form_filter.is_valid():
         # if form_filter.cleaned_data["find"]:
         #     print(True)
@@ -104,9 +105,11 @@ def advertisements(request):
         advertisements = paginator.page(paginator.num_pages)
     page_nums = gen_page_list(int(page), paginator.num_pages)
 
+
     return render(request, "advertisements.html", {"advertisements": advertisements,
                                                  "form_filter": form_filter,
-                                                 "page_nums": page_nums})
+                                                 "page_nums": page_nums,
+                                                   'len_advertisments': len(advertisements)})
 
 
 #---------------------------

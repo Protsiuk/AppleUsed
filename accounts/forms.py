@@ -1,10 +1,13 @@
 from django import forms
 from django.contrib.auth import authenticate
-from accounts.models import User
+from django.forms import ModelForm, modelformset_factory
+from accounts.models import User, UserProfile
+
 # from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm#, UserCreationForm
 
 # from registration.forms import RegistrationForm
+
 
 class LoginForm(forms.Form):
     email = forms.EmailField()
@@ -22,7 +25,7 @@ class LoginForm(forms.Form):
             # raise forms.ValidationError("Sorry, that login or password was invalid. Please try again.")
         return self.cleaned_data
 
-    def login(self, request):
+    def login(self):
         email = self.cleaned_data.get('email')
         password = self.cleaned_data.get('password')
         user = authenticate(email=email, password=password)
@@ -67,13 +70,19 @@ class ForgotPasswordForm(forms.Form):
 
 
 class UserRegistrationForm(forms.Form):
+    username = forms.CharField(label="Имя пользователя", widget=forms.TextInput(
+        attrs={'placeholder': 'Имя пользователя', 'class': 'form-control input-data'}), max_length=50, min_length=3)
+    email = forms.EmailField(label=u"Email", widget=forms.TextInput(
+        attrs={'placeholder': 'Email', 'class': 'form-control input-data'}), max_length=50, min_length=6)
+    password = forms.CharField(label=u"Пароль", widget=forms.TextInput(
+        attrs={'type': 'password', 'placeholder': 'Пароль', 'class': 'form-control input-data'}),
+                               max_length=50, min_length=6)
+    passwordConfirm = forms.CharField(label=u"Пароль", widget=forms.TextInput(
+        attrs={'type': 'password', 'placeholder': 'Повторите пароль', 'class': 'form-control input-data'}),
+                                      max_length=50, min_length=6)
 
-    username = forms.CharField(max_length=50)#(label=(u'Имя Пользователя'))
-    # first_name = forms.CharField(max_length=50)#(label=(u'Имя Пользователя')
-    # last_name = forms.CharField(max_length=50)  # (label=(u'Имя Пользователя')
-    email = forms.EmailField(max_length=50)#(label=(u'Email'))
-    password = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
-    passwordConfirm = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
+    # passwordConfirm = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
+
     # passwordConfirm = forms.CharField(label="", max_length=50, min_length=6,
     #                                   widget=forms.PasswordInput(attrs={'placeholder': 'Пароль повторно',
     #                                                               'class':'form-control input-perso'}))
@@ -82,12 +91,14 @@ class UserRegistrationForm(forms.Form):
     class Meta:
         model = User
         # fields = (
-        #     'first_name',
+        # #     'first_name',
+        # #     'last_name',
         #     'last_name',
         #     'email',
         #     'password1',
         #     'password2'
         # )
+
     # class Meta:
     #     model = user
     #     # Don't show user drop down.
@@ -212,26 +223,67 @@ class UserRegistrationForm(forms.Form):
 #             return cleaned_data
 #         except:
 #             raise forms.ValidationError("Error")
-
-class ProfileUserForm(forms.Form):
+"""
+class UserProfileForm(forms.Form):
     username = forms.CharField(max_length=50)
     email = forms.EmailField(max_length=50)
     # password = forms.CharField(widget=forms.PasswordInput(render_value=False))#label=('Пароль'),
     # passwordConfirm = forms.CharField(label=('Пароль повторно'), widget=forms.PasswordInput(render_value=False))
     city = forms.CharField(label='location', max_length=350)
     phone = forms.IntegerField(label='Phone')
+"""
 
-
-class EditProfileUserForm(UserChangeForm):
-
+class UserProfileForm(forms.ModelForm):
     class Meta:
-        user = User
-        field = {
-            'first_name',
-            'last-name',
-            'city',
-            'phone',
-        }
+            model = UserProfile
+            # fields = ['user', 'first_name', 'last_name', 'phone', 'city']
+            fields = ['user', 'phone', 'city']
+
+    def save(self, user=None):
+        user_profile = super(UserProfileForm, self).save(commit=False)
+        if user:
+            user_profile.user = user
+        user_profile.save()
+        return user_profile
+
+# class EditProfileForm(forms.ModelForm):
+#
+#     first_name = forms.CharField(label='First Name')
+#     last_name = forms.CharField(label='Last Name')
+#
+#     class Meta:
+#         model = User
+#         fields = ['first_name', 'last_name']
+
+
+# class EditProfileUserForm(forms.ModelForm):
+#     username = forms.CharField(max_length=50)
+#     email = forms.EmailField(max_length=50)
+#     first_name = forms.CharField(label='First Name')
+#     last_name = forms.CharField(label='Last Name')
+#     city = forms.CharField(label='location', max_length=350)
+#     phone = forms.IntegerField(label='Phone')
+#
+#     class Meta:
+#         user = User
+#         fields =[
+#             'email',
+#             # 'birth_day',
+#             'first_name',
+#             'last-name',
+#             'city',
+#             'phone'
+#         ]
+
+
+        # field = (
+        #     'email',
+        #     # 'birth_day',
+        #     'first_name',
+        #     'last-name',
+        #     'city',
+        #     'phone'
+        # )
 
 #--------------------------------------------------------------
 # class UserRegistrationForm(RegistrationForm):
@@ -251,3 +303,50 @@ class EditProfileUserForm(UserChangeForm):
 #     class Meta:
 #         model = User
 #         fields = ("email", "first_name", "last_name")
+
+
+class EditProfileUserForm(forms.ModelForm):
+    username = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+
+    # modelformset_factory
+
+    # username = forms.CharField(max_length=50)
+    # email = forms.EmailField(max_length=50)
+    # first_name = forms.CharField(label='First Name')
+    # last_name = forms.CharField(label='Last Name')
+    # city = forms.CharField(label='location', max_length=350)
+    # phone = forms.IntegerField(label='Phone')
+
+    # username = forms.CharField(label="Имя пользователя", widget=forms.TextInput(
+    #     attrs={'placeholder': 'Имя пользователя', 'class': 'form-control input-data'}), max_length=50, min_length=3)
+    # email = forms.EmailField(label=u"Email", widget=forms.TextInput(
+    #     attrs={'placeholder': 'Email', 'class': 'form-control input-data'}), max_length=50, min_length=6)
+    # password = forms.CharField(label=u"Пароль", widget=forms.TextInput(
+    #     attrs={'type': 'password', 'placeholder': 'Пароль', 'class': 'form-control input-data'}), max_length=50, min_length=6)
+    # passwordConfirm = forms.CharField(label=u"Пароль", widget=forms.TextInput(
+    #     attrs={'type': 'password', 'placeholder': 'Повторите пароль', 'class': 'form-control input-data'}), max_length=50, min_length=6)
+
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name')
+
+    def clean_email(self):
+        username = self.cleaned_data.get('username')
+        email = self.cleaned_data.get('email')
+
+        if email and User.objects.filter(email=email).exclude(username=username).count():
+            raise forms.ValidationError('This email address is already in use. Please supply a different email address.')
+        return email
+
+    def save(self, commit=True):
+        user = super(EditProfileUserForm, self).save(commit=False)
+        user.email = self.cleaned_data['email']
+
+        if commit:
+            user.save()
+
+        return user

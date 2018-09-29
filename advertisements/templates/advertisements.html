@@ -70,37 +70,27 @@
 {#        <label for="-added">по дате добавления</label><br/>#}
 {#        <input type="submit" value="отсортировать"/>#}
 {#    </form>#}
+    {% if len_advertisments != 0 %}
+        {{ advertisements.count }}
+        <p>Объявления по вашему запроcу:</p>
 
-    <p>Последние объявления на сайте:</p>
-{#    <div class="filter_price">#}
-{#        <p>Фильтрация по цене:</p>#}
-{#        <form action="" method="GET" enctype="multipart/form-data">#}
-{#            {% csrf_token %}#}
-{#            {{ form.as_p }}#}
-{#            <form action="task_1.1.html" name="home_work_1_Protsiuk"; method="post"; enctype="multipart/form-data">#}
-{#            <input type="text"; name="firstname"; placeholder="Enter your Firstname">#}
-{#            <input type="text" name="lastname"; placeholder="Enter your Lastname">#}
-{#            <input type="email" name="email"; placeholder="Enter your email">#}
-{##}
-{#            <input type="submit" value="Фильтровать">#}
-{#        </form>#}
-{##}
-{#    </div>#}
+        {% for advertisement in advertisements %}
+            <hr>
+            <div class="advertisement">
+                <img src="{{ advertisement.image.url }}" width="100">
+                <a href="{% url 'single_advertisement' advertisement_id=advertisement.id %}">{{ advertisement.title }}</a>
+        {#            <a class="title_advertisement" >{{ advertisement.title }} </a>#}
+                <div align="right"><b class="price">{{ advertisement.price }} USD</b></div>
+                <b>Добавлено {{ advertisement.added | russian_date}}</b>
 
-    {% for advertisement in advertisements %}
-        <hr>
-        <div class="advertisement">
-            <img src="{{ advertisement.image.url }}" width="100">
-            <a href="{% url 'single_advertisement' advertisement_id=advertisement.id %}">{{ advertisement.title }}</a>
-    {#            <a class="title_advertisement" >{{ advertisement.title }} </a>#}
-            <div align="right"><b class="price">{{ advertisement.price }} USD</b></div>
-            <b>Добавлено {{ advertisement.added | russian_date}}</b>
+        {#        This is the advertisement created was {{ advertisement.author.first_name }}<br>#}
 
-    {#        This is the advertisement created was {{ advertisement.author.first_name }}<br>#}
-
-        <hr>
-        </div>
-    {% endfor %}
+            <hr>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Сожалеем, но по Вашему запросу поиск не дал результатов!</p>
+    {% endif %}
 
     <div class="pagination">
     <span class="step-links">

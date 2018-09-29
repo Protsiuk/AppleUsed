@@ -5,6 +5,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 
+# from django.contrib.auth.models import User
+
+
+
 # from utils import get_file_path
 
 
@@ -40,11 +44,18 @@ class WebsiteSettings(models.Model):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, related_name='profile')
+    # user = models.ForeignKey(User, related_name='profile')
+    # user = models.ForeignKey(User)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
     city = models.CharField(default='', blank=True, null=True, max_length=255)
     # city = models.ForeignKey(City,related_name='city', blank=True, null=True, help_text=_('Select your City')
     # location = models.ForeignKey(Country, related_name='location', blank=True, null=True, help_text=_('Select your Location'))
     phone = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.user.username
+
 
     # def create_profile(sender, **kwargs):
     #     if kwargs['created']:
@@ -59,8 +70,9 @@ class UserProfile(models.Model):
 
     @receiver(post_save, sender=User)
     def save_user_profile(sender, instance, **kwargs):
-        # instance.UserProfile.save()
-        instance.profile.save()
+        instance.UserProfile.save()
+        # instance.profile.save()
+
 
 # # Create your models here.
 # class Member (models.Model):
@@ -73,3 +85,19 @@ class UserProfile(models.Model):
 #
 #     def upper_username(self):
 #         return self.username.upper()
+
+
+# class Profile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     bio = models.TextField(max_length=500, blank=True)
+#     location = models.CharField(max_length=30, blank=True)
+#     birth_date = models.DateField(null=True, blank=True)
+#
+#     @receiver(post_save, sender=User)
+#     def create_user_profile(sender, instance, created, **kwargs):
+#         if created:
+#             Profile.objects.create(user=instance)
+#
+#     @receiver(post_save, sender=User)
+#     def save_user_profile(sender, instance, **kwargs):
+#         instance.profile.save()

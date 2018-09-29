@@ -3,7 +3,7 @@
 {% block content %}
     <form class="col s12" action="{% url 'edit_profile_user' %}" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ edit_form.as_p }}
 {#        <ul class='form-errors'>#}
 {#            {% for error in form.non_field_errors %}#}
 {#                <li>{{ error|escape }}</li>#}

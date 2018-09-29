@@ -1,6 +1,7 @@
 from django.conf.urls import url#, include
 
-from accounts.views import sign_out, sign_in, registrationView, profileUserViews, editProfileUserViews#, UserRegistrationView #, ActivationView
+from accounts.views import sign_out, sign_in, registrationView, profileUserViews, editProfileUserViews, \
+    UserProfileView, EditUserProfileView#, UserRegistrationView #, ActivationView
 # from accounts.forms import UserRegistrationForm
 
 # from registration.views import RegistrationView
@@ -15,9 +16,12 @@ urlpatterns = [
     url(r'^login/$', sign_in, name='login'),
     url(r'^registration/$', registrationView, name='registration'),
     # url(r'^registration/confirm/([\w\-]+)/([\w\-]+)/$', 'accounts.views.confirm_reg', name='confirm-reg'),
-    url(r'^profile-user/$', profileUserViews, name='profile_user'),
+    # url(r'^profile-user/$', profileUserViews, name='profile_user'),
+    url(r'^profile-user/$', UserProfileView.as_view(), name='profile_user'),
     url(r'^profile-user/edit/$', editProfileUserViews, name='edit_profile_user'),
-
+    url(r'^users/(?P<pk>\d+)/edit/$', EditUserProfileView.as_view(), name="edit-user-profile"),
+    # url(r'^profile-user/update/success/$', editProfileUserViews, name='update_profile_success'),
+    url(r'^profile-user/update/success/$', UserProfileView, name='update_profile_success'),
     # url(r'^register/$', RegistrationView.as_view(form_class=UserRegistrationForm),
     #     name='registration_register',),
 

@@ -3,12 +3,15 @@ from django.conf import settings
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserChangeForm
+from django.shortcuts import get_object_or_404
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 
 # from django.core.exceptions import ValidationError
 
-from django.shortcuts import render, HttpResponseRedirect, redirect#, HttpResponse
+from django.shortcuts import render, HttpResponseRedirect, get_object_or_404, redirect#, HttpResponse
+from django.views.generic import FormView, UpdateView
+
 # from django.contrib.sites.shortcuts import get_current_site
 
 # from rest_framework.views import APIView
@@ -17,9 +20,9 @@ from django.shortcuts import render, HttpResponseRedirect, redirect#, HttpRespon
 # from password_reset import
 
 # from accounts.serializers import LoginSerializer
-from accounts.forms import LoginForm, UserRegistrationForm, EditProfileUserForm, ProfileUserForm#, , ForgotPasswordForm
+from accounts.forms import LoginForm, UserRegistrationForm, EditProfileUserForm, UserProfileForm#, , ForgotPasswordForm
 
-from accounts.models import User
+from accounts.models import User, UserProfile
 # from accounts import signals
 
 #all imports of django registration----------------------------------------------
@@ -56,7 +59,7 @@ def sign_in(request):
     else:
         form = LoginForm(request.POST or None)
         if request.POST and form.is_valid():
-            user = form.login(request)
+            user = form.login()
             # print(request)
             if user:
                 login(request, user)
@@ -239,26 +242,144 @@ def profileUserViews(request):
 #     return render(request, 'edit-profile-user.html', {'form': form})
 
 
+# @login_required
+# def editProfileUserViews(request):
+#     # user = request.user
+#     if request.POST:
+#         form = EditProfileUserForm(request.POST, instance=request.user)
+#         if form.is_valid():
+#             form.save()
+#             return redirect(reverse('profile-user.html'))
+#         # return render(request, 'profile-user.html', {'user': user})
+#     else:
+#         form = EditProfileUserForm(instance=request.user)
+#         return render(request, 'edit-profile-user.html', {'form': form})
+
+        # return redirect(reverse("edit-profile-user"))
+    # return render(request, 'edit-profile-user.html', {'form': form})
+
+
 @login_required
 def editProfileUserViews(request):
-    # user = request.user
-    if request.POST:
-        form = EditProfileUserForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('profile-user.html'))
-        # return render(request, 'profile-user.html', {'user': user})
-    else:
-        form = UserChangeForm(instance=request.user)
-        return render(request, 'edit-profile-user.html', {'form': form})
-        # return redirect(reverse("edit-profile-user"))
+    args = {}
+    # profile_data = User.objects.get(user=request.user)
+    profile_data = get_object_or_404(User, user=request.user)
+    # edit_form = EditProfileUserForm(request.POST, instance=request.user)
+    edit_form = EditProfileUserForm(instance=profile_data)
+    if request.method == 'POST':
+        edit_form = EditProfileUserForm(request.POST)
+        if edit_form.is_valid():
+            edit_form.save()
+            return HttpResponseRedirect('profile-user.html')
+    return render(request, 'edit-profile-user.html', {'edit_Form': edit_form})
+            # return HttpResponseRedirect(reverse('update_profile_success'))
+    #
+    # else:
+    #     edit_form = EditProfileUserForm()
+    #
+    # args['edit_form'] = edit_form
+    # return render(request, 'edit-profile-user.html', args)
 
-    # return render(request, 'edit-profile-user.html', {'form': form})
+"""
+@login_required
+def editProfileUserViews(request):
+    args = {}
+    if request.method == 'POST':
+        # profile_data = User.objects.get(user=request.user)
+        profile_data = get_object_or_404(User, user=request.user)
+        # edit_form = EditProfileUserForm(request.POST, instance=request.user)
+        edit_form = EditProfileUserForm(instance=profile_data)
+        if edit_form.is_valid():
+            edit_form.save()
+            # return render(request, 'profile-user.html', {'user': user})
+            return render(request, 'edit-profile-user.html', {'editForm': edit_form})
+            # return HttpResponseRedirect(reverse('update_profile_success'))
+    else:
+        edit_form = EditProfileUserForm()
+
+    args['edit_form'] = edit_form
+    return render(request, 'edit-profile-user.html', args)
+"""
+
+# def editProfileUserViews(request):
+#     args = {}
+#
+#     if request.method == 'POST':
+#         form = EditProfileUserForm(request.POST)
+#         form.actual_user = request.user
+#         if form.is_valid():
+#             form.save()
+#             # return render(request, 'profile-user.html', {'user': user})
+#             return HttpResponseRedirect(reverse('update_profile_success'))
+#     else:
+#         form = EditProfileUserForm()
+#
+#     args['form'] = form
+#     return render(request, 'edit-profile-user.html', args)
+
+
+
+
+# def edit_profile_printing(request):
+#     profil_data = get_object_or_404(User, user=request.user)
+#     edit_form = PrintshopProfileForm(instance=profile_data)
+#     return render(request, 'profile/profile_printing.html', {'editForm':edit_form})
+
+
+# @login_required
+# def editProfileUserViews(request):
+#     user = request.user
+#     if request.method == "POST":
+#         usrform = UserForm(data=request.POST, instance=user)
+#         proform = ProfileForm(data=request.POST, instance=user.get_profile())
+#         if usrform.is_valid() and proform.is_valid():
+#             user = usrform.save()
+#             profile = proform.save(commit=False)
+#             profile.user = user
+#             profile.save()
+#             return HttpResponseRedirect('/profile/view')
+#         else:
+#             return render_to_response('profile/profile_edit.html', {
+#                 'profile': request.user.get_profile,
+#                 'usrform': usrform,
+#                 'proform': proform},
+#                 context_instance=RequestContext(request))
+#     else:
+#         usrform = UserForm(instance=user)
+#         proform = ProfileForm(instance=user.get_profile() )
+#         profile = request.user.get_profile
+#         return render(request, "profile/profile_edit.html", {
+#             'profile': profile,
+#             'usrform': usrform,
+#             'proform': proform,
+#             })
+
+
+
+# def editProfileUserViews(request):
+#     user = request.user
+#     form = EditProfileUserForm(request.POST or None)
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             user.first_name = request.POST['email']
+#             user.first_name = request.POST['first_name']
+#             user.last_name = request.POST['last_name']
+#             user.first_name = request.POST['city']
+#             user.first_name = request.POST['phone']
+#
+#             user.save()
+#             return render(request, 'edit-profile-user.html', {'form': form})
+#             # return HttpResponseRedirect('%s'%(reverse('profile')))
+#
+#     context = {
+#         "form": form
+#     }
+#
+#     return render(request, "edit-profile-user.html", context)
 
 # def create_profile(sender, **kwargs):
 #     if kwargs['created']:
 #         user_profile = UserProfile.objects.create(user=kwargs['instance'])
-
 
 # post_save.connect(create_profile, sender=User)
 
@@ -459,3 +580,34 @@ class UserRegistrationView():
                                      request=request)
         return new_user
 """
+
+class UserProfileView(FormView):
+    template_name = "profile-user.html"
+    form_class = UserProfileForm
+
+    def form_valid(self, form):
+        form.save(self.request.user)
+        return super(UserProfileView, self).form_valid(form)
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse('update_profile_success')
+        # return reverse("profile-user/update/success.html")
+
+
+class EditUserProfileView(UpdateView): #Note that we are using UpdateView and not FormView
+    model = UserProfile
+    form_class = UserProfileForm
+    template_name = "profile-user.html"
+
+    def get_object(self, *args, **kwargs):
+        user = get_object_or_404(User, id=self.kwargs['id'])
+
+        # We can also get user object using self.request.user  but that doesnt work
+        # for other models.
+
+        return user.userprofile
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse("update_profile_success")
+
+
