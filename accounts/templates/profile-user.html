@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 <title>{% block title %} Личный кабинет {{ user.username }} {% endblock title %}</title>
+
+{% block navbar %}
+<div class="panel-menu">
+    <a href="{% url 'advertisements' %}">К списку объявлений</a>
+</div>
+{% endblock navbar %}
+
 {% block content %}
 {#        <form class="col s12" action="{% url 'profile_user' %}" method="GET">#}
     {% csrf_token %}

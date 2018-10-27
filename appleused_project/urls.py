@@ -6,20 +6,16 @@ from django.conf.urls.static import static
 from accounts.views import main_page
 
 # from rest_framework.documentation import include_docs_urls
-
+#
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', main_page, name='main'),
 
     url(r'accounts/', include('accounts.urls')),
-    # url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'advertisements/', include('advertisements.urls')),
 
     # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
-
-    url(r'^rest-auth/', include('rest_auth.urls')),
-
-
+    # url(r'^rest-auth/', include('rest_auth.urls')),
     # url(r'registrations/accounts/', include('registration.backends.hmac.urls')),
 
     # url(r'password_reset/', include('password_reset.urls')),

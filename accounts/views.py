@@ -1,18 +1,15 @@
-
+# -*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserChangeForm
-from django.shortcuts import get_object_or_404
+from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse
 
 # from django.core.exceptions import ValidationError
 
-from django.shortcuts import render, HttpResponseRedirect, get_object_or_404, redirect#, HttpResponse
-from django.views.generic import FormView, UpdateView
-
-# from django.contrib.sites.shortcuts import get_current_site
+from django.shortcuts import render, HttpResponseRedirect, redirect#, HttpResponse
+from django.contrib.sites.shortcuts import get_current_site
 
 # from rest_framework.views import APIView
 # from rest_framework.response import Response
@@ -20,15 +17,15 @@ from django.views.generic import FormView, UpdateView
 # from password_reset import
 
 # from accounts.serializers import LoginSerializer
-from accounts.forms import LoginForm, UserRegistrationForm, EditProfileUserForm, UserProfileForm#, , ForgotPasswordForm
+from accounts.forms import LoginForm, UserRegistrationForm, EditProfileUserForm # ProfileUserForm, , ForgotPasswordForm
 
-from accounts.models import User, UserProfile
+from accounts.models import MyCustomUser
 # from accounts import signals
 
-#all imports of django registration----------------------------------------------
-# from registration.backends.default.views import RegistrationView
-# from registration.models import RegistrationProfile
-# from registration import signals
+#----------------------------------------------
+ # from registration.backends.default.views import RegistrationView
+ # from registration.models import RegistrationProfile
+ # from registration import signals
 # #-----------------------------
 
 # from django.contrib.auth import get_user_model
@@ -41,25 +38,26 @@ from accounts.models import User, UserProfile
 # REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
 #-----------------------------
 
+#-------------------------------------------
 
 def main_page(request):
     return render(request, "main.html")
 
 
-# @login_required(login_url="/login/")
+@login_required(login_url="/login/")
 def sign_out(request):
     logout(request)
     return render(request, "main.html")
     # return HttpResponseRedirect(reverse("main"))
 
 
-def sign_in(request):
+def login_user(request):
     if request.user.is_authenticated():
         return HttpResponseRedirect(reverse("advertisements"))
     else:
         form = LoginForm(request.POST or None)
         if request.POST and form.is_valid():
-            user = form.login()
+            user = form.login(request)
             # print(request)
             if user:
                 login(request, user)
@@ -171,22 +169,21 @@ class UserLoginView(APIView):
 
 # @login_required(login_url="/advertisements/")
 # @should_be_anonymous(redirect_url=reverse_lazy('office'))
+
 def registrationView(request):
     # if User.is_authenticated:
     form = UserRegistrationForm(request.POST or None)
     if request.user.is_anonymous() and request.POST:
         if form.is_valid():
-            user = User.objects.create_user(username=form.cleaned_data['username'],
+            user = MyCustomUser.objects.create_user(username=form.cleaned_data['username'],
                                             email=form.cleaned_data['email'],
                                             password=form.cleaned_data['password'])
             # print(user.objects.get['email'])
             user.save()
             # user = User.objects.get()
-            # return HttpResponseRedirect(reverse("profile_user"))
-            return HttpResponseRedirect(reverse("advertisements"))
+            return HttpResponseRedirect(reverse("profile_user"))
     return render(request, 'registration.html', {'form': form})
     # return HttpResponseRedirect(reverse('profile_user'))
-
 
 def emailVerificationVellDonView(request):
     if request.POST:
@@ -202,6 +199,7 @@ def emailVerificationVellDonView(request):
                   [email_to],
                   fail_silently=True)
         return render(request, 'login.html', {'form': form})
+
 
 
 """
@@ -242,144 +240,27 @@ def profileUserViews(request):
 #     return render(request, 'edit-profile-user.html', {'form': form})
 
 
-# @login_required
-# def editProfileUserViews(request):
-#     # user = request.user
-#     if request.POST:
-#         form = EditProfileUserForm(request.POST, instance=request.user)
-#         if form.is_valid():
-#             form.save()
-#             return redirect(reverse('profile-user.html'))
-#         # return render(request, 'profile-user.html', {'user': user})
-#     else:
-#         form = EditProfileUserForm(instance=request.user)
-#         return render(request, 'edit-profile-user.html', {'form': form})
-
-        # return redirect(reverse("edit-profile-user"))
-    # return render(request, 'edit-profile-user.html', {'form': form})
-
 
 @login_required
 def editProfileUserViews(request):
-    args = {}
-    # profile_data = User.objects.get(user=request.user)
-    profile_data = get_object_or_404(User, user=request.user)
-    # edit_form = EditProfileUserForm(request.POST, instance=request.user)
-    edit_form = EditProfileUserForm(instance=profile_data)
-    if request.method == 'POST':
-        edit_form = EditProfileUserForm(request.POST)
-        if edit_form.is_valid():
-            edit_form.save()
-            return HttpResponseRedirect('profile-user.html')
-    return render(request, 'edit-profile-user.html', {'edit_Form': edit_form})
-            # return HttpResponseRedirect(reverse('update_profile_success'))
-    #
-    # else:
-    #     edit_form = EditProfileUserForm()
-    #
-    # args['edit_form'] = edit_form
-    # return render(request, 'edit-profile-user.html', args)
-
-"""
-@login_required
-def editProfileUserViews(request):
-    args = {}
-    if request.method == 'POST':
-        # profile_data = User.objects.get(user=request.user)
-        profile_data = get_object_or_404(User, user=request.user)
-        # edit_form = EditProfileUserForm(request.POST, instance=request.user)
-        edit_form = EditProfileUserForm(instance=profile_data)
-        if edit_form.is_valid():
-            edit_form.save()
-            # return render(request, 'profile-user.html', {'user': user})
-            return render(request, 'edit-profile-user.html', {'editForm': edit_form})
-            # return HttpResponseRedirect(reverse('update_profile_success'))
+    # user = request.user
+    if request.POST:
+        form = EditProfileUserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('profile-user.html'))
+        # return render(request, 'profile-user.html', {'user': user})
     else:
-        edit_form = EditProfileUserForm()
+        form = UserChangeForm(instance=request.user)
+        return render(request, 'edit-profile-user.html', {'form': form})
+        # return redirect(reverse("edit-profile-user"))
 
-    args['edit_form'] = edit_form
-    return render(request, 'edit-profile-user.html', args)
-"""
-
-# def editProfileUserViews(request):
-#     args = {}
-#
-#     if request.method == 'POST':
-#         form = EditProfileUserForm(request.POST)
-#         form.actual_user = request.user
-#         if form.is_valid():
-#             form.save()
-#             # return render(request, 'profile-user.html', {'user': user})
-#             return HttpResponseRedirect(reverse('update_profile_success'))
-#     else:
-#         form = EditProfileUserForm()
-#
-#     args['form'] = form
-#     return render(request, 'edit-profile-user.html', args)
-
-
-
-
-# def edit_profile_printing(request):
-#     profil_data = get_object_or_404(User, user=request.user)
-#     edit_form = PrintshopProfileForm(instance=profile_data)
-#     return render(request, 'profile/profile_printing.html', {'editForm':edit_form})
-
-
-# @login_required
-# def editProfileUserViews(request):
-#     user = request.user
-#     if request.method == "POST":
-#         usrform = UserForm(data=request.POST, instance=user)
-#         proform = ProfileForm(data=request.POST, instance=user.get_profile())
-#         if usrform.is_valid() and proform.is_valid():
-#             user = usrform.save()
-#             profile = proform.save(commit=False)
-#             profile.user = user
-#             profile.save()
-#             return HttpResponseRedirect('/profile/view')
-#         else:
-#             return render_to_response('profile/profile_edit.html', {
-#                 'profile': request.user.get_profile,
-#                 'usrform': usrform,
-#                 'proform': proform},
-#                 context_instance=RequestContext(request))
-#     else:
-#         usrform = UserForm(instance=user)
-#         proform = ProfileForm(instance=user.get_profile() )
-#         profile = request.user.get_profile
-#         return render(request, "profile/profile_edit.html", {
-#             'profile': profile,
-#             'usrform': usrform,
-#             'proform': proform,
-#             })
-
-
-
-# def editProfileUserViews(request):
-#     user = request.user
-#     form = EditProfileUserForm(request.POST or None)
-#     if request.method == 'POST':
-#         if form.is_valid():
-#             user.first_name = request.POST['email']
-#             user.first_name = request.POST['first_name']
-#             user.last_name = request.POST['last_name']
-#             user.first_name = request.POST['city']
-#             user.first_name = request.POST['phone']
-#
-#             user.save()
-#             return render(request, 'edit-profile-user.html', {'form': form})
-#             # return HttpResponseRedirect('%s'%(reverse('profile')))
-#
-#     context = {
-#         "form": form
-#     }
-#
-#     return render(request, "edit-profile-user.html", context)
+    # return render(request, 'edit-profile-user.html', {'form': form})
 
 # def create_profile(sender, **kwargs):
 #     if kwargs['created']:
 #         user_profile = UserProfile.objects.create(user=kwargs['instance'])
+
 
 # post_save.connect(create_profile, sender=User)
 
@@ -526,8 +407,34 @@ class ActivationView(BaseActivationView):
         except User.DoesNotExist:
             return None
 """
+#-------------------------------------------------------------------
 
-# this view fo django-registrtion -------------------------------------------------------------------
+# class UserRegistrationView(RegistrationView):
+#     form_class = UserRegistrationForm
+#
+#     def register(self, request, form):
+#
+#         site = get_current_site(request)
+#
+#         if hasattr(form, 'save'):
+#             new_user_instance = form.save()
+#         else:
+#             new_user_instance = (User().objects
+#                                  .create_user(**form.cleaned_data))
+#
+#         new_user = RegistrationProfile.objects.create_inactive_user(
+#             new_user=new_user_instance,
+#             site=site,
+#             send_email=self.SEND_ACTIVATION_EMAIL,
+#             request=request,
+#         )
+#         signals.user_registered.send(sender=self.__class__,
+#                                      user=new_user,
+#                                      request=request)
+#         return new_user
+
+#------------------------------------------------------------------- Registration
+
 
 # class UserRegistrationView(RegistrationView):
 #     form_class = UserRegistrationForm
@@ -554,60 +461,167 @@ class ActivationView(BaseActivationView):
 #                                      request=request)
 #         return new_user
 
+class UserLoginView():
+    pass
 
-#-------------------------------------------------------------------
-"""
-class UserRegistrationView():
-    form_class = UserRegistrationForm
+#---------------------------------------------------------CBV
+from django.utils.http import is_safe_url
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import FormView, RedirectView
+from django.views.generic import UpdateView
 
-    def register(self, request, form):
-        if request == "POST":
-            site = get_current_site(request)
 
-            if hasattr(form, 'save'):
-                new_user_instance = form.save()
-            else:
-                new_user_instance = (User().objects.create_user(**form.cleaned_data))
+class LoginView(FormView):
+    """
+    Provides the ability to login as a user with a username and password
+    """
+    success_url = '/accounts/profile-user/'
+    form_class = AuthenticationForm
+    # form_class = LoginForm
+    redirect_field_name = REDIRECT_FIELD_NAME
 
-            new_user = ProfileUserForm.objects.create_inactive_user(
-                new_user=new_user_instance,
-                site=site,
-                send_email=self.SEND_ACTIVATION_EMAIL,
-                request=request,
-            )
-        signals.user_registered.send(sender=self.__class__,
-                                     user=new_user,
-                                     request=request)
-        return new_user
-"""
-
-class UserProfileView(FormView):
-    template_name = "profile-user.html"
-    form_class = UserProfileForm
+    @method_decorator(sensitive_post_parameters('password'))
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        # Sets a test cookie to make sure the user has cookies enabled
+        request.session.set_test_cookie()
+        return super(LoginView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        form.save(self.request.user)
-        return super(UserProfileView, self).form_valid(form)
+        auth_login(self.request, form.get_user())
 
-    def get_success_url(self, *args, **kwargs):
-        return reverse('update_profile_success')
-        # return reverse("profile-user/update/success.html")
+        # If the test cookie worked, go ahead and
+        # delete it since its no longer needed
+        if self.request.session.test_cookie_worked():
+            self.request.session.delete_test_cookie()
 
+        return super(LoginView, self).form_valid(form)
 
-class EditUserProfileView(UpdateView): #Note that we are using UpdateView and not FormView
-    model = UserProfile
-    form_class = UserProfileForm
-    template_name = "profile-user.html"
-
-    def get_object(self, *args, **kwargs):
-        user = get_object_or_404(User, id=self.kwargs['id'])
-
-        # We can also get user object using self.request.user  but that doesnt work
-        # for other models.
-
-        return user.userprofile
-
-    def get_success_url(self, *args, **kwargs):
-        return reverse("update_profile_success")
+    def get_success_url(self):
+        redirect_to = self.request.GET.get(self.redirect_field_name)
+        # redirect_to = self.request.REQUEST.get(self.redirect_field_name)
+        if not is_safe_url(url=redirect_to, host=self.request.get_host()):
+            redirect_to = self.success_url
+        return redirect_to
 
 
+class LogoutView(RedirectView):
+    """
+    Provides users the ability to logout
+    """
+    url = '/accounts/signin/'
+    # url = '/advertisements/'
+
+    def get(self, request, *args, **kwargs):
+        auth_logout(request)
+        return super(LogoutView, self).get(request, *args, **kwargs)
+
+
+class UserProfileUpdate(UpdateView):
+    pass
+
+
+
+#--------- verification email
+
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.contrib.auth import login, authenticate
+from .forms import SignupForm
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.template.loader import render_to_string
+from accounts.tokens import account_activation_token
+# from django.contrib.auth.models import User
+from django.core.mail import EmailMessage
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            # mail_subject = 'Activate your blog account.'
+            mail_subject = 'Активация акаунта.'
+            message = render_to_string('acc_active_email.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+                'token':account_activation_token.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            email = EmailMessage(
+                        mail_subject, message, to=[to_email]
+            )
+            email.send()
+            # return HttpResponse('Please confirm your email address to complete the registration')
+            return HttpResponse(u'Пожалуйста подтвердите свой email. Инструкции отправлены на email')
+    else:
+        form = SignupForm()
+    return render(request, 'signup.html', {'form': form})
+
+
+def activate(request, uidb64, token):
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        # user = User.objects.get(pk=uid)
+        user = MyCustomUser.objects.get(pk=uid)
+    # except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except(TypeError, ValueError, OverflowError, MyCustomUser.DoesNotExist):
+        user = None
+    if user is not None and account_activation_token.check_token(user, token):
+        user.is_active = True
+        user.save()
+        login(request, user)
+        # return redirect('home')
+        # return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        return HttpResponse(u'Спасибо, что присоеденились к нам. Теперь можите использовать свои логин и пароль для авторизации')
+    else:
+        # return HttpResponse('Activation link is invalid!')
+        return HttpResponse(u'Ссылка активации недействительна!')
+
+
+# not worked yet
+class RegisterView(FormView):
+    """
+    Provides the ability to login as a user with a username and password
+    """
+    success_url = '/accounts/signin/'
+    form_class = AuthenticationForm
+    # form_class = LoginForm
+    redirect_field_name = REDIRECT_FIELD_NAME
+
+    @method_decorator(sensitive_post_parameters('password'))
+    @method_decorator(csrf_protect)
+    @method_decorator(never_cache)
+    def dispatch(self, request, *args, **kwargs):
+        # Sets a test cookie to make sure the user has cookies enabled
+        request.session.set_test_cookie()
+        return super(RegisterView, self).dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        auth_login(self.request, form.get_user())
+
+        # If the test cookie worked, go ahead and
+        # delete it since its no longer needed
+        if self.request.session.test_cookie_worked():
+            self.request.session.delete_test_cookie()
+
+        return super(RegisterView, self).form_valid(form)
+
+    def get_success_url(self):
+        redirect_to = self.request.GET.get(self.redirect_field_name)
+        # redirect_to = self.request.REQUEST.get(self.redirect_field_name)
+        if not is_safe_url(url=redirect_to, host=self.request.get_host()):
+            redirect_to = self.success_url
+        return redirect_to

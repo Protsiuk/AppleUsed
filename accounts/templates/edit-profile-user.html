@@ -1,25 +1,17 @@
 {% extends "base.html" %}
 <title>{% block title %} Редактирование профиля {{ user.username }} {% endblock title %}</title>
+
+{% block navbar %}
+<div class="panel-menu">
+    <a href="{% url 'advertisements' %}">К списку объявлений</a>
+</div>
+{% endblock navbar %}
+
 {% block content %}
     <form class="col s12" action="{% url 'edit_profile_user' %}" method="post">
         {% csrf_token %}
-        {{ edit_form.as_p }}
-{#        <ul class='form-errors'>#}
-{#            {% for error in form.non_field_errors %}#}
-{#                <li>{{ error|escape }}</li>#}
-{#            {% endfor %}#}
-{#        </ul>#}
-{#            <div class="input-field col s6">#}
-{#                <label for="{{ form.username.first_name.id_for_label }}"></label>#}
-{#                <p><b>Имя:</b> {{ form.username.first_name }}</p>#}
-{#                <label for="{{ user.last_name.id_for_label }}"></label>#}
-{#                <p><b>Фамилия:</b> {{ user.last_name }}</p>#}
-{#                <label for="{{ user.city }}"></label>#}
-{#                <p><b>Город:</b> {{ user.city }}</p>#}
-{#                <label for="{{ user.email.id_for_label }}"></label>#}
-{#                <p><b>Email:</b> {{ user.email }}</p>#}
-{#                <label for="{{ user.password.id_for_label }}"></label>#}
-{#                <a href="" class="href-on-page">Изменить пароль</a>#}
+        {{ form.as_p }}
+{
                 <br>
                 <br>
 
@@ -28,6 +20,7 @@
             {#            <label for="{{ form.passwordConfirm.id_for_label }}"></label><br>#}
             {#            <p>Подтвердить пароль:</p>#}
             {#            {{ form.passwordConfirm }}#}
+        <a> test to commit</a>
                 <button type="submit" class="waves-effect waves-light btn">Сохранить</button>
 {#            </div>#}
     </form>

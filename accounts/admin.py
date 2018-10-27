@@ -1,49 +1,48 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+# from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from accounts.models import User, WebsiteSettings, UserProfile
+from accounts.models import MyCustomUser, WebsiteSettings
 
 from solo.admin import SingletonModelAdmin
 
 
+@admin.register(MyCustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    # add_fieldsets = ((None, {
-    #     'classes': ('wide',),
-    #     'fields': ('first_name', 'last_name', 'email', 'password1', 'password2', 'date_joined')}
-    #                   ),
-    #                  )
-    list_display = ('username', 'first_name', "last_name", 'date_joined', 'last_login', 'is_active', 'is_staff')
+    list_display = ['email', 'first_name', 'last_name', 'phone_number_user', 'date_joined', 'locations_user']
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'date_joined',)
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Important data'), {'fields': ('last_login', 'date_joined')}),
     )
+    ordering = ["email"]
 
+# class CustomUserAdmin(UserAdmin):
+#     add_fieldsets = ((None, {
+#         'classes': ('wide',),
+#         'fields': ('first_name', 'last_name', 'email', 'password1', 'password2')}
+#                       ),
+#                      )
+#     fieldsets = (
+#         (None, {'fields': ('email', 'password')}),
+#         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+#         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+#         (_('Important data'), {'fields': ('last_login', 'date_joined')}),
+#     )
+#     list_filter = ('is_staff', 'is_superuser', 'is_active')
+# -------------
     # fieldsets = (
     #     (None, {'fields': ('username', 'password')}),
     #     (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
     #     (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
     #     (_('Important data'), {'fields': ('last_login', 'date_joined')}),
     # )
-    list_filter = ('is_staff', 'is_superuser', 'is_active')
-
-# class UserProfileAdmin(admin.ModelAdmin):
-#     # model = UserProfile
-#     username = User.get_username(self)
-#     list_filter = ('city', 'phone', 'user_id')
-#     list_display = ('city', 'phone', 'user_id')
-
-    # list_display = ('username', 'first_name', "last_name", 'city', 'phone', 'date_joined', 'last_login', 'is_active', 'is_staff')
-
-    # ordering = ["name"]
 
 
 # Register your models here.
-admin.site.register(User, CustomUserAdmin)
-# admin.site.register(UserProfile, UserProfileAdmin)
-admin.site.register(UserProfile)
+# admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(WebsiteSettings, SingletonModelAdmin)
 
 # ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')

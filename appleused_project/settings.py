@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    # 'send_email.apps.SendEmailConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 
 
+
     # project apps
     'accounts',
     'advertisements',
@@ -47,25 +49,30 @@ INSTALLED_APPS = [
 
     # 3-d generation
     'solo',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'password_reset',
-    'rest_auth',
-    #'registration',
+    # 'rest_framework',
+    # 'rest_framework.authtoken',
+    # 'password_reset',
+    # 'rest_auth',
+    # 'registration',
+
 ]
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    # 'django.contrib.send_email.middleware.MessageMiddleware',
+)
 
-    # 'django.contrib.send_email',
-]
+# MIDDLEWARE = [
+#     'django.middleware.security.SecurityMiddleware',
+#     'django.contrib.sessions.middleware.SessionMiddleware',
+#     'django.middleware.common.CommonMiddleware',
+#     'django.middleware.csrf.CsrfViewMiddleware',
+#     'django.contrib.auth.middleware.AuthenticationMiddleware',
+#     'django.contrib.send_email.middleware.MessageMiddleware',
+#     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+# ]
 
 ROOT_URLCONF = 'appleused_project.urls'
 
@@ -144,15 +151,14 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "dev_static"),
 )
 
-STATIC_URL = '/dev_static/'
-# STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.MyCustomUser'
 # AUTH_USER_MODEL = 'auth.User'
 
 # ACCOUNT_ACTIVATION_DAYS = 3
@@ -160,9 +166,8 @@ AUTH_USER_MODEL = 'accounts.User'
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-AUTH_PROFILE_MODULE = 'list.UserProfile'
-
 LOGIN_URL = 'accounts/signin/'
+# AUTH_PROFILE_MODULE = 'list.UserProfile'
 
 # email server settings
 # EMAIL_HOST = 'smtp.gmail.com'

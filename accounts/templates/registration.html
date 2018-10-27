@@ -10,46 +10,44 @@
                     <strong>{{ error|escape }}</strong>
                 </div>
             {% endfor %}
-            {{ form.as_p }}
+{#            {{ form.as_p }}#}
 
 {##}
+            <div class="input-field col s6">
+                <label for="{{ form.username.id_for_label }}"><p>Имя пользователя:</p></label>
+                {{ form.username }}
+            </div>
+                {% if form.username.errors %}
+                    <div class="text-center"><strong>{{ form.username.errors|escape }}</strong></div>
+                {% endif %}
 
-{#            <div class="input-field col s6">#}
-{#                <label for="{{ form.username.id_for_label }}"><p>Имя пользователя:</p></label>#}
-{#                {{ form.username }}#}
-{#            </div>#}
-{#                {% if form.username.errors %}#}
-{#                    <div class="text-center"><strong>{{ form.username.errors|escape }}</strong></div>#}
-{#                {% endif %}#}
+            <div class="input-field col s6">
+                <label for="{{ form.email.id_for_label }}"><p>Email:</p></label>
+                {{ form.email }}
+            </div>
+                {% if form.email.errors %}
+                    <div class="text-center"><strong>{{ form.email.errors|escape }}</strong></div>
+                {% endif %}
 
+            <div class="input-field col s6">
+                <label for="{{ form.password.id_for_label }}"><p>Пароль:</p></label>
+                {{ form.password }}
+            </div>
+                {% if form.password.errors %}
+                    <div class="text-center"><strong>{{ form.password.errors|escape }}</strong></div>
+                {% endif %}
 
-{#            <div class="input-field col s6">#}
-{#                <label for="{{ form.email.id_for_label }}"><p>Email:</p></label>#}
-{#                {{ form.email }}#}
-{#            </div>#}
-{#                {% if form.email.errors %}#}
-{#                    <div class="text-center"><strong>{{ form.email.errors|escape }}</strong></div>#}
-{#                {% endif %}#}
-{##}
-{#            <div class="input-field col s6">#}
-{#                <label for="{{ form.password.id_for_label }}"><p>Пароль:</p></label>#}
-{#                {{ form.password }}#}
-{#            </div>#}
-{#                {% if form.password.errors %}#}
-{#                    <div class="text-center"><strong>{{ form.password.errors|escape }}</strong></div>#}
-{#                {% endif %}#}
-{##}
-{#            <div class="input-field col s6">#}
-{#                <label for="{{ form.passwordConfirm.id_for_label }}"><p>Подтвердить пароль:</p></label>#}
-{#                {{ form.passwordConfirm }}#}
-{#            </div>#}
-{#                {% if form.passwordConfirm.errors %}#}
-{#                    <div class="text-center"><strong>{{ form.passwordConfirm.errors|escape }}</strong></div>#}
-{#                {% endif %}#}
-{##}
+            <div class="input-field col s6">
+                <label for="{{ form.passwordConfirm.id_for_label }}"><p>Подтвердить пароль:</p></label>
+                {{ form.passwordConfirm }}
+            </div>
+                {% if form.passwordConfirm.errors %}
+                    <div class="text-center"><strong>{{ form.passwordConfirm.errors|escape }}</strong></div>
+                {% endif %}
+
                 <button type="submit" class="waves-effect waves-light btn">Зарегистрироваться</button>
 
-        </form>
+            </form>
 
     {% endblock content %}
 </div>
