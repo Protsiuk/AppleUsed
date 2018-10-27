@@ -162,6 +162,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 AUTH_PROFILE_MODULE = 'list.UserProfile'
 
+LOGIN_URL = 'accounts/signin/'
+
 # email server settings
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_HOST_USER = 'your-username@gmail.com'
