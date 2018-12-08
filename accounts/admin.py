@@ -3,18 +3,20 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
 from accounts.models import WebsiteSettings, MyCustomUser
-from accounts.forms import EditProfileUserForm#, #MyCustomUserCreationForm#, CustomUserChangeForm
+from accounts.forms import EditProfileUserForm, MyCustomUserCreationForm#, CustomUserChangeForm
 
 from solo.admin import SingletonModelAdmin
 
 
 @admin.register(MyCustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    # add_form = MyCustomUserCreationForm
+    add_form = EditProfileUserForm
     # form = MyCustomUserCreationForm
     form = EditProfileUserForm
 
-    list_display = ['id', 'email', 'first_name', 'last_name', 'phone_number_user', 'locations_user', 'date_joined', 'birth_day']
+    list_display = [
+        'id', 'email', 'first_name', 'last_name', 'phone_number_user', 'locations_user', 'date_joined', 'birth_day'
+        ]
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'date_joined',)
     fieldsets = (
         (None, {'fields': ('email', 'username', 'password')}),

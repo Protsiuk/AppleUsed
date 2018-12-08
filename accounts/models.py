@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser, PermissionsMixin, BaseUserManager#, UserManager
 # from django.core.mail import send_mail
-from django.core.validators import RegexValidator
+# from django.core.validators import RegexValidator
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 # from utils import get_file_path
@@ -85,7 +85,7 @@ class MyCustomUser(AbstractUser, PermissionsMixin):
 
     Username, password and email are required. Other fields are optional.
     """
-    username = models.CharField(max_length=254, unique=False, blank=True)
+    username = models.CharField(_('username'), max_length=254, unique=False, blank=True)
     # email = models.EmailField(max_length=255, unique=True)
     email = models.EmailField(
         _('Email Address'), unique=True,
@@ -103,14 +103,14 @@ class MyCustomUser(AbstractUser, PermissionsMixin):
                     'active. Unselect this instead of deleting accounts.'))
     # photo = models.FileField(upload_to=get_file_path)
     birth_day = models.DateField(_('birthday'), blank=True, null=True)
-    locations_user = models.CharField(default='', blank=True, null=True, max_length=512)
+    locations_user = models.CharField(_('locations'), default='', blank=True, null=True, max_length=512)
     # country = models.ForeignKey(Country,related_name='country', blank=True, null=True, help_text=_('Select your Country')
     # city = models.ForeignKey(City,related_name='city', blank=True, null=True, help_text=_('Select your City')
     # location = models.ForeignKey(Country, related_name='location', blank=True, null=True, help_text=_('Select your Location'))
-    # phone = models.IntegerField(unique=True)
-    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
-                                 message="Phone number must be entered in the format: '+9999999999'. Up to 15 digits allowed.")
-    phone_number_user = models.CharField(validators=[phone_regex], max_length=15, blank=True)  # validators should be a list
+    phone_number_user = models.CharField(_('Phone number user'), default='', max_length=15, blank=True, null=True,)
+    # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
+    #                              message="Phone number must be entered in the format: '+9999999999'. Up to 15 digits allowed.")
+    # phone_number_user = models.CharField(validators=[phone_regex], max_length=15, blank=True)  # validators should be a list
 
     # phone = models.IntegerField(default=0, unique=True)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
@@ -211,55 +211,8 @@ class MyCustomUser(AbstractUser, PermissionsMixin):
     #     return user
 
 
-
 class WebsiteSettings(models.Model):
     title = models.CharField(max_length=255)
     # favicon = models.ImageField(width_field=30, height_field=30)
     description = models.CharField(max_length=255)
     about = models.TextField(max_length=510)
-
-
-
-    # def create_profile(sender, **kwargs):
-    #     if kwargs['created']:
-    #         user_profile = UserProfile.objects.create(user=kwargs['instance'])
-
-    # post_save.connnect(create_profile, sender=User)
-
-# # Create your models here.
-# class Member (models.Model):
-#     username = models.CharField(max_length= 255)
-#     password = models.CharField(max_length= 255)
-#     email = models.CharField(max_length=255)
-#
-#     def __str__(self):
-#         return self.username
-#
-#     def upper_username(self):
-#         return self.username.upper()
-
-
-# class Profile(models.Model):
-#     STUDENT = 1
-#     TEACHER = 2
-#     SUPERVISOR = 3
-#     ROLE_CHOICES = (
-#         (STUDENT, 'Student'),
-#         (TEACHER, 'Teacher'),
-#         (SUPERVISOR, 'Supervisor'),
-#     )
-#     user = models.OneToOneField(User, on_delete=models.CASCADE)
-#     location = models.CharField(max_length=30, blank=True)
-#     birthdate = models.DateField(null=True, blank=True)
-#     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True)
-#
-#     def __str__(self):  # __unicode__ for Python 2
-#         return self.user.username
-#
-# @receiver(post_save, sender=User)
-# def create_or_update_user_profile(sender, instance, created, **kwargs):
-#     if created:
-#         Profile.objects.create(user=instance)
-#     instance.profile.save()
-
-# created_date = models.DateField(blank=True, null=True, verbose_name="Created on")

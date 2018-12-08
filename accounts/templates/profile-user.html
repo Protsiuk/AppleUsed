@@ -16,13 +16,6 @@
                <h5><b>Личный кабинет {{ user.username }} </b></h5>
                 <p>Имя пользователя: <b>{{ user.first_name }}</b></p>
                 <p>Фамилия пользователя: <b>{{ user.last_name }}</b></p>
-{#                <p>День рождения пользователя: <b>{{ user.birth_day }}</b></p>#}
-{#                {% if user.birth_day == None %}#}
-{#                    <p>День рождения пользователя: <b>Не заполнено</b></p>#}
-{#                {% else %}#}
-{#                    <p>День рождения пользователя: <b>{{ user.birth_day }}</b></p>#}
-{#                {% endif %}#}
-        {#        <p>Город: <b>{{ user.locations_user }}</b></p>#}
                 <p>Email: <b>{{ user.email }}</b></p>
                 <p>Location: <b>{{ user.locations_user }}</b> </p>
 {#                <p>Phone number<b> {{ user.phone_number_user }}</b> </p>#}
@@ -31,7 +24,7 @@
                 {% else %}
                     <p>День рождения пользователя: <b>{{ user.birth_day }}</b></p>
                 {% endif %}
-                <p>Phone number<b> {{ user.phone_number_user}}</b> </p>
+                <p>Phone number:<b> {{ user.phone_number_user }}</b></p>
 
                 <a href="{% url 'edit_profile_user' user.id %}" class="href-on-page">Редатировать</a>
             </div>

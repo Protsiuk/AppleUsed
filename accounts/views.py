@@ -193,22 +193,22 @@ def profileUserViews(request):
 #     return render(request, 'edit-profile-user.html', {'form': form})
 
 
-# @login_required
-# def editProfileUserViews(request):
-#     # user = request.user
-#     if request.POST:
-#         form = EditProfileUserForm(request.POST, instance=request.user)
-#         if form.is_valid():
-#             form.save()
-#             return redirect(reverse('profile-user.html'))
-#         # return render(request, 'profile-user.html', {'user': user})
-#     else:
-#         form = UserChangeForm(instance=request.user)
-#         return render(request, 'edit-profile-user.html', {'form': form})
-#         # return redirect(reverse("edit-profile-user"))
-#
-#     # return render(request, 'edit-profile-user.html', {'form': form})
-#
+@login_required
+def editProfileUserViews(request):
+    # user = request.user
+    if request.POST:
+        form = EditProfileUserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect(reverse('profile-user.html'))
+        # return render(request, 'profile-user.html', {'user': user})
+    else:
+        form = UserChangeForm(instance=request.user)
+        return render(request, 'edit-profile-user.html', {'form': form})
+        # return redirect(reverse("edit-profile-user"))
+
+    # return render(request, 'edit-profile-user.html', {'form': form})
+
 
 
 class LoginView(FormView):
@@ -260,6 +260,7 @@ class LogoutView(RedirectView):
 
 class UserProfileUpdateViews(LoginRequiredMixin, UpdateView):
     # form_class = EditProfileUserForm
+    # form_class = UserRegistrationForm
     success_url = '/accounts/profile-user/'
     template_name = 'edit-profile-user.html'
     # queryset = MyCustomUser.objects.filter(user=request.user)

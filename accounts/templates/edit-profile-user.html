@@ -13,14 +13,15 @@
             <div class="input-field col s9">
                 <form class="col s9" action="{% url 'edit_profile_user' user.id %}" method="post">
                     {% csrf_token %}
-            {#        {{ form.as_p }}#}
-                    <p> Username: {{ form.username }} </p>
-                    <p> Email: {{ form.email }} </p>
-                    <p> First Name: {{ form.first_name }} </p>
-                    <p> Last Name: {{ form.last_name }} </p>
-                    <p> Location: {{ form.locations_user }} </p>
-                    <p> Phone number: {{ user.phone_number_user }} </p>
-                    <p>  Birthday: {{ form.birth_day }} </p>
+                    {{ form.as_p }}
+{#                    <p> Username: {{ form.username }} </p>#}
+{#                    <p> Email: {{ form.email }} </p>#}
+{#                    <p> First Name: {{ form.first_name }} </p>#}
+{#                    <p> Last Name: {{ form.last_name }} </p>#}
+{#                    <p> Location: {{ form.locations_user }} </p>#}
+{#                    <p> Birthday: {{ form.birth_day }} </p>#}
+{#                    <p> Phone number: {{ user.phone_number_user }} </p>#}
+                    
 {#                    <div class="container">#}
 {#                        <div class="row">#}
 {#                            <div class='col-sm-6'>#}

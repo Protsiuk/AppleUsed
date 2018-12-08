@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from accounts.models import MyCustomUser
 # from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-
+from django.core.validators import RegexValidator
 from django.forms.widgets import SelectDateWidget
 # from registration.forms import RegistrationForm
 
@@ -268,6 +268,35 @@ class ProfileUserForm(forms.Form):
         fields = '__all__'
 
 
+class PhoneField(forms.MultiValueField):
+    def __init__(self, **kwargs):
+        # Define one message for all fields.
+        error_messages = {
+            'incomplete': 'Enter a country calling code and a phone number.',
+        }
+        # Or define a different message for each field.
+        fields = (
+            forms.CharField(
+                error_messages={'incomplete': 'Enter a country calling code.'},
+                validators=[
+                    RegexValidator(r'^[0-9]+$', 'Enter a valid country calling code.'),
+                ],
+            ),
+            forms.CharField(
+                error_messages={'incomplete': 'Enter a phone number.'},
+                validators=[RegexValidator(r'^[0-9]+$', 'Enter a valid phone number.')],
+            ),
+            forms.CharField(
+                validators=[RegexValidator(r'^[0-9]+$', 'Enter a valid extension.')],
+                required=False,
+            ),
+        )
+        super().__init__(
+            error_messages=error_messages, fields=fields,
+            require_all_fields=False, **kwargs
+        )
+
+
 class EditProfileUserForm(forms.ModelForm):
     """ form for updating users
     the field you want to use should already be defined in the model
@@ -279,7 +308,7 @@ class EditProfileUserForm(forms.ModelForm):
     # # passwordConfirm = forms.CharField(label=('Пароль повторно'), widget=forms.PasswordInput(render_value=False))
     # locations_user = forms.CharField(label='location', max_length=512)
     # phone = forms.CharField(label='Phone', max_length=13)
-
+    # phone_number_user = PhoneField()
     class Meta:
         user = MyCustomUser
         fields = (
