@@ -1,7 +1,7 @@
 from django.conf.urls import url#, include
 
-from accounts.views import sign_out, login_user, registrationView, profileUserViews, editProfileUserViews,\
-    LoginView, LogoutView, signup, activate, MyUserPasswordResetConfirmView, UserPasswordResetCompleteView#, \
+from accounts.views import sign_out, login_user, registrationView, profileUserViews, UserProfileUpdateViews,\
+    LoginView, LogoutView, signup, SignUp, activate, MyUserPasswordResetConfirmView, UserPasswordResetCompleteView, MyProfileUser#, #editProfileUserViews,
     # UserPasswordResetView#, UserRegistrationView #, ActivationView
 # from accounts.forms import UserRegistrationForm
 #
@@ -24,8 +24,8 @@ urlpatterns = [
     url(r'^login/$', login_user, name='login'),
     url(r'^registration/$', registrationView, name='registration'),
     # url(r'^registration/confirm/([\w\-]+)/([\w\-]+)/$', 'accounts.views.confirm_reg', name='confirm-reg'),
-    url(r'^profile-user/$', profileUserViews, name='profile_user'),
-    url(r'^profile-user/edit/$', editProfileUserViews, name='edit_profile_user'),
+    # url(r'^profile-user/$', profileUserViews, name='profile_user'),
+    # url(r'^profile-user/edit/$', editProfileUserViews, name='edit_profile_user'),
 
 
     # url(r'^register/$', RegistrationView.as_view(form_class=UserRegistrationForm),
@@ -66,6 +66,7 @@ urlpatterns = [
     # url(r'^signout/$', LogoutView.as_view(template_name='main.html'), name='sign_out'),
 
     url(r'^signup/$', signup, name='signup'),
+    url('signup/', SignUp.as_view(), name='signup'),
     url(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         activate, name='activate'),
 
@@ -80,6 +81,7 @@ urlpatterns = [
         name='password_change'),
     url(r'^change-password/done/$', PasswordChangeDoneView.as_view(template_name='password_change_done.html'),
         name='password_change_done'),
+
 
     url(r'^password_reset/$', PasswordResetView.as_view(template_name='password_reset_form.html'),
         name='password_reset'),
@@ -96,8 +98,11 @@ urlpatterns = [
     # url(r'^password_reset/complete/$', PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),
     #     name='password_reset_complete'),
 
+    url(r'^profile-user/$', MyProfileUser.as_view(), name='profile_user'),
+    url(r'^profile-user/edit/$', UserProfileUpdateViews.as_view(template_name='edit-profile-user.html'), name='edit_profile'),
 
+    url(r'^profile-user/(?P<pk>\d+)/edit/$', UserProfileUpdateViews.as_view(), name='edit_profile_user'),
+    # url(r'^profile-user/<int:pk>/edit/$', UserProfileUpdateViews.as_view(), name='edit_profile_user'), # for django 2
     # url(r'^forgot-password/$', ForgotPassword, name='ForgotPassword'),
     # url(r'^api/login/$', UserLoginView.as_view()),
-
 ]

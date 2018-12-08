@@ -1,6 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
-from django.core.mail import send_mail
+from django.contrib.auth.models import User, AbstractUser, PermissionsMixin, BaseUserManager#, UserManager
+# from django.core.mail import send_mail
 from django.core.validators import RegexValidator
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -30,7 +30,54 @@ class MyUserManager(BaseUserManager):
     def create_superuser(self, email, password, **extra_fields):
         return self._create_user(email, password, True, True, **extra_fields)
 
+# class MyCustomUser(User):
+#     """
+#     Users within the Django authentication system are represented by this
+#     model.
+#
+#     Username, password and email are required. Other fields are optional.
+#     """
+#     # username_validator = UnicodeUsernameValidator() if six.PY3 else ASCIIUsernameValidator()
+#     username = models.CharField(
+#         _('username'),
+#         max_length=150,
+#         unique=True,
+#         help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+#         # validators=[username_validator],
+#         error_messages={
+#             'unique': _("A user with that username already exists."),
+#         },
+#     )
+#     first_name = models.CharField(_('first name'), max_length=30, blank=True)
+#     last_name = models.CharField(_('last name'), max_length=30, blank=True)
+#     email = models.EmailField(_('email address'), blank=True)
+#     is_staff = models.BooleanField(
+#         _('staff status'),
+#         default=False,
+#         help_text=_('Designates whether the user can log into this admin site.'),
+#     )
+#     is_active = models.BooleanField(
+#         _('active'),
+#         default=True,
+#         help_text=_(
+#             'Designates whether this user should be treated as active. '
+#             'Unselect this instead of deleting accounts.'
+#         ),
+#     )
+#     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
+#
+#     objects = UserManager()
+#
+#     EMAIL_FIELD = 'email'
+#     USERNAME_FIELD = 'username'
+#     REQUIRED_FIELDS = ['email']
+#
+#     class Meta:
+#         verbose_name = _('user')
+#         verbose_name_plural = _('users')
+#         abstract = True
 
+#
 class MyCustomUser(AbstractUser, PermissionsMixin):
     """
     An abstract base class implementing a fully featured User model with
@@ -55,8 +102,9 @@ class MyCustomUser(AbstractUser, PermissionsMixin):
         help_text=_('Designates whether this user should be treated as '
                     'active. Unselect this instead of deleting accounts.'))
     # photo = models.FileField(upload_to=get_file_path)
-    birth_day = models.DateField(_('birth day'), blank=True, null=True)
+    birth_day = models.DateField(_('birthday'), blank=True, null=True)
     locations_user = models.CharField(default='', blank=True, null=True, max_length=512)
+    # country = models.ForeignKey(Country,related_name='country', blank=True, null=True, help_text=_('Select your Country')
     # city = models.ForeignKey(City,related_name='city', blank=True, null=True, help_text=_('Select your City')
     # location = models.ForeignKey(Country, related_name='location', blank=True, null=True, help_text=_('Select your Location'))
     # phone = models.IntegerField(unique=True)
@@ -94,12 +142,28 @@ class MyCustomUser(AbstractUser, PermissionsMixin):
     def get_short_name(self):
         "Returns the short name for the user."
         return self.first_name
+# ------------------
+#     def email_user(self, subject, message, from_email=None):
+#         """
+#         Sends an email to this User.
+#         """
+#         send_mail(subject, message, from_email, [self.email])
 
-    # def email_user(self, subject, message, from_email=None):
-    #     """
-    #     Sends an email to this User.
-    #     """
-    #     send_mail(subject, message, from_email, [self.email])
+# class UserProfile(models.Model):
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     location = models.CharField(max_length=30, blank=True)
+#     birthdate = models.DateField(null=True, blank=True)
+#     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True)
+#
+#     def __str__(self):  # __unicode__ for Python 2
+#         return self.user.username
+#
+# @receiver(post_save, sender=User)
+# def create_or_update_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+#     instance.profile.save()
+
 
 #
 # class UserManager(BaseUserManager):
@@ -173,3 +237,29 @@ class WebsiteSettings(models.Model):
 #
 #     def upper_username(self):
 #         return self.username.upper()
+
+
+# class Profile(models.Model):
+#     STUDENT = 1
+#     TEACHER = 2
+#     SUPERVISOR = 3
+#     ROLE_CHOICES = (
+#         (STUDENT, 'Student'),
+#         (TEACHER, 'Teacher'),
+#         (SUPERVISOR, 'Supervisor'),
+#     )
+#     user = models.OneToOneField(User, on_delete=models.CASCADE)
+#     location = models.CharField(max_length=30, blank=True)
+#     birthdate = models.DateField(null=True, blank=True)
+#     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, null=True, blank=True)
+#
+#     def __str__(self):  # __unicode__ for Python 2
+#         return self.user.username
+#
+# @receiver(post_save, sender=User)
+# def create_or_update_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         Profile.objects.create(user=instance)
+#     instance.profile.save()
+
+# created_date = models.DateField(blank=True, null=True, verbose_name="Created on")

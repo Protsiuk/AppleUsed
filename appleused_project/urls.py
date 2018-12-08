@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from accounts.views import main_page
+from django.views.generic.base import TemplateView
 
 # from rest_framework.documentation import include_docs_urls
 #
@@ -22,5 +23,7 @@ urlpatterns = [
 
     # url(r'home')?, home_pages, name='home'
     # url(r'send_email/', include('send_email.urls')),
+    url('', TemplateView.as_view(template_name='home.html'), name='home'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

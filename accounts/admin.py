@@ -1,23 +1,30 @@
 from django.contrib import admin
-# from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import ugettext_lazy as _
 
-from accounts.models import MyCustomUser, WebsiteSettings
+from accounts.models import WebsiteSettings, MyCustomUser
+from accounts.forms import EditProfileUserForm#, #MyCustomUserCreationForm#, CustomUserChangeForm
 
 from solo.admin import SingletonModelAdmin
 
 
 @admin.register(MyCustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
-    list_display = ['email', 'first_name', 'last_name', 'phone_number_user', 'date_joined', 'locations_user']
+    # add_form = MyCustomUserCreationForm
+    # form = MyCustomUserCreationForm
+    form = EditProfileUserForm
+
+    list_display = ['id', 'email', 'first_name', 'last_name', 'phone_number_user', 'locations_user', 'date_joined', 'birth_day']
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'date_joined',)
     fieldsets = (
         (None, {'fields': ('email', 'username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'locations_user', 'phone_number_user', 'birth_day')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Important data'), {'fields': ('last_login', 'date_joined')}),
     )
     ordering = ["email"]
+
+
 
 # class CustomUserAdmin(UserAdmin):
 #     add_fieldsets = ((None, {
@@ -42,7 +49,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 
 # Register your models here.
-# admin.site.register(CustomUser, CustomUserAdmin)
+# admin.site.register(MyCustomUser, UserAdmin)
 admin.site.register(WebsiteSettings, SingletonModelAdmin)
 
 # ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')

@@ -8,26 +8,35 @@ from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.contrib.auth.tokens import default_token_generator
 
+from django.shortcuts import render, HttpResponseRedirect, redirect, Http404, get_object_or_404#, HttpResponse
+from django.contrib.sites.shortcuts import get_current_site
+
+
 from django.contrib.auth import (
     REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
     logout as auth_logout, update_session_auth_hash,
 )
 
-# from django.core.exceptions import ValidationError
-
-from django.shortcuts import render, HttpResponseRedirect, redirect#, HttpResponse
-from django.contrib.sites.shortcuts import get_current_site
-
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-# from rest_framework.authtoken.models import Token
-# from password_reset import
 
 # from accounts.serializers import LoginSerializer
-from accounts.forms import LoginForm, UserRegistrationForm, EditProfileUserForm # ProfileUserForm, , ForgotPasswordForm
+from accounts.forms import LoginForm, UserRegistrationForm, EditProfileUserForm, MyCustomUserCreationForm#, MyForm
+# ProfileUserForm, ForgotPasswordForm
 
 from accounts.models import MyCustomUser
+
 # from accounts import signals
+#---------------------------------------------------------CBV
+from django.utils.http import is_safe_url
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout, get_user_model
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import FormView, RedirectView, ListView, UpdateView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.views.generic import UpdateView, TemplateView
+from django.contrib.auth.views import PasswordResetCompleteView
 
 #----------------------------------------------
  # from registration.backends.default.views import RegistrationView
@@ -70,28 +79,15 @@ def login_user(request):
                 return HttpResponseRedirect(reverse("advertisements"))
     return render(request, 'login.html', {'form': form})
 
-
-def forgotPassword(request):
-    form = LoginForm(request.GET)
-    if request.POST and form.is_valid():
-        user = form.login(request)
-        if user:
-            auth_login(request, user)
-            return HttpResponseRedirect(reverse("advertisements"))
-    return render(request, 'login.html', {'form': form})
-
-
-"""
-    form = LoginForm(request.POST or None)
-    data = form.cleaned_data
-    user = authenticate(email=data.get("email"), password=data.get("password"))
-    # user = authenticate(email=data.get("email"), password=data.get("password"))
-    if user is not None:
-        print("user is authenticate", data.get("email"))
-    else:
-        raise forms.ValidationError("Sorry, that login or password was invalid. Please try again.")
-    return render(request, "login.html", {"form": form})
-"""
+#
+# def forgotPassword(request):
+#     form = LoginForm(request.GET)
+#     if request.POST and form.is_valid():
+#         user = form.login(request)
+#         if user:
+#             auth_login(request, user)
+#             return HttpResponseRedirect(reverse("advertisements"))
+#     return render(request, 'login.html', {'form': form})
 
 
 """
@@ -112,33 +108,6 @@ def forgotPassword(request):
         return render(request, "login.html", {"form": form})
 """
 
-        # # form = LoginForm()
-        # form = LoginForm(request.POST)
-        # if request.POST and form.is_valid:
-        #     # form = LoginForm(request.POST)
-        #     data = form.cleaned_data
-        #     user = authenticate(email=data.get("email"), password=data.get("password"))
-        #     if user:
-        #         login(request, user)
-        #         return render(request, "login.html", {"form": form})
-        #         # return HttpResponseRedirect(reverse("main"))
-
-        # if request.method == "POST":
-        #     form = LoginForm(request.POST)
-        #     if form.is_valid():
-        #         data = form.cleaned_data
-        #         user = authenticate(email=data.get("email"), password=data.get("password"))
-        #         if not user:
-        #             raise forms.ValidationError("Sorry, that login or password was invalid. Please try again.")
-        #         else:
-        #             login(request, user)
-        #             return HttpResponseRedirect(reverse("main"))
-
-                #     print(form.errors)
-
-                    # raise ValidationError("Sorry, that login or password was invalid. Please try again.")
-                    # print("sorry")
-        # return render(request, "login.html", {"form": form})
 
 """
 class UserLoginView(APIView):
@@ -201,28 +170,12 @@ def emailVerificationVellDonView(request):
         return render(request, 'login.html', {'form': form})
 
 
-
-"""
-    if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse('profile_user'))
-    elif request.POST:
-        form = RegistrationForm(request.POST or None)
-        if form.is_valid():
-            user = User.objects.create_user(username=form.cleaned_data['username'],
-                                            email=form.cleaned_data['email'],
-                                            password=form.cleaned_data['password'])
-            # print(user.objects.get['email'])
-            user.save()
-            # user = User.objects.get()
-            return HttpResponseRedirect(reverse("profile_user"))
-    return render(request, 'registration.html', {'form': form})
-"""
-
 @login_required
 def profileUserViews(request):
-    # user = request.user
-    # if request.GET:
-    #     return user
+    user = request.user
+    # print(user)
+    if request.GET:
+        return user
     return render(request, 'profile-user.html', {'user': request.user})
 
 
@@ -240,243 +193,22 @@ def profileUserViews(request):
 #     return render(request, 'edit-profile-user.html', {'form': form})
 
 
-
-@login_required
-def editProfileUserViews(request):
-    # user = request.user
-    if request.POST:
-        form = EditProfileUserForm(request.POST, instance=request.user)
-        if form.is_valid():
-            form.save()
-            return redirect(reverse('profile-user.html'))
-        # return render(request, 'profile-user.html', {'user': user})
-    else:
-        form = UserChangeForm(instance=request.user)
-        return render(request, 'edit-profile-user.html', {'form': form})
-        # return redirect(reverse("edit-profile-user"))
-
-    # return render(request, 'edit-profile-user.html', {'form': form})
-
-# def create_profile(sender, **kwargs):
-#     if kwargs['created']:
-#         user_profile = UserProfile.objects.create(user=kwargs['instance'])
-
-
-# post_save.connect(create_profile, sender=User)
-
-
-
-# ----------------------------------------------------------------------------
-
-"""
-class RegistrationView(BaseRegistrationView):
-"""    """
-    Register a new (inactive) user account, generate an activation key
-    and email it to the user.
-
-    This is different from the model-based activation workflow in that
-    the activation key is the username, signed using Django's
-    TimestampSigner, with HMAC verification on activation.
-
-"""    """
-    email_body_template = 'registration/activation_email.txt'
-    email_subject_template = 'registration/activation_email_subject.txt'
-
-    def register(self, form):
-        new_user = self.create_inactive_user(form)
-        signals.user_registered.send(sender=self.__class__,
-                                     user=new_user,
-                                     request=self.request)
-        return new_user
-
-    def get_success_url(self, user):
-        return ('registration_complete', (), {})
-
-    def create_inactive_user(self, form):
-"""        """
-        Create the inactive user account and send an email containing
-        activation instructions.
-
-"""        """
-        new_user = form.save(commit=False)
-        new_user.is_active = False
-        new_user.save()
-
-        self.send_activation_email(new_user)
-
-        return new_user
-
-    def get_activation_key(self, user):
-"""        """
-        Generate the activation key which will be emailed to the user.
-
-"""        """
-        return signing.dumps(
-            obj=getattr(user, user.USERNAME_FIELD),
-            salt=REGISTRATION_SALT
-        )
-
-    def get_email_context(self, activation_key):
-"""        """
-        Build the template context used for the activation email.
-
-"""        """
-        scheme = 'https' if self.request.is_secure else 'http'
-        return {
-            'scheme': scheme,
-            'activation_key': activation_key,
-            'expiration_days': settings.ACCOUNT_ACTIVATION_DAYS,
-            'site': get_current_site(self.request)
-        }
-
-    def send_activation_email(self, user):
-"""        """
-        Send the activation email. The activation key is the username,
-        signed using TimestampSigner.
-
-"""        """
-        activation_key = self.get_activation_key(user)
-        context = self.get_email_context(activation_key)
-        context.update({
-            'user': user,
-        })
-        subject = render_to_string(self.email_subject_template,
-                                   context)
-        # Force subject to a single line to avoid header-injection
-        # issues.
-        subject = ''.join(subject.splitlines())
-        message = render_to_string(self.email_body_template,
-                                   context)
-        user.email_user(subject, message, settings.DEFAULT_FROM_EMAIL)
-
-
-class ActivationView(BaseActivationView):
-"""    """
-    Given a valid activation key, activate the user's
-    account. Otherwise, show an error message stating the account
-    couldn't be activated.
-
-"""    """
-    success_url = 'registration_activation_complete'
-
-    def activate(self, *args, **kwargs):
-        # This is safe even if, somehow, there's no activation key,
-        # because unsign() will raise BadSignature rather than
-        # TypeError on a value of None.
-        username = self.validate_key(kwargs.get('activation_key'))
-        if username is not None:
-            user = self.get_user(username)
-            if user is not None:
-                user.is_active = True
-                user.save()
-                return user
-        return False
-
-    def validate_key(self, activation_key):
-"""        """
-        Verify that the activation key is valid and within the
-        permitted activation time window, returning the username if
-        valid or ``None`` if not.
-
-"""        """
-        try:
-            username = signing.loads(
-                activation_key,
-                salt=REGISTRATION_SALT,
-                max_age=settings.ACCOUNT_ACTIVATION_DAYS * 86400
-            )
-            return username
-        # SignatureExpired is a subclass of BadSignature, so this will
-        # catch either one.
-        except signing.BadSignature:
-            return None
-
-    def get_user(self, email):
-"""        """
-        Given the verified username, look up and return the
-        corresponding user account if it exists, or ``None`` if it
-        doesn't.
-"""        """
-        User = get_user_model()
-        try:
-            user = User.objects.get(**{
-                User.USERNAME_FIELD: email,
-                'is_active': False
-            })
-            return user
-        except User.DoesNotExist:
-            return None
-"""
-#-------------------------------------------------------------------
-
-# class UserRegistrationView(RegistrationView):
-#     form_class = UserRegistrationForm
+# @login_required
+# def editProfileUserViews(request):
+#     # user = request.user
+#     if request.POST:
+#         form = EditProfileUserForm(request.POST, instance=request.user)
+#         if form.is_valid():
+#             form.save()
+#             return redirect(reverse('profile-user.html'))
+#         # return render(request, 'profile-user.html', {'user': user})
+#     else:
+#         form = UserChangeForm(instance=request.user)
+#         return render(request, 'edit-profile-user.html', {'form': form})
+#         # return redirect(reverse("edit-profile-user"))
 #
-#     def register(self, request, form):
+#     # return render(request, 'edit-profile-user.html', {'form': form})
 #
-#         site = get_current_site(request)
-#
-#         if hasattr(form, 'save'):
-#             new_user_instance = form.save()
-#         else:
-#             new_user_instance = (User().objects
-#                                  .create_user(**form.cleaned_data))
-#
-#         new_user = RegistrationProfile.objects.create_inactive_user(
-#             new_user=new_user_instance,
-#             site=site,
-#             send_email=self.SEND_ACTIVATION_EMAIL,
-#             request=request,
-#         )
-#         signals.user_registered.send(sender=self.__class__,
-#                                      user=new_user,
-#                                      request=request)
-#         return new_user
-
-#------------------------------------------------------------------- Registration
-
-
-# class UserRegistrationView(RegistrationView):
-#     form_class = UserRegistrationForm
-#
-#     def register(self, request, form):
-#         if request == "POST":
-#
-#             site = get_current_site(request)
-#
-#             if hasattr(form, 'save'):
-#                 new_user_instance = form.save()
-#             else:
-#                 new_user_instance = (User().objects
-#                                      .create_user(**form.cleaned_data))
-#
-#             new_user = RegistrationProfile.objects.create_inactive_user(
-#                 new_user=new_user_instance,
-#                 site=site,
-#                 send_email=self.SEND_ACTIVATION_EMAIL,
-#                 request=request,
-#             )
-#         signals.user_registered.send(sender=self.__class__,
-#                                      user=new_user,
-#                                      request=request)
-#         return new_user
-
-class UserLoginView():
-    pass
-
-#---------------------------------------------------------CBV
-from django.utils.http import is_safe_url
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout, get_user_model
-# from django.contrib.auth import REDIRECT_FIELD_NAME, login, logout, get_user_model
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import FormView, RedirectView
-from django.views.generic import UpdateView, TemplateView
-from django.contrib.auth.views import PasswordResetCompleteView
-
 
 
 class LoginView(FormView):
@@ -520,17 +252,70 @@ class LogoutView(RedirectView):
     Provides users the ability to logout
     """
     url = '/accounts/signin/'
-    # url = '/advertisements/'
 
     def get(self, request, *args, **kwargs):
         auth_logout(request)
         return super(LogoutView, self).get(request, *args, **kwargs)
 
 
-class UserProfileUpdate(UpdateView):
-    pass
+class UserProfileUpdateViews(LoginRequiredMixin, UpdateView):
+    # form_class = EditProfileUserForm
+    success_url = '/accounts/profile-user/'
+    template_name = 'edit-profile-user.html'
+    # queryset = MyCustomUser.objects.filter(user=request.user)
+    """
+    Base view for updating an existing object.
+    Using this base class requires subclassing to provide a response mixin.
+    """
+    fields = ['username', 'first_name', 'last_name', 'birth_day', 'email', 'locations_user', 'phone_number_user']
+
+    # def get(self):
+    #     return MyCustomUser.objects.filter(user=self.request.user)
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    # # @login_required
+    # # def editProfileUserViews(self):
+    # def edit(self):
+    #     # user = request.user
+    #     if self.request.POST:
+    #         form = EditProfileUserForm(self.request.POST, instance=self.request.user)
+    #         if form.is_valid():
+    #             form.save()
+    #             return redirect(reverse('profile-user.html'))
+    #             # return render(request, 'profile-user.html', {'user': user})
+    #     else:
+    #         form = UserChangeForm(instance=self.request.user)
+    #         return render(self.request, 'edit-profile-user.html', {'form': form})
+    #
+    #     """
+    #     Base view for updating an existing object.
+    #
+    #     Using this base class requires subclassing to provide a response mixin.
+    #     """
+    #
+    #     # def get(self, request, *args, **kwargs):
+    #     #     self.object = self.get_object()
+    #     #     return super(UserProfileUpdateViews, self).get(request, *args, **kwargs)
+    #     #
+    #     # def post(self, request, *args, **kwargs):
+    #     #     self.object = self.get_object()
+    #     #     return super(UserProfileUpdateViews, self).post(request, *args, **kwargs)
 
 
+class MyProfileUser(DetailView):
+    model = MyCustomUser
+    template_name = 'profile-user.html'
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(request.user)
+        context = self.get_context_data(object=self.object)
+        # print(context)
+        return self.render_to_response(context)
 
 #--------- verification email
 
@@ -538,7 +323,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, resolve_url
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView, PasswordResetView
-from .forms import SignupForm
+# from .forms import MyCustomUserCreationForm
 from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -551,7 +336,7 @@ from django.utils.translation import ugettext_lazy as _
 
 def signup(request):
     if request.method == 'POST':
-        form = SignupForm(request.POST)
+        form = MyCustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
@@ -573,7 +358,7 @@ def signup(request):
             # return HttpResponse('Please confirm your email address to complete the registration')
             return HttpResponse(u'Пожалуйста подтвердите свой email. Инструкции отправлены на email')
     else:
-        form = SignupForm()
+        form = MyCustomUserCreationForm()
     return render(request, 'signup.html', {'form': form})
 
 
@@ -659,11 +444,15 @@ class MyUserPasswordResetConfirmView(PasswordResetConfirmView):
 
         if self.user is not None:
             token = kwargs['token']
+            print('token #1 is', str(token))
+            print('INTERNAL_RESET_SESSION_TOKEN #2 is', str(INTERNAL_RESET_SESSION_TOKEN))
+            print('INTERNAL_RESET_URL_TOKEN #2222 is', str(INTERNAL_RESET_URL_TOKEN))
             if token == INTERNAL_RESET_URL_TOKEN:
                 session_token = self.request.session.get(INTERNAL_RESET_SESSION_TOKEN)
                 if self.token_generator.check_token(self.user, session_token):
                     # If the token is valid, display the password reset form.
                     self.validlink = True
+                    # return super().dispatch(*args, **kwargs)
                     return super(MyUserPasswordResetConfirmView, self).dispatch(*args, **kwargs)
             else:
                 if self.token_generator.check_token(self.user, token):
@@ -672,6 +461,7 @@ class MyUserPasswordResetConfirmView(PasswordResetConfirmView):
                     # avoids the possibility of leaking the token in the
                     # HTTP Referer header.
                     self.request.session[INTERNAL_RESET_SESSION_TOKEN] = token
+                    print('token #3 from session is', str(token))
                     redirect_url = self.request.path.replace(token, INTERNAL_RESET_URL_TOKEN)
                     return HttpResponseRedirect(redirect_url)
 
@@ -694,6 +484,7 @@ class MyUserPasswordResetConfirmView(PasswordResetConfirmView):
 
     def form_valid(self, form):
         user = form.save()
+        print('token #4 is', str(self.request.session[INTERNAL_RESET_SESSION_TOKEN]))
         del self.request.session[INTERNAL_RESET_SESSION_TOKEN]
         if self.post_reset_login:
             auth_login(self.request, user, self.post_reset_login_backend)
@@ -723,14 +514,22 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
         return context
 
 
-# #     template_name = 'registration/password_reset_complete.html'
-# # class PasswordResetCompleteView(PasswordContextMixin, TemplateView):
-# class UserPasswordResetCompleteView(PasswordResetCompleteView):
-#     template_name = 'registration/password_reset_complete.html'
-#     title = _('Password reset complete')
 
+# _________________________________________________________________________________________________________________
+from django.urls import reverse_lazy
+from django.views import generic
+from django.contrib.messages.views import SuccessMessageMixin
 
+class SignUp(generic.CreateView):
+    form_class = MyCustomUserCreationForm
+    success_url = reverse_lazy('login')
+    template_name = 'signup.html'
 
+# class MyEdit(SuccessMessageMixin, UpdateView):
+#     model = MyCustomUser
+#     form_class = MyForm
+#     template_name_suffix = '_edit'
+#     success_message = '...'
 
 #     title = _('Password reset complete')
 #
@@ -742,72 +541,6 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
 
 
 
-# import functools
-# import warnings
-#
-# from django.conf import settings
-# # Avoid shadowing the login() and logout() views below.
-# from django.contrib.auth import (
-#     REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
-#     logout as auth_logout, update_session_auth_hash,
-# )
-# from django.contrib.auth.decorators import login_required
-# from django.contrib.auth.forms import (
-#     AuthenticationForm, PasswordChangeForm, PasswordResetForm, SetPasswordForm,
-# )
-# from django.contrib.auth.tokens import default_token_generator
-# from django.contrib.sites.shortcuts import get_current_site
-# from django.http import HttpResponseRedirect, QueryDict
-# from django.shortcuts import resolve_url
-# from django.template.response import TemplateResponse
-# from django.urls import reverse, reverse_lazy
-# from django.utils.decorators import method_decorator
-# from django.utils.deprecation import (
-#     RemovedInDjango20Warning, RemovedInDjango21Warning,
-# )
-# from django.utils.encoding import force_text
-# from django.utils.http import is_safe_url, urlsafe_base64_decode
-# from django.utils.six.moves.urllib.parse import urlparse, urlunparse
-# from django.utils.translation import ugettext_lazy as _
-# from django.views.decorators.cache import never_cache
-# from django.views.decorators.csrf import csrf_protect
-# from django.views.decorators.debug import sensitive_post_parameters
-# from django.views.generic.base import TemplateView
-# from django.views.generic.edit import FormView
-#
-# UserModel = get_user_model()
-#
-#
-# def deprecate_current_app(func):
-#     """
-#     Handle deprecation of the current_app parameter of the views.
-#     """
-#     @functools.wraps(func)
-#     def inner(*args, **kwargs):
-#         if 'current_app' in kwargs:
-#             warnings.warn(
-#                 "Passing `current_app` as a keyword argument is deprecated. "
-#                 "Instead the caller of `{0}` should set "
-#                 "`request.current_app`.".format(func.__name__),
-#                 RemovedInDjango20Warning
-#             )
-#             current_app = kwargs.pop('current_app')
-#             request = kwargs.get('request', None)
-#             if request and current_app is not None:
-#                 request.current_app = current_app
-#         return func(*args, **kwargs)
-#     return inner
-#
-#
-# class SuccessURLAllowedHostsMixin(object):
-#     success_url_allowed_hosts = set()
-#
-#     def get_success_url_allowed_hosts(self):
-#         allowed_hosts = {self.request.get_host()}
-#         allowed_hosts.update(self.success_url_allowed_hosts)
-#         return allowed_hosts
-#
-#
 # class LoginView(SuccessURLAllowedHostsMixin, FormView):
 #     """
 #     Displays the login form and handles the login action.
@@ -875,25 +608,7 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
 #             context.update(self.extra_context)
 #         return context
 #
-#
-# # @deprecate_current_app
-# # def login(request, template_name='registration/login.html',
-# #           redirect_field_name=REDIRECT_FIELD_NAME,
-# #           authentication_form=AuthenticationForm,
-# #           extra_context=None, redirect_authenticated_user=False):
-# #     warnings.warn(
-# #         'The login() view is superseded by the class-based LoginView().',
-# #         RemovedInDjango21Warning, stacklevel=2
-# #     )
-# #     return LoginView.as_view(
-# #         template_name=template_name,
-# #         redirect_field_name=redirect_field_name,
-# #         form_class=authentication_form,
-# #         extra_context=extra_context,
-# #         redirect_authenticated_user=redirect_authenticated_user,
-# #     )(request)
-#
-#
+
 # class LogoutView(SuccessURLAllowedHostsMixin, TemplateView):
 #     """
 #     Logs out the user and displays 'You are logged out' message.
@@ -954,38 +669,6 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
 #         return context
 #
 #
-# @deprecate_current_app
-# def logout_then_login(request, login_url=None, extra_context=_sentinel):
-#     """
-#     Logs out the user if they are logged in. Then redirects to the log-in page.
-#     """
-#     if extra_context is not _sentinel:
-#         warnings.warn(
-#             "The unused `extra_context` parameter to `logout_then_login` "
-#             "is deprecated.", RemovedInDjango21Warning
-#         )
-#
-#     if not login_url:
-#         login_url = settings.LOGIN_URL
-#     login_url = resolve_url(login_url)
-#     return LogoutView.as_view(next_page=login_url)(request)
-#
-#
-# def redirect_to_login(next, login_url=None,
-#                       redirect_field_name=REDIRECT_FIELD_NAME):
-#     """
-#     Redirects the user to the login page, passing the given 'next' page
-#     """
-#     resolved_url = resolve_url(login_url or settings.LOGIN_URL)
-#
-#     login_url_parts = list(urlparse(resolved_url))
-#     if redirect_field_name:
-#         querystring = QueryDict(login_url_parts[4], mutable=True)
-#         querystring[redirect_field_name] = next
-#         login_url_parts[4] = querystring.urlencode(safe='/')
-#
-#     return HttpResponseRedirect(urlunparse(login_url_parts))
-#
 #
 # # 4 views for password reset:
 # # - password_reset sends the mail
@@ -1040,190 +723,7 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
 #
 #     return TemplateResponse(request, template_name, context)
 #
-#
-# @deprecate_current_app
-# def password_reset_done(request,
-#                         template_name='registration/password_reset_done.html',
-#                         extra_context=None):
-#     warnings.warn("The password_reset_done() view is superseded by the "
-#                   "class-based PasswordResetDoneView().",
-#                   RemovedInDjango21Warning, stacklevel=2)
-#     context = {
-#         'title': _('Password reset sent'),
-#     }
-#     if extra_context is not None:
-#         context.update(extra_context)
-#
-#     return TemplateResponse(request, template_name, context)
-#
-#
-# # Doesn't need csrf_protect since no-one can guess the URL
-# @sensitive_post_parameters()
-# @never_cache
-# @deprecate_current_app
-# def password_reset_confirm(request, uidb64=None, token=None,
-#                            template_name='registration/password_reset_confirm.html',
-#                            token_generator=default_token_generator,
-#                            set_password_form=SetPasswordForm,
-#                            post_reset_redirect=None,
-#                            extra_context=None):
-#     """
-#     View that checks the hash in a password reset link and presents a
-#     form for entering a new password.
-#     """
-#     warnings.warn("The password_reset_confirm() view is superseded by the "
-#                   "class-based PasswordResetConfirmView().",
-#                   RemovedInDjango21Warning, stacklevel=2)
-#     assert uidb64 is not None and token is not None  # checked by URLconf
-#     if post_reset_redirect is None:
-#         post_reset_redirect = reverse('password_reset_complete')
-#     else:
-#         post_reset_redirect = resolve_url(post_reset_redirect)
-#     try:
-#         # urlsafe_base64_decode() decodes to bytestring on Python 3
-#         uid = force_text(urlsafe_base64_decode(uidb64))
-#         user = UserModel._default_manager.get(pk=uid)
-#     except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
-#         user = None
-#
-#     if user is not None and token_generator.check_token(user, token):
-#         validlink = True
-#         title = _('Enter new password')
-#         if request.method == 'POST':
-#             form = set_password_form(user, request.POST)
-#             if form.is_valid():
-#                 form.save()
-#                 return HttpResponseRedirect(post_reset_redirect)
-#         else:
-#             form = set_password_form(user)
-#     else:
-#         validlink = False
-#         form = None
-#         title = _('Password reset unsuccessful')
-#     context = {
-#         'form': form,
-#         'title': title,
-#         'validlink': validlink,
-#     }
-#     if extra_context is not None:
-#         context.update(extra_context)
-#
-#     return TemplateResponse(request, template_name, context)
-#
-#
-# @deprecate_current_app
-# def password_reset_complete(request,
-#                             template_name='registration/password_reset_complete.html',
-#                             extra_context=None):
-#     warnings.warn("The password_reset_complete() view is superseded by the "
-#                   "class-based PasswordResetCompleteView().",
-#                   RemovedInDjango21Warning, stacklevel=2)
-#     context = {
-#         'login_url': resolve_url(settings.LOGIN_URL),
-#         'title': _('Password reset complete'),
-#     }
-#     if extra_context is not None:
-#         context.update(extra_context)
-#
-#     return TemplateResponse(request, template_name, context)
-
-
-# # Class-based password reset views
-# # - PasswordResetView sends the mail
-# # - PasswordResetDoneView shows a success message for the above
-# # - PasswordResetConfirmView checks the link the user clicked and
-# #   prompts for a new password
-# # - PasswordResetCompleteView shows a success message for the above
-#
-# class PasswordContextMixin(object):
-#     extra_context = None
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(PasswordContextMixin, self).get_context_data(**kwargs)
-#         context['title'] = self.title
-#         if self.extra_context is not None:
-#             context.update(self.extra_context)
-#         return context
-#
-#
-# class UserPasswordResetView(PasswordResetView):
-#     # email_template_name = 'registration/password_reset_email.html'
-#     # extra_email_context = None
-#     # form_class = PasswordResetForm
-#     # from_email = None
-#     # html_email_template_name = None
-#     subject_template_name = 'registration/password_reset_subject.txt'
-#     success_url = reverse_lazy('password_reset_done')
-#     template_name = 'registration/password_reset_form.html'
-#     title = _('Password reset')
-#     token_generator = default_token_generator
-#
-#     @method_decorator(csrf_protect)
-#     def dispatch(self, *args, **kwargs):
-#         return super(UserPasswordResetView, self).dispatch(*args, **kwargs)
-#
-#     def form_valid(self, form):
-#         opts = {
-#             'use_https': self.request.is_secure(),
-#             'token_generator': self.token_generator,
-#             'from_email': self.from_email,
-#             'email_template_name': self.email_template_name,
-#             'subject_template_name': self.subject_template_name,
-#             'request': self.request,
-#             'html_email_template_name': self.html_email_template_name,
-#             'extra_email_context': self.extra_email_context,
-#         }
-#         form.save(**opts)
-#         return super(UserPasswordResetView, self).form_valid(form)
-# #
-#
-# INTERNAL_RESET_URL_TOKEN = 'set-password'
-# INTERNAL_RESET_SESSION_TOKEN = '_password_reset_token'
-#
-#
-# class PasswordResetDoneView(PasswordContextMixin, TemplateView):
-#     template_name = 'registration/password_reset_done.html'
-#     title = _('Password reset sent')
-#
-#
-# class PasswordResetConfirmView(PasswordContextMixin, FormView):
-#     form_class = SetPasswordForm
-#     post_reset_login = False
-#     post_reset_login_backend = None
-#     success_url = reverse_lazy('password_reset_complete')
-#     template_name = 'registration/password_reset_confirm.html'
-#     title = _('Enter new password')
-#     token_generator = default_token_generator
-#
-#     @method_decorator(sensitive_post_parameters())
-#     @method_decorator(never_cache)
-#     def dispatch(self, *args, **kwargs):
-#         assert 'uidb64' in kwargs and 'token' in kwargs
-#
-#         self.validlink = False
-#         self.user = self.get_user(kwargs['uidb64'])
-#
-#         if self.user is not None:
-#             token = kwargs['token']
-#             if token == INTERNAL_RESET_URL_TOKEN:
-#                 session_token = self.request.session.get(INTERNAL_RESET_SESSION_TOKEN)
-#                 if self.token_generator.check_token(self.user, session_token):
-#                     # If the token is valid, display the password reset form.
-#                     self.validlink = True
-#                     return super(PasswordResetConfirmView, self).dispatch(*args, **kwargs)
-#             else:
-#                 if self.token_generator.check_token(self.user, token):
-#                     # Store the token in the session and redirect to the
-#                     # password reset form at a URL without the token. That
-#                     # avoids the possibility of leaking the token in the
-#                     # HTTP Referer header.
-#                     self.request.session[INTERNAL_RESET_SESSION_TOKEN] = token
-#                     redirect_url = self.request.path.replace(token, INTERNAL_RESET_URL_TOKEN)
-#                     return HttpResponseRedirect(redirect_url)
-#
-#         # Display the "Password reset unsuccessful" page.
-#         return self.render_to_response(self.get_context_data())
-#
+##
 #     def get_user(self, uidb64):
 #         try:
 #             # urlsafe_base64_decode() decodes to bytestring on Python 3

@@ -4,20 +4,152 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href={% static "css/style.css" %} />
-    <title>{% block title %} AppleUsed {% endblock title %}</title>
-{#    <title>{% block title %}<img src="{% static 'img/apple_icon.ico' %}"> AppleUsed {% endblock title %}</title>#}
-     <!-- Compiled and minified CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
-    <!--Import jQuery before materialize.js-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+{#    <title>{% block title %} AppleUsed {% endblock title %}</title>#}
+    <title>{% block title %}<img src="{% static 'img/apple_icon.ico' %}"> AppleUsed {% endblock title %}</title>
+{#     <!-- Compiled and minified CSS -->#}
+{#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">#}
+{#    <!--Import jQuery before materialize.js-->#}
+{#    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>#}
+{#    <!-- Compiled and minified JavaScript -->#}
+{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>#}
+
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
     <!-- Compiled and minified JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
 
 </head>
 
+{#<html lang="en">#}
+{#  <head>#}
+{#      <!-- Required meta tags -->#}
+{#    <meta charset="utf-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">#}
+{#    <meta name="description" content="The most popular HTML, CSS, and JS library in the world.">#}
+{#    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">#}
+{#    <meta name="generator" content="Jekyll v3.8.3">#}
+{##}
+{##}
+{##}
+{#<title>Bootstrap · The most popular HTML, CSS, and JS library in the world.</title>#}
+{##}
+{#<!-- Bootstrap core CSS -->#}
+{#<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">#}
+{##}
+{##}
+{#<link href="/docs/4.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">#}
+{##}
+{##}
+{#<!-- Documentation extras -->#}
+{##}
+{#<link href="/docs/4.1/assets/css/docs.min.css" rel="stylesheet">#}
+{##}
+{#<!-- Favicons -->#}
+{#<link rel="apple-touch-icon" href="/docs/4.1/assets/img/favicons/apple-touch-icon.png" sizes="180x180">#}
+{#<link rel="icon" href="/docs/4.1/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">#}
+{#<link rel="icon" href="/docs/4.1/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">#}
+{#<link rel="manifest" href="/docs/4.1/assets/img/favicons/manifest.json">#}
+{#<link rel="mask-icon" href="/docs/4.1/assets/img/favicons/safari-pinned-tab.svg" color="#563d7c">#}
+{#<link rel="icon" href="/favicon.ico">#}
+{#<meta name="msapplication-config" content="/docs/4.1/assets/img/favicons/browserconfig.xml">#}
+{#<meta name="theme-color" content="#563d7c">#}
+{##}
+{#<!-- Facebook -->#}
+{#<meta property="og:url" content="https://getbootstrap.com/">#}
+{#<meta property="og:title" content="Bootstrap">#}
+{#<meta property="og:description" content="The most popular HTML, CSS, and JS library in the world.">#}
+{#<meta property="og:type" content="website">#}
+{#<meta property="og:image" content="http://getbootstrap.com/docs/4.1/assets/brand/bootstrap-social.png">#}
+{#<meta property="og:image:secure_url" content="https://getbootstrap.com/docs/4.1/assets/brand/bootstrap-social.png">#}
+{#<meta property="og:image:type" content="image/png">#}
+{#<meta property="og:image:width" content="1200">#}
+{#<meta property="og:image:height" content="630">#}
+{##}
+{##}
+{#<script>#}
+{#  window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;#}
+{#  ga('create', 'UA-146052-10', 'getbootstrap.com');#}
+{#  ga('send', 'pageview');#}
+{#</script>#}
+{#<script async src='https://www.google-analytics.com/analytics.js'></script>#}
+{##}
+{#  </head>#}
+{##}
+{#  <body>#}
+{#    <a id="skippy" class="sr-only sr-only-focusable" href="#content">#}
+{#  <div class="container">#}
+{#    <span class="skiplink-text">Skip to main content</span>#}
+{#  </div>#}
+{#</a>#}
+{##}
+{##}
+{#    <header class="navbar navbar-expand navbar-dark flex-column flex-md-row bd-navbar">#}
+{#  <a class="navbar-brand mr-0 mr-md-2" href="/" aria-label="Bootstrap"><svg class="d-block" width="36" height="36" viewbox="0 0 612 612" xmlns="http://www.w3.org/2000/svg" focusable="false"><title>Bootstrap</title><path fill="currentColor" d="M510 8a94.3 94.3 0 0 1 94 94v408a94.3 94.3 0 0 1-94 94H102a94.3 94.3 0 0 1-94-94V102a94.3 94.3 0 0 1 94-94h408m0-8H102C45.9 0 0 45.9 0 102v408c0 56.1 45.9 102 102 102h408c56.1 0 102-45.9 102-102V102C612 45.9 566.1 0 510 0z"/><path fill="currentColor" d="M196.77 471.5V154.43h124.15c54.27 0 91 31.64 91 79.1 0 33-24.17 63.72-54.71 69.21v1.76c43.07 5.49 70.75 35.82 70.75 78 0 55.81-40 89-107.45 89zm39.55-180.4h63.28c46.8 0 72.29-18.68 72.29-53 0-31.42-21.53-48.78-60-48.78h-75.57zm78.22 145.46c47.68 0 72.73-19.34 72.73-56s-25.93-55.37-76.46-55.37h-74.49v111.4z"/></svg>#}
+{#</a>#}
+{##}
+{#  <div class="navbar-nav-scroll">#}
+{#    <ul class="navbar-nav bd-navbar-nav flex-row">#}
+{#      <li class="nav-item">#}
+{#        <a class="nav-link active" href="/" onclick="ga('send', 'event', 'Navbar', 'Community links', 'Bootstrap');">Home</a>#}
+{#      </li>#}
+{#      <li class="nav-item">#}
+{#        <a class="nav-link " href="/docs/4.1/getting-started/introduction/" onclick="ga('send', 'event', 'Navbar', 'Community links', 'Docs');">Documentation</a>#}
+{#      </li>#}
+{#      <li class="nav-item">#}
+{#        <a class="nav-link " href="/docs/4.1/examples/" onclick="ga('send', 'event', 'Navbar', 'Community links', 'Examples');">Examples</a>#}
+{#      </li>#}
+{#      <li class="nav-item">#}
+{#        <a class="nav-link" href="https://themes.getbootstrap.com" onclick="ga('send', 'event', 'Navbar', 'Community links', 'Themes');" target="_blank" rel="noopener">Themes</a>#}
+{#      </li>#}
+{#      <li class="nav-item">#}
+{#        <a class="nav-link" href="https://expo.getbootstrap.com" onclick="ga('send', 'event', 'Navbar', 'Community links', 'Expo');" target="_blank" rel="noopener">Expo</a>#}
+{#      </li>#}
+{#      <li class="nav-item">#}
+{#        <a class="nav-link" href="https://blog.getbootstrap.com" onclick="ga('send', 'event', 'Navbar', 'Community links', 'Blog');" target="_blank" rel="noopener">Blog</a>#}
+{#      </li>#}
+{#    </ul>#}
+{#  </div>#}
+{##}
+{#  <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">#}
+{#    <li class="nav-item dropdown">#}
+{#      <a class="nav-item nav-link dropdown-toggle mr-md-2" href="#" id="bd-versions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
+{#        v4.1#}
+{#      </a>#}
+{#      <div class="dropdown-menu dropdown-menu-right" aria-labelledby="bd-versions">#}
+{#        <a class="dropdown-item" href="https://getbootstrap.com/docs/4.0/">v4.0.0</a>#}
+{#        <div class="dropdown-divider"></div>#}
+{#        <a class="dropdown-item" href="https://v4-alpha.getbootstrap.com/">v4 Alpha 6</a>#}
+{#        <a class="dropdown-item" href="https://getbootstrap.com/docs/3.3/">v3.3.7</a>#}
+{#        <a class="dropdown-item" href="https://getbootstrap.com/2.3.2/">v2.3.2</a>#}
+{#      </div>#}
+{#    </li>#}
+{##}
+
 <body>
 
+<!-- TOP CONTENT -->
+{#<nav class="navbar navbar-light" style="background-color: #e3f2fd;">#}
+{#  <!-- Navbar content -->#}
+{#        <img src="{% static 'img/apple_logo.gif' %}" width="50" height="50">#}
+{#        <a href="{% url 'main' %}" class="brand-logo">AppleUsed</a>#}
+{#        <ul id="nav-mobile" class="right hide-on-med-and-down">#}
+{#</nav>#}
+
 <nav>
+{#    <div class="container">#}
+{#        <div class="row">#}
+{#            <div class="row">#}
+{##}
+{#            </div>#}
+{#            <h></h>#}
+{#            <h></h>#}
+{#        </div>#}
+{#    </div>#}
+
+
     <div class="nav-wrapper">
         <img src="{% static 'img/apple_logo.gif' %}" width="50" height="50">
         <a href="{% url 'main' %}" class="brand-logo">AppleUsed</a>

@@ -8,21 +8,59 @@
 {% endblock navbar %}
 
 {% block content %}
-    <form class="col s12" action="{% url 'edit_profile_user' %}" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-{
-                <br>
-                <br>
+    <div class ="container">
+        <div class="row">
+            <div class="input-field col s9">
+                <form class="col s9" action="{% url 'edit_profile_user' user.id %}" method="post">
+                    {% csrf_token %}
+            {#        {{ form.as_p }}#}
+                    <p> Username: {{ form.username }} </p>
+                    <p> Email: {{ form.email }} </p>
+                    <p> First Name: {{ form.first_name }} </p>
+                    <p> Last Name: {{ form.last_name }} </p>
+                    <p> Location: {{ form.locations_user }} </p>
+                    <p> Phone number: {{ user.phone_number_user }} </p>
+                    <p>  Birthday: {{ form.birth_day }} </p>
+{#                    <div class="container">#}
+{#                        <div class="row">#}
+{#                            <div class='col-sm-6'>#}
+{#                                <div class="form-group">#}
+{#                                    <div class='input-group date' id='datetimepicker1'>#}
+{#                                        <input type='text' class="form-control" />#}
+{#                                        <span class="input-group-addon">#}
+{#                                            <span class="glyphicon glyphicon-calendar"></span>#}
+{#                                        </span>#}
+{#                                    </div>#}
+{#                                </div>#}
+{#                            </div>#}
+{#                            <script type="text/javascript">#}
+{#                                $(function () {#}
+{#                                    $('#datetimepicker1').datetimepicker();#}
+{#                                });#}
+{#                            </script>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                    <input type="text" class="datepicker">#}
+
+                    <a href="{% url 'password_change' %}" class="href-on-page">Изменить пароль</a>
+                    <br>
+                    <br>
 
             {#        <a href="{% url 'change_password' %}" class="href-on-page">Изменить пароль</a>#}
             {#            {{ form.password }}<br>#}
             {#            <label for="{{ form.passwordConfirm.id_for_label }}"></label><br>#}
             {#            <p>Подтвердить пароль:</p>#}
             {#            {{ form.passwordConfirm }}#}
-        <a> test to commit</a>
-                <button type="submit" class="waves-effect waves-light btn">Сохранить</button>
+                    <button type="submit" class="waves-effect waves-light btn">Сохранить</button>
 {#            </div>#}
-    </form>
+                </form>
+{#        <script>#}
+{#            const Calendar = document.querySelector('.datepicker');#}
+{#            M.Datepicker.init(Calendar, {});#}
+{#        </script>#}
+
+            </div>
+        </div>
+    </div>
 
 {% endblock content %}

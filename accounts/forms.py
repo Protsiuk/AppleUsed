@@ -4,6 +4,7 @@ from accounts.models import MyCustomUser
 # from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 
+from django.forms.widgets import SelectDateWidget
 # from registration.forms import RegistrationForm
 
 
@@ -76,14 +77,20 @@ class ForgotPasswordForm(forms.Form):
     # password = forms.CharField(min_length=10, max_length=20, widget=forms.TextInput(atr={"class": "password"}))
 
 
+class DateInput(forms.DateInput):
+    input_type = 'date'
+
+
 class UserRegistrationForm(forms.Form):
 
     # username = forms.CharField(max_length=50)#(label=(u'Имя Пользователя'))
     first_name = forms.CharField(max_length=50)#(label=(u'Имя Пользователя')
     last_name = forms.CharField(max_length=50)  # (label=(u'Имя Пользователя')
+    # birthday = forms.SplitDateTimeField(widget=SelectDateWidget)
+    birthday = forms.DateField(widget=SelectDateWidget())
     email = forms.EmailField(max_length=50)#(label=(u'Email'), widget = forms.TextInput(attrs={'placeholder': 'Input email', 'class': 'form-control input-perso'}), max_length = 30, min_length = 3)
-    password = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
-    passwordConfirm = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
+    password1 = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
+    password2 = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
     # passwordConfirm = forms.CharField(label="", max_length=50, min_length=6,
     #                                   widget=forms.PasswordInput(attrs={'placeholder': 'Пароль повторно',
     #                                                               'class':'form-control input-perso'}))
@@ -91,13 +98,18 @@ class UserRegistrationForm(forms.Form):
         # (label=('Пароль повторно'), widget=forms.PasswordInput(render_value=False))
     class Meta:
         model = MyCustomUser
-        # fields = (
-        #     'first_name',
-        #     'last_name',
-        #     'email',
-        #     'password1',
-        #     'password2'
-        # )
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'birthday',
+            'password1',
+            'password2'
+            ]
+        # labels = {'title': '', 'birthday': ''}
+        # widgets = {'birthday': forms.SelectDateWidget()}
+        widgets = {'birthday': DateInput(),}
+
     # class Meta:
     #     model = user
     #     # Don't show user drop down.
@@ -137,6 +149,28 @@ class UserRegistrationForm(forms.Form):
         if commit:
             user.save()
         return user
+
+
+class CustomUserUpdateForm():
+    first_name = forms.CharField(max_length=50)#(label=(u'Имя Пользователя')
+    last_name = forms.CharField(max_length=50)  # (label=(u'Имя Пользователя')
+    email = forms.EmailField(max_length=50)#(label=(u'Email'), widget = forms.TextInput(attrs={'placeholder': 'Input email', 'class': 'form-control input-perso'}), max_length = 30, min_length = 3)
+    locations_user = forms.CharField(max_length=150)
+    # password1 = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
+    # password2 = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
+
+    class Meta:
+        model = MyCustomUser
+        fields = [
+            'first_name',
+            'last_name',
+            'email',
+            'birth_day'
+            'locations_user',
+            'password1',
+            'password2'
+            ]
+        widgets = {'birth_day': DateInput(), }
 
 
 """class RegistrationForm(forms.Form):
@@ -223,22 +257,58 @@ class UserRegistrationForm(forms.Form):
 class ProfileUserForm(forms.Form):
     username = forms.CharField(max_length=50)
     email = forms.EmailField(max_length=50)
+    birthday = forms.DateField(label='Birthday')
     # password = forms.CharField(widget=forms.PasswordInput(render_value=False))#label=('Пароль'),
     # passwordConfirm = forms.CharField(label=('Пароль повторно'), widget=forms.PasswordInput(render_value=False))
-    city = forms.CharField(label='location', max_length=350)
+    location = forms.CharField(label='location', max_length=512)
     phone = forms.IntegerField(label='Phone')
-
-
-class EditProfileUserForm(UserChangeForm):
 
     class Meta:
         user = MyCustomUser
-        field = {
+        fields = '__all__'
+
+
+class EditProfileUserForm(forms.ModelForm):
+    """ form for updating users
+    the field you want to use should already be defined in the model
+    so no need to add them here again DRY"""
+    # username = forms.CharField(max_length=50, label='Username')
+    # email = forms.EmailField(max_length=50, label='Email')
+    # birthday = forms.DateField(label='Birthday')
+    # # password = forms.CharField(widget=forms.PasswordInput(render_value=False))#label=('Пароль'),
+    # # passwordConfirm = forms.CharField(label=('Пароль повторно'), widget=forms.PasswordInput(render_value=False))
+    # locations_user = forms.CharField(label='location', max_length=512)
+    # phone = forms.CharField(label='Phone', max_length=13)
+
+    class Meta:
+        user = MyCustomUser
+        fields = (
             'first_name',
             'last-name',
-            'city',
-            'phone',
-        }
+            'username',
+            'birth_day',
+            'locations_user',
+            'phone_number_user',
+        )
+
+    # def get(self):
+    #     object = self.objects.all.filter(user=self.req)
+
+    # def get_context_data(self, *args, **kwargs):
+    #     context = super(UserProfileUpdateView, self).get_context_data(*args, **kwargs)
+    #     return context
+
+    # def clean(self):
+    #     try:
+    #         # cleaned_data = super(UserRegistrationForm, self).clean()
+    #         cleaned_data = super(EditProfileUserForm, self).clean()
+    #         password = cleaned_data.get("password")
+    #         passwordConfirm = cleaned_data.get('passwordConfirm')
+    #         if password != passwordConfirm:
+    #             raise forms.ValidationError("Пароли не совпадают.")
+    #         return cleaned_data
+    #     except ValueError:
+    #         raise forms.ValidationError("Error. Пожалуйста проверте еще раз данные")
 
 #--------------------------------------------------------------
 # class UserRegistrationForm(RegistrationForm):
@@ -329,6 +399,7 @@ class EditProfileUserForm(UserChangeForm):
     #     #print unicode(message).encode('utf8')
     #     send_mail(datas['email_subject'], message, 'yourdomain <no-reply@yourdomain.com>', [datas['email']], fail_silently=False)
 
+
 #-----------------------------------------
 
 from django import forms
@@ -336,8 +407,59 @@ from django.contrib.auth.forms import UserCreationForm
 # from django.contrib.auth.models import User
 
 
-class SignupForm(UserCreationForm):
+class MyCustomUserCreationForm(UserCreationForm):
+# class SignupForm(UserCreationForm):
     email = forms.EmailField(max_length=200, help_text='Required')
+    birth_day = forms.DateField(widget=forms.SelectDateWidget)
+
     class Meta:
         model = MyCustomUser
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ('username', 'email', 'password1', 'password2', 'birth_day')
+#
+#
+# class CustomUserChangeForm(UserChangeForm):
+#     class Meta:
+#         model = MyCustomUser
+#         fields = ('username', 'email')
+
+#
+# class MyCustomUserCreationForm(UserCreationForm):
+#     username = forms.CharField(max_length=50)
+#     email = forms.EmailField(max_length=50)
+#     birthday = forms.DateField(label='Birthday')
+#     # password = forms.CharField(widget=forms.PasswordInput(render_value=False))#label=('Пароль'),
+#     # passwordConfirm = forms.CharField(label=('Пароль повторно'), widget=forms.PasswordInput(render_value=False))
+#     locations_user = forms.CharField(label='location', max_length=512)
+#     phone = forms.IntegerField(label='Phone')
+#
+#
+#     class Meta:
+#         user = MyCustomUser
+#         # fields = '__all__'
+#         fields = (
+#             'first_name',
+#             'last-name',
+#             'username',
+#             'birthday',
+#             'locations_user',
+#             'phone',
+#         )
+#
+#     def clean(self):
+#         try:
+#             # cleaned_data = super(UserRegistrationForm, self).clean()
+#             cleaned_data = super(MyCustomUserCreationForm, self).clean()
+#             password = cleaned_data.get("password")
+#             passwordConfirm = cleaned_data.get('passwordConfirm')
+#             if password != passwordConfirm:
+#                 raise forms.ValidationError("Пароли не совпадают.")
+#             return cleaned_data
+#         except ValueError:
+#             raise forms.ValidationError("Error. Пожалуйста проверте еще раз данные")
+
+#
+# class MyForm(forms.ModelForm):
+#     created_date = forms.DateField(input_formats=['%d/%m/%Y',],
+#     # widget=forms.DateInput(attrs={'class':'datepicker form-control', 'placeholder':'Select a date'}), required=False)
+#     widget=forms.DateInput(attrs={'class': 'datepicker form-control', 'placeholder': 'Select a date'}),
+#                                    required=False, format='%d/%m/%Y')
