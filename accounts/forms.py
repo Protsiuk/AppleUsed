@@ -268,35 +268,6 @@ class ProfileUserForm(forms.Form):
         fields = '__all__'
 
 
-class PhoneField(forms.MultiValueField):
-    def __init__(self, **kwargs):
-        # Define one message for all fields.
-        error_messages = {
-            'incomplete': 'Enter a country calling code and a phone number.',
-        }
-        # Or define a different message for each field.
-        fields = (
-            forms.CharField(
-                error_messages={'incomplete': 'Enter a country calling code.'},
-                validators=[
-                    RegexValidator(r'^[0-9]+$', 'Enter a valid country calling code.'),
-                ],
-            ),
-            forms.CharField(
-                error_messages={'incomplete': 'Enter a phone number.'},
-                validators=[RegexValidator(r'^[0-9]+$', 'Enter a valid phone number.')],
-            ),
-            forms.CharField(
-                validators=[RegexValidator(r'^[0-9]+$', 'Enter a valid extension.')],
-                required=False,
-            ),
-        )
-        super().__init__(
-            error_messages=error_messages, fields=fields,
-            require_all_fields=False, **kwargs
-        )
-
-
 class EditProfileUserForm(forms.ModelForm):
     """ form for updating users
     the field you want to use should already be defined in the model
@@ -307,8 +278,7 @@ class EditProfileUserForm(forms.ModelForm):
     # # password = forms.CharField(widget=forms.PasswordInput(render_value=False))#label=('Пароль'),
     # # passwordConfirm = forms.CharField(label=('Пароль повторно'), widget=forms.PasswordInput(render_value=False))
     # locations_user = forms.CharField(label='location', max_length=512)
-    # phone = forms.CharField(label='Phone', max_length=13)
-    # phone_number_user = PhoneField()
+
     class Meta:
         user = MyCustomUser
         fields = (
@@ -486,9 +456,4 @@ class MyCustomUserCreationForm(UserCreationForm):
 #         except ValueError:
 #             raise forms.ValidationError("Error. Пожалуйста проверте еще раз данные")
 
-#
-# class MyForm(forms.ModelForm):
-#     created_date = forms.DateField(input_formats=['%d/%m/%Y',],
-#     # widget=forms.DateInput(attrs={'class':'datepicker form-control', 'placeholder':'Select a date'}), required=False)
-#     widget=forms.DateInput(attrs={'class': 'datepicker form-control', 'placeholder': 'Select a date'}),
-#                                    required=False, format='%d/%m/%Y')
+

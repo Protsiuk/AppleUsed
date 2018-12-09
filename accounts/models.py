@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, AbstractUser, PermissionsMixin, BaseUserManager#, UserManager
 # from django.core.mail import send_mail
-# from django.core.validators import RegexValidator
+from django.core.validators import RegexValidator
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 # from utils import get_file_path
@@ -107,10 +107,10 @@ class MyCustomUser(AbstractUser, PermissionsMixin):
     # country = models.ForeignKey(Country,related_name='country', blank=True, null=True, help_text=_('Select your Country')
     # city = models.ForeignKey(City,related_name='city', blank=True, null=True, help_text=_('Select your City')
     # location = models.ForeignKey(Country, related_name='location', blank=True, null=True, help_text=_('Select your Location'))
-    phone_number_user = models.CharField(_('Phone number user'), default='', max_length=15, blank=True, null=True,)
-    # phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
-    #                              message="Phone number must be entered in the format: '+9999999999'. Up to 15 digits allowed.")
-    # phone_number_user = models.CharField(validators=[phone_regex], max_length=15, blank=True)  # validators should be a list
+    # phone_number_user = models.CharField(_('Phone number user'), default='', max_length=15, blank=True, null=True,)
+    phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
+                                 message="Phone number must be entered in the format: '+9999999999'. Up to 15 digits allowed.")
+    phone_number_user = models.CharField(_('Phone number user'), validators=[phone_regex], max_length=15, blank=True)  # validators should be a list
 
     # phone = models.IntegerField(default=0, unique=True)
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
