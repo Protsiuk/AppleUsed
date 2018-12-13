@@ -26,13 +26,14 @@ urlpatterns = [
     # url(r'^registration/confirm/([\w\-]+)/([\w\-]+)/$', 'accounts.views.confirm_reg', name='confirm-reg'),
     # url(r'^profile-user/$', profileUserViews, name='profile_user'),
     # url(r'^profile-user/edit/$', editProfileUserViews, name='edit_profile_user'),
+    url(r'^profile-user/$', MyProfileUser.as_view(), name='profile_user'),
+    # url(r'^profile-user/edit/$', UserProfileUpdateViews.as_view(template_name='edit-profile-user.html'),
+    #     name='edit_profile'),
 
+    url(r'^profile-user/(?P<pk>\d+)/edit/$', UserProfileUpdateViews.as_view(), name='edit_profile_user'),
 
     # url(r'^register/$', RegistrationView.as_view(form_class=UserRegistrationForm),
     #     name='registration_register',),
-    #
-    # url(r'^', include('registration.backends.default.urls')),
-
 
     # url(r'^activate/complete/$',
     #     TemplateView.as_view(
@@ -71,12 +72,6 @@ urlpatterns = [
         activate, name='activate'),
 
 
-    # url(r"^verify-email/$", email_verification_sent, name="account_email_verification_sent"),
-
-    # url(r'^verify-email/$', VerifyEmailView.as_view(), name='rest_verify_email'),
-    # url(r'^email-verification/$', TemplateView.as_view(template_name="email_verification.html"), name='email-verification'),
-
-
     url(r'^change-password/$', PasswordChangeView.as_view(template_name='password_change_form.html'),
         name='password_change'),
     url(r'^change-password/done/$', PasswordChangeDoneView.as_view(template_name='password_change_done.html'),
@@ -98,10 +93,6 @@ urlpatterns = [
     # url(r'^password_reset/complete/$', PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),
     #     name='password_reset_complete'),
 
-    url(r'^profile-user/$', MyProfileUser.as_view(), name='profile_user'),
-    url(r'^profile-user/edit/$', UserProfileUpdateViews.as_view(template_name='edit-profile-user.html'), name='edit_profile'),
-
-    url(r'^profile-user/(?P<pk>\d+)/edit/$', UserProfileUpdateViews.as_view(), name='edit_profile_user'),
     # url(r'^profile-user/<int:pk>/edit/$', UserProfileUpdateViews.as_view(), name='edit_profile_user'), # for django 2
     # url(r'^forgot-password/$', ForgotPassword, name='ForgotPassword'),
     # url(r'^api/login/$', UserLoginView.as_view()),

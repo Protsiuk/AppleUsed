@@ -1,17 +1,49 @@
 from django.contrib import admin
-from advertisements.models import Advertisement
-
-# from solo.admin import SingletonModelAdmin
-# from config.models import SiteConfiguration
+from advertisements.models import Advertisement, AdvertisementImage, AdvertisementFollowing, AdvertisementMessage, SiteConfiguration
+# from advertisements.forms import AdvertisementForm
 
 # Register your models here.
-admin.site.register(Advertisement)
+# admin.site.register(SiteConfiguration)
+# admin.site.register(Advertisement)
+admin.site.register(AdvertisementImage)
+admin.site.register(AdvertisementFollowing)
+admin.site.register(AdvertisementMessage)
 
-# admin.site.register(SiteConfiguration, SingletonModelAdmin)
+
+# class ChoiceInline(admin.StackedInline):
+#     model = Advertisement
+#     extra = 3
 #
-# # There is only one item in the table, you can get it this way:
-# from .models import SiteConfiguration
-# config = SiteConfiguration.objects.get()
+# class AdvertisementAdmin(admin.ModelAdmin):
+#     inlines = [ChoiceInline]
 #
-# # get_solo will create the item if it does not already exist
-# config = SiteConfiguration.get_solo()
+# admin.site.register(Advertisement, AdvertisementAdmin)
+
+@admin.register(Advertisement)
+class AdvertisementAdmin(admin.ModelAdmin):
+    # add_form = UpdateAdvertisementForm
+    # form = MyCustomUserCreationForm
+    # form = AdvertisementForm
+
+    list_display = [
+        'id',
+        'title',
+        'category_equipment',
+        'price',
+        'phone_author',
+        'description',
+        'location_author',
+        'author',
+        'product_number'
+        ]
+    exclude = ('phone_regex',)
+    list_filter = ['author', 'title', 'is_active', 'created']
+#     # fieldsets = (
+#     #     (None, {'fields': ('email', 'username', 'password')}),
+    #     (_('Personal info'), {'fields': ('first_name', 'last_name', 'locations_user', 'phone_number_user', 'birth_day')}),
+    #     (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+    #     (_('Important data'), {'fields': ('last_login', 'date_joined')}),
+    # )
+    ordering = ['-created']
+#     # ordering = ["email"]
+

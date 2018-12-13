@@ -155,7 +155,7 @@ class CustomUserUpdateForm():
     first_name = forms.CharField(max_length=50)#(label=(u'Имя Пользователя')
     last_name = forms.CharField(max_length=50)  # (label=(u'Имя Пользователя')
     email = forms.EmailField(max_length=50)#(label=(u'Email'), widget = forms.TextInput(attrs={'placeholder': 'Input email', 'class': 'form-control input-perso'}), max_length = 30, min_length = 3)
-    locations_user = forms.CharField(max_length=150)
+    location_user = forms.CharField(max_length=150)
     # password1 = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
     # password2 = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
 
@@ -166,7 +166,7 @@ class CustomUserUpdateForm():
             'last_name',
             'email',
             'birth_day'
-            'locations_user',
+            'location_user',
             'password1',
             'password2'
             ]
@@ -286,7 +286,7 @@ class EditProfileUserForm(forms.ModelForm):
             'last-name',
             'username',
             'birth_day',
-            'locations_user',
+            'location_user',
             'phone_number_user',
         )
 

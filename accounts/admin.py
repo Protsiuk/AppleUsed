@@ -11,16 +11,16 @@ from solo.admin import SingletonModelAdmin
 @admin.register(MyCustomUser)
 class CustomUserAdmin(admin.ModelAdmin):
     add_form = EditProfileUserForm
-    # form = MyCustomUserCreationForm
-    form = EditProfileUserForm
+    form = MyCustomUserCreationForm
+    # form = EditProfileUserForm
 
     list_display = [
-        'id', 'email', 'first_name', 'last_name', 'phone_number_user', 'locations_user', 'date_joined', 'birth_day'
+        'id', 'email', 'first_name', 'last_name', 'phone_number_user', 'location_user', 'date_joined', 'birth_day'
         ]
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'date_joined',)
     fieldsets = (
         (None, {'fields': ('email', 'username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'locations_user', 'phone_number_user', 'birth_day')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name', 'location_user', 'phone_number_user', 'birth_day')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Important data'), {'fields': ('last_login', 'date_joined')}),
     )
@@ -54,4 +54,3 @@ class CustomUserAdmin(admin.ModelAdmin):
 # admin.site.register(MyCustomUser, UserAdmin)
 admin.site.register(WebsiteSettings, SingletonModelAdmin)
 
-# ('first_name', 'last_name', 'username', 'email', 'password1', 'password2')

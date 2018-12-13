@@ -1,21 +1,39 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
-from django.contrib.auth import login, logout, authenticate
+from django.core.mail import EmailMessage
+from django.contrib.auth import (
+    login, logout, authenticate, REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout, get_user_model, update_session_auth_hash)
+
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
+from django.contrib.auth.forms import UserChangeForm, AuthenticationForm, UserCreationForm
+from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView, PasswordResetView
 from django.core.mail import send_mail
 from django.core.urlresolvers import reverse, reverse_lazy
 
 from django.contrib.auth.tokens import default_token_generator
 
-from django.shortcuts import render, HttpResponseRedirect, redirect, Http404, get_object_or_404#, HttpResponse
+from django.views.generic import FormView, RedirectView, ListView, UpdateView, DetailView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordResetCompleteView
+
 from django.contrib.sites.shortcuts import get_current_site
 
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, resolve_url, HttpResponseRedirect,  Http404, get_object_or_404#, HttpResponse
 
-from django.contrib.auth import (
-    REDIRECT_FIELD_NAME, get_user_model, login as auth_login,
-    logout as auth_logout, update_session_auth_hash,
-)
+from django.template.loader import render_to_string
+from accounts.tokens import account_activation_token
+from django.contrib.auth.models import User
+
+from django.utils.http import is_safe_url
+from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import force_bytes, force_text
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.debug import sensitive_post_parameters
 
 
 # from accounts.serializers import LoginSerializer
@@ -25,18 +43,6 @@ from accounts.forms import LoginForm, UserRegistrationForm, EditProfileUserForm,
 from accounts.models import MyCustomUser
 
 # from accounts import signals
-#---------------------------------------------------------CBV
-from django.utils.http import is_safe_url
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout, get_user_model
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import never_cache
-from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.debug import sensitive_post_parameters
-from django.views.generic import FormView, RedirectView, ListView, UpdateView, DetailView
-from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.views.generic import UpdateView, TemplateView
-from django.contrib.auth.views import PasswordResetCompleteView
 
 #----------------------------------------------
  # from registration.backends.default.views import RegistrationView
@@ -268,7 +274,7 @@ class UserProfileUpdateViews(LoginRequiredMixin, UpdateView):
     Base view for updating an existing object.
     Using this base class requires subclassing to provide a response mixin.
     """
-    fields = ['username', 'first_name', 'last_name', 'birth_day', 'email', 'locations_user', 'phone_number_user']
+    fields = ['username', 'first_name', 'last_name', 'birth_day', 'email', 'location_user', 'phone_number_user']
 
     # def get(self):
     #     return MyCustomUser.objects.filter(user=self.request.user)
@@ -320,19 +326,7 @@ class MyProfileUser(DetailView):
 
 #--------- verification email
 
-from django.http import HttpResponse
-from django.shortcuts import render, redirect, resolve_url
-from django.contrib.auth import login, authenticate
-from django.contrib.auth.views import PasswordResetConfirmView, PasswordResetCompleteView, PasswordResetView
-# from .forms import MyCustomUserCreationForm
-from django.contrib.sites.shortcuts import get_current_site
-from django.utils.encoding import force_bytes, force_text
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.template.loader import render_to_string
-from accounts.tokens import account_activation_token
-# from django.contrib.auth.models import User
-from django.core.mail import EmailMessage
-from django.utils.translation import ugettext_lazy as _
+
 
 
 def signup(request):
@@ -525,20 +519,6 @@ class SignUp(generic.CreateView):
     form_class = MyCustomUserCreationForm
     success_url = reverse_lazy('login')
     template_name = 'signup.html'
-
-# class MyEdit(SuccessMessageMixin, UpdateView):
-#     model = MyCustomUser
-#     form_class = MyForm
-#     template_name_suffix = '_edit'
-#     success_message = '...'
-
-#     title = _('Password reset complete')
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(PasswordResetCompleteView, self).get_context_data(**kwargs)
-#         context['login_url'] = resolve_url(settings.LOGIN_URL)
-#         return context
-
 
 
 

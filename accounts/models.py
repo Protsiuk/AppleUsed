@@ -103,7 +103,7 @@ class MyCustomUser(AbstractUser, PermissionsMixin):
                     'active. Unselect this instead of deleting accounts.'))
     # photo = models.FileField(upload_to=get_file_path)
     birth_day = models.DateField(_('birthday'), blank=True, null=True)
-    locations_user = models.CharField(_('locations'), default='', blank=True, null=True, max_length=512)
+    location_user = models.CharField(_('location'), default='', blank=True, null=True, max_length=512)
     # country = models.ForeignKey(Country,related_name='country', blank=True, null=True, help_text=_('Select your Country')
     # city = models.ForeignKey(City,related_name='city', blank=True, null=True, help_text=_('Select your City')
     # location = models.ForeignKey(Country, related_name='location', blank=True, null=True, help_text=_('Select your Location'))
