@@ -1,7 +1,7 @@
 from django.conf.urls import url#, include
 
-from accounts.views import sign_out, login_user, registrationView, profileUserViews, UserProfileUpdateViews,\
-    LoginView, LogoutView, signup, SignUp, activate, MyUserPasswordResetConfirmView, UserPasswordResetCompleteView, MyProfileUser#, #editProfileUserViews,
+from accounts.views import login_user, registrationView, profileUserViews, UserProfileUpdateViews,\
+    LoginView, LogoutView, signup, SignUp, activate, MyUserPasswordResetConfirmView, UserPasswordResetCompleteView, MyProfileUser#, sign_out, #editProfileUserViews,
     # UserPasswordResetView#, UserRegistrationView #, ActivationView
 # from accounts.forms import UserRegistrationForm
 #
@@ -20,7 +20,7 @@ from django.contrib.auth.views import (
     # PasswordResetCompleteView)
 
 urlpatterns = [
-    url(r'^logout/$', sign_out, name='logout'),
+    # url(r'^logout/$', sign_out, name='logout'),
     url(r'^login/$', login_user, name='login'),
     url(r'^registration/$', registrationView, name='registration'),
     # url(r'^registration/confirm/([\w\-]+)/([\w\-]+)/$', 'accounts.views.confirm_reg', name='confirm-reg'),

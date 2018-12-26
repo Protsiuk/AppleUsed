@@ -24,18 +24,12 @@ html, pagination, footer, header, nav, general-container
 	font-size: 100%;
 }
 
-.product-item{
-	height: 150px;
-	background: gray;
-	position: relative;
-
-}
 
 /*----------pagination content----------*/
-/*pagination{*/
-	/*font-size: 12px; font-style: oblique; color: #444444;*/
-	/*text-align: center;*/
-/*}*/
+pagination{
+	font-size: 12px; font-style: oblique; color: #444444;
+	text-align: center;
+}
 
 /*.nav_wrapper{*/
 	/*margin: 0;*/
@@ -70,5 +64,3 @@ footer{
 	border-radius: 20px 20px;
 	text-align: center;
 }
-
-

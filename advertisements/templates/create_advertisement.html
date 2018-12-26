@@ -6,9 +6,10 @@
         <b><h4>Создание объявления</h4></b><br>
         <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
+            {% include "form.html" %}
 {#            <input type="text" name="find" placeholder="Введите название желаемой продукции Apple">#}
 {#            <input type="submit" value="Искать">#}
-            {{ form.as_p }}
+{#            {{ form.as_p }}#}
 {#            <button type="submit" class="send_message btn">Отправитть сообщение</button>#}
 
 {#            {% if %}#}

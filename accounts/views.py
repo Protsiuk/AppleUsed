@@ -60,21 +60,21 @@ from accounts.models import MyCustomUser
 # REGISTRATION_SALT = getattr(settings, 'REGISTRATION_SALT', 'registration')
 #-----------------------------
 
-
-def main_page(request):
-    return render(request, "main.html")
-
-
-@login_required(login_url="/login/")
-def sign_out(request):
-    logout(request)
-    return render(request, "main.html")
+#
+# def main_page(request):
+#     return render(request, "main.html")
+#
+#
+# @login_required(login_url="/login/")
+# def sign_out(request):
+#     logout(request)
+#     return render(request, "main.html")
     # return HttpResponseRedirect(reverse("main"))
 
 
 def login_user(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect(reverse("advertisements"))
+        return HttpResponseRedirect(reverse("profile_user"))
     else:
         form = LoginForm(request.POST or None)
         if request.POST and form.is_valid():
@@ -82,7 +82,8 @@ def login_user(request):
             # print(request)
             if user:
                 login(request, user)
-                return HttpResponseRedirect(reverse("advertisements"))
+                return HttpResponseRedirect(reverse("profile_user"))
+                # return HttpResponseRedirect(reverse("advertisements"))
     return render(request, 'login.html', {'form': form})
 
 #
@@ -198,7 +199,6 @@ def profileUserViews(request):
 #                                             password=form.cleaned_data['password'])
 #     return render(request, 'edit-profile-user.html', {'form': form})
 
-
 @login_required
 def editProfileUserViews(request):
     # user = request.user
@@ -212,7 +212,6 @@ def editProfileUserViews(request):
         form = UserChangeForm(instance=request.user)
         return render(request, 'edit-profile-user.html', {'form': form})
         # return redirect(reverse("edit-profile-user"))
-
     # return render(request, 'edit-profile-user.html', {'form': form})
 
 
