@@ -1,0 +1,81 @@
+<nav aria-label="Page navigation example">
+    {% if is_paginated %}
+        <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li><a href="?page={{ page_obj.previous_page_number }}{% include 'search_get_parametr.html' %}">&laquo;</a></li>
+        {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+        {% endif %}
+        {% for page in paginator.page_range %}
+            {% if page_obj.number == page %}
+                <li class="active"><span>{{ page }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+                <li><a href="?page={{ page }}{% include 'search_get_parametr.html' %}">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li><a href="?page={{ page_obj.next_page_number }}{% include 'search_get_parametr.html' %}">&raquo;</a></li>
+        {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+</nav>
+
+
+
+
+
+
+{#<div class="pagination">#}
+{#    <span class="step-links">#}
+{#        {% if page_obj.has_previous %}#}
+{#            <a href="?page={{ page_obj.previous_page_number }}"><-</a>#}
+{#        {% endif %}#}
+{##}
+{#        {% for page_num in page_obj.num_pages %}#}
+{#            {%  if  page_num == '...' %}#}
+{#                {{ page_num }}#}
+{#            {% else %}#}
+{#                <a href="?page={{ page_num }}">{{ page_num }} </a>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{##}
+{#                <span class="current">#}
+{#                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.#}
+{#                </span>#}
+{##}
+{#        {% if page_obj.has_next %}#}
+{#            <a href="?page={{ page_obj.next_page_number }}">-></a>#}
+{#        {% endif %}#}
+{#    </span>#}
+{#</div>#}
+{#______________________________________________________#}
+
+
+
+<nav aria-label="...">
+{% if pag_obj.has_other_pages %}
+  <ul class="pagination">
+    {% if pag_obj.has_previous %}
+      <li><a href="?page={{ pag_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in pag_obj.paginator.page_range %}
+      {% if pag_obj.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if pag_obj.has_next %}
+      <li><a href="?page={{ pag_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+  </ul>
+{% endif %}
+</nav>
+
+

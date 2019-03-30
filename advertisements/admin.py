@@ -1,5 +1,6 @@
 from django.contrib import admin
-from advertisements.models import Advertisement, AdvertisementImage, AdvertisementFollowing, AdvertisementMessage, SiteConfiguration
+from advertisements.models import Advertisement, AdvertisementImage, AdvertisementFollowing, AdvertisementMessage, \
+    PageHit, SiteConfiguration
 # from advertisements.forms import AdvertisementForm
 
 
@@ -17,6 +18,31 @@ class AdvertisementImageInline(admin.StackedInline):
     model = AdvertisementImage
 
 
+@admin.register(PageHit)
+class PageHitAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'advertisement',
+        # 'user',
+        'date',
+        'hits_counter',
+        ]
+    # exclude = ('phone_regex',)
+    list_filter = ['id', 'advertisement', 'date', 'hits_counter']
+
+#     # fieldsets = (
+#     #     (None, {'fields': ('email', 'username', 'password')}),
+    #     (_('Personal info'), {'fields': ('first_name', 'last_name', 'locations_user', 'phone_number_user', 'birth_day')}),
+    #     (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
+    #     (_('Important data'), {'fields': ('last_login', 'date_joined')}),
+    # )
+
+    ordering = ['-date']
+
+    class Meta:
+        model = PageHit
+
+
 @admin.register(Advertisement)
 class AdvertisementAdmin(admin.ModelAdmin):
     # add_form = UpdateAdvertisementForm
@@ -24,19 +50,22 @@ class AdvertisementAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'title',
-        'slug',
+        'description',
         'category_equipment',
         'price',
-        'phone_author',
-        'description',
-        'location_author',
         'author',
+        'phone_author',
+        'location_author',
+        'main_image',
+        'is_active',
+        'slug',
         'product_number',
         'created',
         'updated',
+        # 'hit_counter',
         ]
     # exclude = ('phone_regex',)
-    list_filter = ['author', 'title', 'is_active', 'created']
+    list_filter = ['author', 'title', 'price', 'is_active', 'created', 'updated', 'phone_author']
     inlines = [AdvertisementImageInline]
 #     # fieldsets = (
 #     #     (None, {'fields': ('email', 'username', 'password')}),
@@ -53,18 +82,14 @@ class AdvertisementAdmin(admin.ModelAdmin):
 
 # @admin.register(AdvertisementImage)
 class AdvertisementImageAdmin(admin.ModelAdmin):
-    # add_form = UpdateAdvertisementForm
-    # form = AdvertisementForm
     list_display = [
         'id',
         'advertisement',
         'image',
-        'main_image',
         'created',
         'updated',
         'is_active',
         ]
-    # exclude = ('phone_regex',)
     list_filter = ['advertisement', 'created', 'updated', 'is_active']
     # inlines = [AdvertisementImageInline]
 

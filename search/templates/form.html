@@ -1,12 +1,13 @@
 <!-- this is a form -->
-{#{% extends 'base.html' %}#}
+{% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{#{% block title %}#}
-{#    <div class="top-content">#}
-{#       <h1 class='text-align-center'>{{title}}</h1>#}
-{#    </div>#}
-{#{% endblock %}#}
+{% block title %}
+    <div class="top-content">
+       <h1 class='text-align-center'>{{title}}</h1>
+    </div>
+
+{% endblock %}
 
 {% block content %}
     <div class="section-top">
@@ -17,7 +18,7 @@
                         {% csrf_token %}
 {#                        {{ form.as_p }}#}
                         {{ form | crispy }}
-                        <input class="btn btn-sm btn-primary" type="submit" value="Отправить">
+                        <input class="btn btn-default" type="submit" value="Отправить">
                     </form>
                 </div>
             </div>

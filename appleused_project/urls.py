@@ -24,11 +24,11 @@ urlpatterns = [
 
     # url(r'home')?, home_pages, name='home'
     # url(r'send_email/', include('send_email.urls')),
-    # url('', TemplateView.as_view(template_name='home.html'), name='home'),
+    # url('', TemplateView.as_view(template_name='main.html'), name='home'),
     # url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 ]
 if settings.DEBUG:
-    urlpatterns += staticfiles_urlpatterns()
+    # urlpatterns += staticfiles_urlpatterns()
     # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

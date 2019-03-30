@@ -1,73 +1,47 @@
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
+import json
+from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, get_list_or_404
 
+from django.http import HttpResponse, Http404
+from django.forms import formset_factory
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
+from django.views import View
 
 from django.views.generic import CreateView, FormView, RedirectView, ListView, UpdateView, DetailView
 
-from advertisements.forms import AdvertisementCreationMultiForm, AdvertisementForm, AdvertisementMessageForm, AdvertisementFilterForm
-from advertisements.models import Advertisement, AdvertisementMessage, AdvertisementImage
+from advertisements.forms import AdvertisementForm, AdvertisementMessageForm,\
+                                AdvertisementFilterForm, AdvertisementsSearchFilterMultiForm, AdvertisementImageForm,\
+                                AdvertisementImageFormSet
+from advertisements.models import Advertisement, AdvertisementMessage, AdvertisementFollowing, PageHit, AdvertisementImage
+
+from accounts.models import MyCustomUser
 
 from utils import gen_page_list
 
 
-"""def advertisements(request):
-    form = AdvertisementForm()
-    if request.method == "POST":
-        form = AdvertisementForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = form.cleaned_data
-            AdvertisementMessage.objects.create(title=data.get("title"),
-                                         body=data.get("body"),
-                                         image=data.get("image"),
-                                         price=data.get("price"),
-                                         type_equipment=data.get("type_equipment"),
-                                         author=request.user)
-    advertisements = Advertisement.objects.order_by("-added")
-
-    # pagination of pages
-    paginator = Paginator(advertisements, 1)
-    page = request.GET.get('page', 1)
-    # print(paginator.num_pages, "pages number")
-    try:
-        advertisements = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        advertisements = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        advertisements = paginator.page(paginator.num_pages)
-    page_nums = gen_page_list(int(page), paginator.num_pages)
-
-    return render(request, "advertisements.html", {"advertisements": advertisements,
-                                                 "form": form,
-                                                 "page_nums": page_nums})
-"""
-
-
-                # return render(request, "advertisements.html", {"advertisements": advertisements,
-                #                                                "form": form,
-                #                                                "page_nums": page_nums})
-            # data = form.cleaned_data['min_price']
-            # AdvertisementMessage.objects.create(title=data.get("title"),
-            #                              body=data.get("body"),
-            #                              image=data.get("image"),
-            #                              price=data.get("price"),
-            #                              type_equipment=data.get("type_equipment"),
-            #                              author=request.user)
-
-
-
 class AdvertisementHomeView(ListView):
     model = Advertisement
-    # success_url = '/advertisment/list/'
-    template_name = 'home.html'
+    success_url = '/advertisements/search-list/'
+    template_name = 'main.html'
     # queryset = AdvertisementImage.objects.filter(advertisementimage__image=True, advertisementimage__main_image=True)
     # print(queryset.filter())
 
-    # def get(self):
-    #     return self.advertistement.image_set.all()
-    #
+    def get_queryset(self):
+        # qs = super(AdvertisementHomeView, self).get_queryset()
+        qs = Advertisement.objects.order_by('-created').filter(is_active=True)[:4]
+        return qs
+
+    # def get_context_data(self, **kwargs):
+    #     context = super(AdvertisementHomeView, self).get_context_data(**kwargs)
+    #     advertisement = get_object_or_404(Advertisement, pk=self.kwargs['advertisement_id'])
+    #     try:
+    #         context['following'] = AdvertisementFollowing.objects.filter(user=self.request.user, advertisement=advertisement)
+    #     except Exception:
+    #         context['following'] = None
+    #     return context
+
     # def get_queryset(self):
     #     queryset = []
     #     advertisements = Advertisement.objects.all().order_by('-created')
@@ -79,423 +53,401 @@ class AdvertisementHomeView(ListView):
     #     return queryset
 
 
-        # return render_to_Advertisement.objects.filter(title__icontains='war')[:5]
-    # def get_queryset(self):
-    #     advertisement = Advertisement
-    #     # qs_images_advertisemnt=self.advertisement.images.all()
-    #     qs_images_advertisemnt = AdvertisementImage.objects.filter(advertisement=advertisement)
-    #     return Advertisement.objects.filter(title__icontains='war')[:5]
-    # # print(images.all())
+class AdvertisementsSearchView(ListView):
+    model = Advertisement
+    # success_url = '/advertisment/list/'
+    template_name = 'search_list.html'
+    paginate_by = 10
 
-
-    # def get_queryset(self):
-    #     advertisement = Advertisement
-    #     # qs_images_advertisemnt=self.advertisement.images.all()
-    #     qs_images_advertisemnt = AdvertisementImage.objects.filter(advertisement=advertisement)
-    #     return Advertisement.objects.filter(title__icontains='war')[:5]
-    # # print(images.all())
-
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        # result = result.objects.filter(query)
+        result = Advertisement.objects.search(query)
+        from_min_price =self.request.GET.get('min_price')
+        to_max_price = self.request.GET.get('max_price')
+        if from_min_price:
+            result = result.filter(price__gte=from_min_price)
+        if to_max_price:
+            result = result.filter(price__lte=to_max_price)
+        ordering = self.request.GET.get('ordering')
+        if ordering:
+            ordering = self.request.GET.get('ordering')
+        else:
+            ordering = '-created'
+        return result.order_by(ordering)
 
     # def get_context_data(self, **kwargs):
-    #     # Call the base implementation first to get a context
-    #     context = super(AdvertisementHomeView, self).get_context_data(**kwargs)
-    #     # Add in a QuerySet of all the books
-    #     context['object_list'] = AdvertisementImage.objects.filter(advertisement__advertisementimage__is_active=True)
-    #     # print(context)
+    #     context = super(AdvertisementsSearchView, self).get_context_data(**kwargs)
+    #     context['following'] = AdvertisementFollowing.objects.filter(user=self.request.user, is_following=True)
     #     return context
 
-    # def get_queryset(self):
-    #     queryset = []
-    #     for item in super().get_queryset():
-    #         subQueryset = []
-    #         for main_image in item.criteria.all():
-    #             subQueryset.append(
-    #                 (criterion, get_weight(criterion, self.request.user))
-    #             )
-    #         queryset.append((category, subQueryset))
-    #     return queryset
+
+# class AdvertisementListMarksView(ListView):
+#     model = AdvertisementFollowing
+#     success_url = '/advertisements/favorites/'
+#     template_name = 'main.html'
+#     # queryset = AdvertisementImage.objects.filter(advertisementimage__image=True, advertisementimage__main_image=True)
+#     # print(queryset.filter())
+#
+#     def get_queryset(self):
+#         # qs = super(AdvertisementHomeView, self).get_queryset()
+#         user = self.request.user
+#         qs = AdvertisementFollowing.objects.filter(user=user)
+#         # qs = Advertisement.objects.filter('-created').filter(is_active=True)[:4]
+#         return qs
+
+class MyAdvertisementActiveView(LoginRequiredMixin, ListView):
+    model = Advertisement
+    template_name = 'my_active_advertisements.html'
+
+    def get_queryset(self):
+        ctx = super(MyAdvertisementActiveView, self).get_queryset()
+        author = self.request.user
+        ctx = ctx.filter(author=author, is_active=True)
+        # print(ctx)
+        return ctx
 
 
+class MyAdvertisementArchiveView(LoginRequiredMixin, ListView):
+    model = Advertisement
+    template_name = 'archive_advertisements.html'
 
-        # if self.queryset is not None:
-        #     queryset = self.queryset
-        #     if
-        #
-        #     if isinstance(queryset, QuerySet):
-        #         queryset = queryset.all()
-        # elif self.model is not None:
-        #     queryset = self.model._default_manager.all()
-        # else:
-        #     raise ImproperlyConfigured(
-        #         "%(cls)s is missing a QuerySet. Define "
-        #         "%(cls)s.model, %(cls)s.queryset, or override "
-        #         "%(cls)s.get_queryset()." % {
-        #             'cls': self.__class__.__name__
-        #         }
-        #     )
-        # ordering = self.get_ordering()
-        # if ordering:
-        #     if isinstance(ordering, six.string_types):
-        #         ordering = (ordering,)
-        #     queryset = queryset.order_by(*ordering)
-        # return queryset
+    def get_queryset(self):
+        ctx = super(MyAdvertisementArchiveView, self).get_queryset()
+        author = self.request.user
+        ctx = ctx.filter(author=author, is_active=False)
+        return ctx
+
+
+# class MyAdvertisementView(LoginRequiredMixin, ListView):
+#     model = Advertisement
+#     template_name = 'my_advertisements.html'
+#
+#     def get_queryset(self):
+#         ctx = super(MyAdvertisementView, self).get_queryset()
+#         author = self.request.user
+#         ctx = ctx.filter(author=author)
+#         return ctx
+
+
+class AjaxAdvertisementMarkView(View):
+    template_name = 'advertisement_detail.html'
+    model = AdvertisementFollowing
+
+    def get(self, request, args, **kwargs):
+        ctx = []
+        if request.POST:
+            advertisement_id = self.request.GET.get('advertisement_id')
+            user_follower = request.user
+            # advertisementmark = self.model.objects
+            advertisementmark, created = self.model.objects.get_or_create(user=user_follower, obj_id=advertisement_id)
+            ctx['advertisementmark'] = advertisementmark
+            return render(request, self.template_name, ctx)
+
+
+class AdvertisementsListMarksView(LoginRequiredMixin, ListView):
+    model = Advertisement
+    template_name = 'favorites.html'
+    model_following = AdvertisementFollowing
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(favorites__user=self.request.user)
+        return qs
+
+
+class AdvertisementMarkMixinView(View):
+    model = AdvertisementFollowing
+    template_name = 'advertisement_detail.html'
+    #
+    # def get(self, request, args, **kwargs):
+    #     advertisement_id = self.request.GET.get('advertisement_id')
+    #     advertisement = Advertisement.objects.get(id=advertisement_id)
+    #     current_user = MyCustomUser.objects.get(user=request.user)
+    #     current_user
+
+
+    # def options(self, request, *args, **kwargs):
+    #     """
+    #     Handles responding to requests for the OPTIONS HTTP verb.
+    #     """
+    #     response = HttpResponseRedirect()
+    #     return response
+
+
+    def post(self, request, advertisement_id):
+        user_follow = request.user
+        # пытаемся получить закладку из таблицы, или создать новую
+        advertisementmark, created = self.model.objects.get_or_create(user=user_follow, obj_id=advertisement_id)
+        # если не была создана новая закладка,
+        # то считаем, что запрос был на удаление закладки
+        # print(advertisementmark)
+        if not created:
+            advertisementmark.delete()
+        return HttpResponse(
+            json.dumps({
+                "result": created,
+                "count": self.model.objects.filter(obj_id=advertisement_id).count()
+            }),
+            content_type="application/json"
+        )
+
+    # def get_context_data(self, request, advertisement_id):
+    #     user = request.user
+    #     # mark = super(AdvertisementMarkView, self).get_context_data(user=user)
+    #     advertisement_marked = get_object_or_404(user, id=advertisement_id)
+    #     try:
+    #         context = AdvertisementFollowing.objects.filter(advertisement=advertisement_marked, user=user).exists()
+    #     except Exception:
+    #         context = False
+    #     print(context)
+    #     return context
+
+    # def add_to_favorite(self, request, advertisement_id):
+    #     if self.request.user.is_authenticated():
+    #         advertisement = get_object_or_404(Advertisement, pk=advertisement_id)
+    #         if AdvertisementFollowing.objects.filter(advertisement=advertisement, user=request.user).exists():
+    #             AdvertisementFollowing.objects.filter(advertisement=advertisement, user=request.user).delete()
+    #         else:
+    #             AdvertisementFollowing.objects.create(advertisement=advertisement, user=request.user)
+    #         return HttpResponseRedirect(reverse("advertisement_detail", kwargs={"advertisement_id": advertisement_id}))
+    #     else:
+    #         return HttpResponseRedirect(reverse("signin"))
+
+
+    # def post(self, request, advertisement_id):
+    #     user_follow = request.user(request)
+    #     # пытаемся получить закладку из таблицы, или создать новую
+    #     bookmark, created = self.model.objects.get_or_create(user=user_follow, obj_id=id)
+    #     # если не была создана новая закладка,
+    #     # то считаем, что запрос был на удаление закладки
+    #     if not created:
+    #         bookmark.delete()
+    #     return HttpResponse(
+    #         json.dumps({
+    #             "result": created,
+    #             "count": self.model.objects.filter(obj_id=id).count()
+    #         }),
+    #         content_type="application/json"
+    #     )
+
+
 class AdvertisementMessageView(CreateView):
     model = AdvertisementMessage
     form_class = AdvertisementMessageForm
     template_name = 'advertisement_detail.html'
 
-class AdvertisementCreateView(CreateView):
+
+class AdvertisementCreateView(LoginRequiredMixin, CreateView):
     model = Advertisement
-    success_url = '/advertisment/list/'
-    # form_class = AdvertisementForm
-    form_class = AdvertisementCreationMultiForm
-    # success_url = '/accounts/profile-user/'
-    template_name = 'form.html'
-    # template_name = 'create_advertisement.html'
+    success_url = '/advertisements/'
+    form_class = AdvertisementForm
+    template_name = 'create_advertisement.html'
     """Create NEW advertisement"""
     # fields = ['username', 'first_name', 'last_name', 'birth_day', 'email', 'location_user', 'phone_number_user']
-    # fields = [
-    #         'title',
-    #         'category_equipment',
-    #         'price',
-    #         'phone_author',
-    #         'description',
-    #         'product_number',
-    #         'location_author',
-    #         # 'phone_number_user',
-    #         ]
 
-    # def get(self):
-    #     form_filter = AdvertisementFilterForm(request.GET)
-    #     # form = AdvertisementForm()
-    #     advertisements = Advertisement.objects.all()
-    #     if request.GET.get("find"):
-    #         advertisements = find_title(request, advertisements)
-    #
-    #     if form_filter.is_valid():
-    #         advertisements = filter_list(request, form_filter, advertisements)
-    #
-    #     # if request.GET.get("find"):
-    #     #     advertisements = find_title(request, advertisements)
-    #     advertisements = advertisements.order_by("-added")
-    #     # advertisements = Advertisement.objects.order_by("-added")
-    #     # pagination of pages
-    #     paginator = Paginator(advertisements, 3)
-    #     page = request.GET.get('page', 1)
-    #     # print(paginator.num_pages, "pages number")
-    #     try:
-    #         advertisements = paginator.page(page)
-    #     except PageNotAnInteger:
-    #         # If page is not an integer, deliver first page.
-    #         advertisements = paginator.page(1)
-    #     except EmptyPage:
-    #         # If page is out of range (e.g. 9999), deliver last page of results.
-    #         advertisements = paginator.page(paginator.num_pages)
-    #     page_nums = gen_page_list(int(page), paginator.num_pages)
-    #
-    #     return render(request, "advertisements.html", {"advertisements": advertisements,
-    #                                                    "form_filter": form_filter,
-    #                                                    "page_nums": page_nums})
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests and instantiates blank versions of the form
+        and its inline formsets.
+        """
+        self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        image_form = AdvertisementImageFormSet()
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  image_form=image_form))
 
-    # def filter_list(request, form_filter, advertisements):
-    #     print(request.GET, "it was REQUEST")
-    #     if form_filter.cleaned_data["min_price"]:
-    #         advertisements = advertisements.filter(price__gte=form_filter.cleaned_data['min_price'])
-    #
-    #     if form_filter.cleaned_data["max_price"]:
-    #         advertisements = advertisements.filter(price__lte=form_filter.cleaned_data['max_price'])
-    #
-    #     # if form_filter.cleaned_data["ordering"]:
-    #     #     advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
-    #     return (advertisements)
-    #
-    #     # return {"advertisements": advertisements, "form_filter": form_filter}
-    #
-    #     # def ordering_list(request, form_filter, advertisements):
-    #     #     advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
-    #     #     return (advertisements)
-    #
-    # def ordering_list(request):
-    #     print('request самые дешевые')
-    #     advertisements = Advertisement.objects.all()
-    #     form_filter = AdvertisementFilterForm(request.GET)
-    #     if request.GET.get("GET/advertisements/order_price_inexpensive/"):
-    #         print('самые дешевые')
-    #         advertisements = Advertisement.objects.order_by("-price")
-    #         return render(request, "advertisements_sorted_inexpensive.html", {"advertisements": advertisements,
-    #                                                                           "form_filter": form_filter})
-    #     elif request.GET.get("/advertisements/order_price_expensive/"):
-    #         advertisements = Advertisement.objects.order_by("price")
-    #         return render(request, "advertisements_sorted_expensive.html", {"advertisements": advertisements})
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance and its inline
+        formsets with the passed POST variables and then checking them for
+        validity.
+        """
+        # self.object = None
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        image_form = AdvertisementImageFormSet(request.POST, request.FILES)#, queryset=AdvertisementImage.objects.none())
+        # image_form = AdvertisementImageForm(self.request.POST or None, self.request.FILES or None)
+        # print(request.POST)
+        if (form.is_valid() and image_form.is_valid()):
+            return self.form_valid(form, image_form)
+        else:
+            return self.form_invalid(form, image_form)
+
+    def form_valid(self, form, image_form):
+        """
+        Called if all forms are valid. Creates a Advertisement instance along with
+        associated AdvertisementImage (ImageFormsets Images) and then redirects to a
+        success page.
+        """
+        form.instance.author = self.request.user
+        self.object = form.save()
+        image_form.instance = self.object
+        image_form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form, image_form):
+        """
+        Called if a form is invalid. Re-renders the context data with the
+        data-filled forms and errors.
+        """
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  image_form=image_form))
+
+    def get_context_data(self, **kwargs):
+        context = super(AdvertisementCreateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context['advertisementimage_form'] = AdvertisementImageFormSet(self.request.POST)
+        else:
+            context['advertisementimage_form'] = AdvertisementImageFormSet()
+        return context
+
+
+class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Advertisement
+    success_url = '/advertisements/my_active_advertisements/'
+    form_class = AdvertisementForm
+    template_name = 'update_advertisement.html'
+    permission_denied_message = 'You can not edit this ad.'
+    """Update existing advertisement"""
+
+    def test_func(self):
+        obj = self.get_object()
+        return obj.author == self.request.user
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     user_test_result = self.get_test_func()()
+    #     if not request.user.is_authenticated:
+    #         return self.handle_no_permission()
+    #     else:
+    #         if not user_test_result:
+    #             return self.get_permission_denied_message()
+    #     return super(AdvertisementUpdateView, self).dispatch(request, *args, **kwargs)
+
+    # def dispatch(self, request, *args, **kwargs):
+    #     obj = self.get_object()
+    #     if obj.author != self.request.user:
+    #         return Http404("You are not allowed to edit this Ad")
+    #     return super(AdvertisementUpdateView, self).dispatch(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        """
+        Handles GET requests and instantiates blank versions of the form
+        and its inline formsets.
+        """
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        # form.instance.author = self.request.user
+        image_form = AdvertisementImageFormSet()
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  image_form=image_form))
+
+        # if self.object.author != self.request.user:
+        #     print('ne author')
+        #     return self.render_to_response(self.get_permission_denied_message())
+        #     # return self.handle_no_permission()
+        #     # return (self.get_permission_denied_message())
+        # else:
+        #     form_class = self.get_form_class()
+        #     form = self.get_form(form_class)
+        #     # form.instance.author = self.request.user
+        #     image_form = AdvertisementImageFormSet()
+        #     return self.render_to_response(
+        #         self.get_context_data(form=form,
+        #                               image_form=image_form))
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handles POST requests, instantiating a form instance and its inline
+        formsets with the passed POST variables and then checking them for
+        validity.
+        """
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        image_form = AdvertisementImageFormSet(request.POST, request.FILES, instance=self.object)
+        print(self.object)
+        if (form.is_valid() and image_form.is_valid()):
+            print("bla-bla-bla")
+            return self.form_valid(form, image_form)
+        else:
+            print("NE bla")
+            return self.form_invalid(form, image_form)
+
+    def form_valid(self, form, image_form):
+        """
+        Called if all forms are valid. Updates a Advertisement instance along with
+        associated AdvertisementImage (ImageFormsets Images) and then redirects to a
+        success page.
+        """
+        # form.instance.author = self.request.user
+        self.object = form.save()
+        image_form.instance = self.object
+        image_form.save()
+        return HttpResponseRedirect(self.get_success_url())
+
+    def form_invalid(self, form, image_form):
+        """
+        Called if a form is invalid. Re-renders the context data with the
+        data-filled forms and errors.
+        """
+        return self.render_to_response(
+            self.get_context_data(form=form,
+                                  image_form=image_form))
+
+    def get_context_data(self, **kwargs):
+        context = super(AdvertisementUpdateView, self).get_context_data(**kwargs)
+        if self.request.POST:
+            context['formset_image'] = AdvertisementImageFormSet(self.request.POST, instance=self.object)
+        else:
+            context['formset_image'] = AdvertisementImageFormSet(instance=self.object)
+        return context
 
 
 class AdvertisementDetailView(DetailView):
     model = Advertisement
+    model_hits = PageHit
     template_name = 'advertisement_detail.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(AdvertisementDetailView, self).get_context_data(**kwargs)
+        advertisement = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
+        user = self.request.user
+        try:
+            following = AdvertisementFollowing.objects.filter(user=user, advertisement=advertisement)
+        except Exception:
+            following = None
+        if following:
+            context['following'] = True
 
-    # def get_queryset(self):
-    #     queryset = get_object_or_404(Advertisement,
-    #                               pk=self.kwargs['pk']
-    #                               )
-    #     return queryset
+        views_page = self.hit_count(user, advertisement)
+        context['views_page'] = views_page
+        if user == advertisement.author:
+            context['you_is_author'] = True
+        return context
 
-    # def get_object(self, queryset=None):
-    #     # context_data = super(AdvertisementDetailView, self).get_context_data(**kwargs)
-    #     # Add in a QuerySet of all the books
-    #     queryset = Advertisement.objects.filter(pk=self.request.id)
-    #     print('НАШ queryset', queryset)
-    #     return queryset
-    #
-    # # def get_object(self, queryset=None):
-    # #     return self.request.user
-    # #
-    # def get(self, request, *args, **kwargs):
-    #     self.object = self.get_object(request.user)
-    #     context = self.get_context_data(object=self.object)
-    #     # print(context)
-    #     return self.render_to_response(context)
+    """
+    Counter for views pages
+    If user is not author counter increment +1
+    """
+    def hit_count(self, user, advertisement):
 
-    # def get(self, request, *args, **kwargs):
-    #     self.object = self.get_object(request.user)
-    #     context = self.get_context_data(object=self.object)
-    #     # print(context)
-    #     return self.render_to_response(context)
-
-def advertisements(request):
-    # print ('ZAPROS'+request.GET)
-    # form = AdvertisementFilterForm()
-    form_filter = AdvertisementFilterForm(request.GET)
-
-    # form = AdvertisementForm()
-    advertisements = Advertisement.objects.all()
-    if request.GET.get("find"):
-        advertisements = find_title(request, advertisements)
-
-    if form_filter.is_valid():
-        advertisements = filter_list(request, form_filter, advertisements)
-
-    # if request.GET.get("find"):
-    #     advertisements = find_title(request, advertisements)
-    advertisements = advertisements.order_by("-added")
-    # advertisements = Advertisement.objects.order_by("-added")
-    # pagination of pages
-    paginator = Paginator(advertisements, 3)
-    page = request.GET.get('page', 1)
-    # print(paginator.num_pages, "pages number")
-    try:
-        advertisements = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        advertisements = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        advertisements = paginator.page(paginator.num_pages)
-    page_nums = gen_page_list(int(page), paginator.num_pages)
-
-    return render(request, "advertisements.html", {"advertisements": advertisements,
-                                                 "form_filter": form_filter,
-                                                 "page_nums": page_nums})
-
-
-def filter_list(request, form_filter, advertisements):
-    print(request.GET, "it was REQUEST")
-    if form_filter.cleaned_data["min_price"]:
-        advertisements = advertisements.filter(price__gte=form_filter.cleaned_data['min_price'])
-
-    if form_filter.cleaned_data["max_price"]:
-        advertisements = advertisements.filter(price__lte=form_filter.cleaned_data['max_price'])
-
-    # if form_filter.cleaned_data["ordering"]:
-    #     advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
-    return (advertisements)
-
-    # return {"advertisements": advertisements, "form_filter": form_filter}
-
-# def ordering_list(request, form_filter, advertisements):
-#     advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
-#     return (advertisements)
-
-
-def ordering_list(request):
-    print('request самые дешевые')
-    advertisements = Advertisement.objects.all()
-    form_filter = AdvertisementFilterForm(request.GET)
-    if request.GET.get("GET/advertisements/order_price_inexpensive/"):
-        print('самые дешевые')
-        advertisements = Advertisement.objects.order_by("-price")
-        return render(request, "advertisements_sorted_inexpensive.html", {"advertisements": advertisements,
-                                                                        "form_filter": form_filter})
-    elif request.GET.get("/advertisements/order_price_expensive/"):
-        advertisements = Advertisement.objects.order_by("price")
-        return render(request, "advertisements_sorted_expensive.html", {"advertisements": advertisements})
-
-
-
-
-    # advertisements = advertisements.order_by(form_filter.cleaned_data["ordering"])
-    # return (advertisements)
-
-
-def find_title(request, advertisements):
-    find = request.GET.get("find")
-    # print(request.GET)
-    advertisements = advertisements.filter(title__icontains=find)
-    return (advertisements)
-
-
-# def ordering_list(request, advertisements):
-#     ordering = request.GET.get("ordering")
-#     advertisements = Advertisement.objects.order_by(ordering)
-#
-#     return (advertisements)
-#----------------------------------------------------------------
-
-#     if request.method == "POST":
-#         form = AdvertisementForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             data = form.cleaned_data
-#             Advertisement.objects.create(title=data.get("title"),
-#                                          body=data.get("body"),
-#                                          image=data.get("image"),
-#                                          price=data.get("price"),
-#                                          type_equipment=data.get("type_equipment"),
-#                                          author=request.user)
-
-""" #views.py
-def some_view(request):
-    ....
-    if 'sort_by' in request.GET:
-        sort_by = request.GET['sort_by']
-    else:
-        sort_by = None
-    ....
-
-#template.html
-<a href="?page={{ content.next_page_number }}{% if sort_by %}&sort_by={{ sort_by }}{% endif %}">Следующая страница</a>
-"""
-    # advertisements = Advertisement.objects.order_by("-added")
-
-
-
-    # # pagination of pages
-    # paginator = Paginator(advertisements, 5)
-    # page = request.GET.get('page', 1)
-    # # print(paginator.num_pages, "pages number")
-    # try:
-    #     advertisements = paginator.page(page)
-    # except PageNotAnInteger:
-    #     # If page is not an integer, deliver first page.
-    #     advertisements = paginator.page(1)
-    # except EmptyPage:
-    #     # If page is out of range (e.g. 9999), deliver last page of results.
-    #     advertisements = paginator.page(paginator.num_pages)
-    # page_nums = gen_page_list(int(page), paginator.num_pages)
-    #
-    # return render(request, "advertisements.html", {"advertisements": advertisements,
-    #                                              "form": form,
-    #                                              "page_nums": page_nums})
-
-
-def new_advertisement(request):
-    form = AdvertisementForm()
-    if request.method == "POST":
-        form = AdvertisementForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = form.cleaned_data
-            Advertisement.objects.create(title=data.get("title"),
-                                         body=data.get("body"),
-                                         image=data.get("image"),
-                                         price=data.get("price"),
-                                         type_equipment=data.get("type_equipment"),
-                                         author=request.user)
-    advertisements = Advertisement.objects.all()
-
-
-def single_advertisement(request, advertisement_id):
-    advertisement = get_object_or_404(Advertisement, pk=advertisement_id)
-    # print("проверка", advertisement)
-    form = AdvertisementMessageForm()
-    # send_email('тема письма', 'само тело письма.', 'd.protsiuk@gmail.com',
-    #           ['procent83@ukr.net'])
-    if request.method == "POST":
-        form = AdvertisementMessageForm(request.POST)
-        if form.is_valid():
-            print('тема письма будет', advertisement.title)
-            """test send email"""
-            # email_visitor = form.cleaned_data['email_visitor']
-            # title = advertisement.title#("title")
-            # text = form.cleaned_data['text']
-            # email_author = advertisement.author.email
-
-            # server = smtplib.SMTP("smtp.gmail.com 587)
-            # server.ehlo()
-            # server.starttls()
-            # server.login("myGmailAccount", "o_MyPassword")
-            # message = "\r\n".join([ \
-            #     "From: {}".format(email_from), \
-            #     "To: {}".format(email_to), \
-            #     "Subject: {}".format(subject), \
-            #     "", \
-            #     "{}".format(text) \
-            #     ])
-            # server.sendmail("myYandexAccount@ya.ru", email_to, message)
-            # server.quit()
-
-
-            # Advertisement.objects.create(advertisement=advertisement,
-            #                                   # author=user.email,
-            #                                   email_visitor=form.cleaned_data['email_visitor'],
-            #                                   # message=form.cleaned_data['text'],
-            #                                   text=form.cleaned_data['text'])
-            """
-            send_mail("Subject BIG", "Data sent: %s %s" % (title, text),
-                      email_visitor,
-                      [email_author],
-                      fail_silently=True)
-            """
-            return HttpResponseRedirect(reverse("advertisement_detail", kwargs={"id": advertisement_id}))
-
-    # print("проверка", advertisement)
-    # msg = EmailMessage(
-    #     subject=u'Тема письма',
-    #     body=u'тело сообщения тут',
-    #     from_email= form.email_visitor,
-    #     to=(request.user.email,),
-    #     headers={'From': 'email_from@me.com'}
-    # )
-    # msg.content_subtype = 'html'
-    # msg.send()
-    return render(request, "advertisement_detail.html", {"advertisement": advertisement,
-                                                       "form": form})
-
-
-def advertisements_expensive(request):
-    # print ('ZAPROS'+request.GET)
-    form = AdvertisementFilterForm()
-    form_filter = AdvertisementFilterForm(request.GET)
-
-    # form = AdvertisementForm()
-    advertisements = Advertisement.objects.all()
-
-    advertisements = advertisements.order_by("-price")
-
-    # pagination of pages
-    paginator = Paginator(advertisements, 10)
-    page = request.GET.get('page', 1)
-    # print(paginator.num_pages, "pages number")
-    try:
-        advertisements = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        advertisements = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        advertisements = paginator.page(paginator.num_pages)
-    page_nums = gen_page_list(int(page), paginator.num_pages)
-
-    return render(request, "advertisements_sorted_inexpensive.html", {"advertisements": advertisements,
-                                                   "form_filter": form_filter,
-                                                   "page_nums": page_nums})
-
-    # GET /advertisements/order_price_inexpensive
+        if user != advertisement.author:
+            hit_count, created = self.model_hits.objects.get_or_create(advertisement=advertisement)
+            if created:
+                hit_count.hits_counter = 1
+            else:
+                hit_count.hits_counter += 1
+            hit_count.save()
+            views = hit_count.hits_counter
+        else:
+            try:
+                views_ad = self.model_hits.objects.get(advertisement=advertisement)
+                views = views_ad.hits_counter
+            except self.model_hits.DoesNotExist:
+                views = 0
+        return views

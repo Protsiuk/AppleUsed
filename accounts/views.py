@@ -185,20 +185,6 @@ def profileUserViews(request):
         return user
     return render(request, 'profile-user.html', {'user': request.user})
 
-
-# @login_required
-# def editProfileUserViews(request):
-#     user = request.user
-#     if request.POST:
-#         form = ProfileUserForm(request.POST)
-#         user = User.objects.update(first_name=form.cleaned_data['first_name'],
-#                                    last_name=form.cleaned_data['last_name'],
-#                                    # phone=form.cleaned_data['last_name'],
-#                                    city=form.cleaned_data['city'],
-#                                             email=form.cleaned_data['email'],
-#                                             password=form.cleaned_data['password'])
-#     return render(request, 'edit-profile-user.html', {'form': form})
-
 @login_required
 def editProfileUserViews(request):
     # user = request.user
@@ -222,6 +208,7 @@ class LoginView(FormView):
     """
     success_url = '/accounts/profile-user/'
     form_class = AuthenticationForm
+    # prefix = 'login_form'
     # form_class = LoginForm
     redirect_field_name = REDIRECT_FIELD_NAME
 
@@ -252,7 +239,7 @@ class LoginView(FormView):
         return redirect_to
 
 
-class LogoutView(RedirectView):
+class LogoutView(LoginRequiredMixin, RedirectView):
     """
     Provides users the ability to logout
     """
@@ -310,7 +297,7 @@ class UserProfileUpdateViews(LoginRequiredMixin, UpdateView):
     #     #     return super(UserProfileUpdateViews, self).post(request, *args, **kwargs)
 
 
-class MyProfileUser(DetailView):
+class MyProfileUser(LoginRequiredMixin, DetailView):
     model = MyCustomUser
     template_name = 'profile-user.html'
 

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load formated_datas %}
+{% load static %}
+{% block content %}
+
+    <hr>
+    <div class="section-top">
+        <p>Ваши активные объявления:</p>
+    </div>
+    {% if object_list|length is 0 %}
+       <p> У Вас нет активных объявлений.</p>
+    {% endif %}
+    <div class="section">
+        <div class="container">
+            {% include 'list_advertisements.html' %}
+            {% include 'pagination.html' %}
+        </div>
+    </div>
+
+{% endblock content %}

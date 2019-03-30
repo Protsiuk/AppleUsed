@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load formated_datas %}
+{% load static %}
+{% block content %}
+
+    <hr>
+    <div class="section-top">
+        <p>Ваши архивные объявления:</p>
+    </div>
+    {% if object_list|length is 0 %}
+       <p> У Вас нет архивных объявлений.</p>
+    {% endif %}
+        <div class="section">
+            <div class="container">
+                <div class="row">
+    {#                <div class="col-lg-3">#}
+                        {% for obj in object_list %}
+                            <tr>
+                            <div class="col-lg-3">
+                                <div class="product-item">
+                                    <a class="text-title" href="{% url 'advertisement_detail' pk=obj.id %}">{{ obj.title }}
+                                    <p><b>{{ obj.price }}USD </b></p>
+                                    {% if  obj.main_image %}
+                                        <img src="{{ obj.main_image.url }}" class="img-responsive" width="150" height="150" alt="advertisement">
+                                    {% else %}
+                                        <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="120" alt="advertisement">
+                                    {% endif %}
+
+
+    {#                                {% endfor %}#}
+
+    {#                                {% if  object.main_image %}#}
+    {#                                    <img src="{{ object.main_image.url }}" class="img-responsive" width="150" height="150" alt="advertisement">#}
+    {#                                {% else %}#}
+    {#                                    <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="120" alt="advertisement">#}
+    {#                                {% endif %}#}
+
+    {#                                <li>#}
+    {#                                    <a class="text-title" href="{% url 'advertisement_detail' pk=object.id %}">{{ object.title }} </a><br>#}
+    {#                                </li>#}
+    {#                                <li>#}
+    {#                                    <a class="card-action">{{ object.created.date|formated_datas }}</a><br>#}
+    {#                                </li>#}
+    {#                                    <div align="center">#}
+    {#                                    <b class="price">{{ object.price }} USD</b>#}
+    {#                                </div>#}
+                                </div>
+                            </div>
+    {#                        </tr>#}
+                        {% endfor %}
+                    </div>
+            </div>
+        </div>
+
+{% endblock content %}

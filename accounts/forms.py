@@ -11,13 +11,9 @@ from django.forms.widgets import SelectDateWidget
 class LoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
-    # password = forms.CharField(widget=forms.FilePathField, required=True)
 
     def clean(self):
         data = self.cleaned_data
-        # email = self.cleaned_data.get('email')
-        # password = self.cleaned_data.get('password')
-        # user = authenticate(email=email, password=password)
         user = authenticate(email=data.get("email"), password=data.get("password"))
         if not user:
             raise forms.ValidationError("Вы ввели некоректный email или пароль.")
@@ -156,8 +152,6 @@ class CustomUserUpdateForm():
     last_name = forms.CharField(max_length=50)  # (label=(u'Имя Пользователя')
     email = forms.EmailField(max_length=50)#(label=(u'Email'), widget = forms.TextInput(attrs={'placeholder': 'Input email', 'class': 'form-control input-perso'}), max_length = 30, min_length = 3)
     location_user = forms.CharField(max_length=150)
-    # password1 = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
-    # password2 = forms.CharField(min_length=6, max_length=20, widget=forms.TextInput(attrs={"type": "password"}))
 
     class Meta:
         model = MyCustomUser
@@ -414,14 +408,7 @@ class MyCustomUserCreationForm(UserCreationForm):
     class Meta:
         model = MyCustomUser
         fields = ('username', 'email', 'password1', 'password2', 'birth_day')
-#
-#
-# class CustomUserChangeForm(UserChangeForm):
-#     class Meta:
-#         model = MyCustomUser
-#         fields = ('username', 'email')
 
-#
 # class MyCustomUserCreationForm(UserCreationForm):
 #     username = forms.CharField(max_length=50)
 #     email = forms.EmailField(max_length=50)

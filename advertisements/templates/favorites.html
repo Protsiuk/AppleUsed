@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load humanize %}
+{% load formated_datas %}
+{% load static %}
+{% load staticfiles %}
+{% block content %}
+
+    <hr>
+    <div class="section-top">
+        <p>Ваши избранные объявления:</p>
+    </div>
+
+    <div class="section">
+        <div class="container">
+        {% include 'list_advertisements.html' %}
+        {% include 'pagination.html' %}
+        </div>
+    </div>
+
+{% endblock content %}

@@ -1,46 +1,73 @@
 {% extends "base.html" %}
-
+{% load static %}
 {% load humanize %}
 {% load formated_datas %}
 
     {% block title %} {{ advertisement.title }}, AppleUsed {% endblock title %}
-
     {% block content %}
 
-{#        <a href="{% url 'advertisements' %}"><u>Главная</u></a>#}
         <hr>
-{#            проверка {{ advertisement.body }}#}
         <div class="col-lg-12">
             <tb>
+
+                <ul class=class="col-lg-3">
+                    {% if you_is_author %}
+                        <h4 class="row ">Это ваше объявление.
+                        <a href="{% url 'edit_ad' pk=object.id %}"><input type="submit" name="submit" class="btn btn-sm btn-primary" value="Редактировать?"/>
+                        </a></h4>
+
+                    {% endif %}
+                </ul>
                 <b class="title_advertisement"><h4>{{ object.title }}</h4></b>
                 <a>Номер объявления:{{ object.id }}</a><br>
                 <a>Добавлено {{ object.created | formated_datas}}</a><br>
                 <a class="author">Автор <b>{{ object.author.first_name }} </b></a><br>
                 <a class="phone_author">Телефон для связи с автором <b>{{ object.phone_author }}</b></a><br>
+                <a class="hit_count">Количество просмотров <b>
+                     <img src="{% static 'img/views.gif' %}" class="img-thumbnail align-right" width="50" height="50">
+                    {{ views_page }}</b></a><br>
+            </tb>
+            <tb>
+                <div class="col-12">
+                {% if object.advertisement in object.advertisement.advertisementfollowing_set %}
+                    {{ object.advertisementfollowing_set }}
+                    <img src="{% static 'img/favorite_TRUE.png' %}" class="img-thumbnail align-right" width="50" height="50">
+                {% else %}
+                    <img src="{% static 'img/favorite_FALSE.png' %}" class="img-thumbnail align-right" width="50" height="50">
+{#                    <p4>FOLLOWING is blue {{ following }}</p4>#}
+                {% endif %}
+                </div>
             </tb>
             <tb>
                 <a class="text">{{ object.description }}</a>
                 <div align="right"><b class="price">{{ object.price }} USD</b></div><br>
                 <div align="center">
-                {% for image_item in object.images.all %}
-                    <img src="{{ image_item.image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
-                    <hr>
-                {% endfor %}
+                    <ul class=class="col-lg-3">
+                    {% if  object.main_image %}
+                        <img src="{{ object.main_image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
+                        {% if object.images.all %}
+                            {% for image_item in object.images.all %}
+                                <img src="{{ image_item.image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
+                                <hr>
+                            {% endfor %}
+                        {% endif %}
+                    {% else %}
+                        <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="500" alt="advertisement">
+                    {% endif %}
+                    </ul>
                 </div>
             </tb>
-{#            <a href="{% url 'single_advertisement' advertisement_id=advertisement.id %}">{{ advertisement.title }}</a>#}
-{#                    <a class="title_advertisement" >{{ advertisement.title }} </a>#}
-{#            <div align="right">#}
-{#                <a class="price">{{ advertisement.price }} USD</a>#}
 
-{#            </div>#}
+            <ul class=class="col-lg-3">
+                {% if  not you_is_author %}
+                    <b>Написать автору объявления {{ object.title }}:</b><br>
+                {% endif %}
+            </ul>
             <hr>
-{##}
-{#            <div align="center"><b class="body_advertisement">{{ advertisement.body }} </b></div>#}
-{##}
         </div>
 
-        <b>Написать автору объявления {{ object.title }}:</b><br>
+
+{#        <b>Написать автору объявления {{ object.title }}:</b><br>#}
 {#         <a href="{% url 'send_message' %}"><u>Написать автору объявления</u></a>#}
 
 {#        <form action="{% url 'advertisement_detail' pk=advertisement.id %}" method="POST" enctype="multipart/form-data">#}
@@ -49,30 +76,8 @@
 {#            <button type="submit" class="send_message btn">Отправитть сообщение</button>#}
 {#        </form>#}
 {#        <a href="{% url 'advertisements' %}"> вернуться к списку объявлений</a>#}
-    {% endblock %}
 
+    {% endblock %}
 
 <div class="footer">
 </div>
-
-
-{##}
-{#{% block content %}#}
-{#    <b><h4>Advertisement.title </h4></b><br>#}
-{#    {{ advertisement.title }}<br>#}
-{#    Likes:{{ advertisement.get_likes_count }}<br>#}
-{#    <a href="{% url 'like_single_publication' advertisement_id=advertisement.id %}">LIKE</a>#}
-{#    <hr>#}
-{#    <b>Comment to {{ advertisement.title }}:</b><br>#}
-{#    {% for comment in advertisement.comments.all %}#}
-{#        <img src="{{ user.photo.url }}" width="30" height="30">#}
-{#        {{ comment.user.get_full_name }}{{ comment.added }} <br>#}
-{#        {{ comment.text }}<br>#}
-{#    {% endfor %}#}
-{#    <hr>#}
-{#    <form action="{% url 'single_publication' publication_id=publication.id %}" method="POST">#}
-{#        {% csrf_token %}#}
-{#        {{ form }}#}
-{#        <input type="submit">#}
-{#    </form>#}
-{#{% endblock content %}#}

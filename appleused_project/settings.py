@@ -218,6 +218,7 @@ INSTALLED_APPS = [
     # project apps
     'accounts',
     'advertisements',
+    'search',
     # 'send_email',
 
     # 3-d generation
@@ -325,18 +326,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'dev_static'),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 AUTH_USER_MODEL = 'accounts.MyCustomUser'
-# AUTH_USER_MODEL = 'auth.User'
 
 # ACCOUNT_ACTIVATION_DAYS = 3
 
@@ -389,3 +389,6 @@ try:
     from .local_settings import *
 except ImportError:
     pass
+
+
+# OBJECT_SEARCH = 'advertisements.models.Advertisement'

@@ -13,11 +13,14 @@
     <div class ="container">
         <div class="row">
             <div class="input-field col s6">
-               <h5><b>Личный кабинет {{ user.username }} </b></h5>
+                <h5><b>Личный кабинет {{ user.username }} </b></h5>
                 <p>Имя пользователя: <b>{{ user.first_name }}</b></p>
                 <p>Фамилия пользователя: <b>{{ user.last_name }}</b></p>
                 <p>Email: <b>{{ user.email }}</b></p>
                 <p>Location: <b>{{ user.location_user }}</b> </p>
+                <a href="{% url 'favorites' %}" class="href-on-page"><p>Перейти к избранным объявлениям</p></a>
+                <a href="{% url 'my_active_advertisements' %}" class="href-on-page"><p>Перейти к вашым объявлениям</p></a>
+                <a href="" class="href-on-page"><p>Перейти к вашым сообщениям</p></a>
 {#                <p>Phone number<b> {{ user.phone_number_user }}</b> </p>#}
                 {% if user.birth_day == None %}
                     <p>День рождения пользователя: <b>Не заполнено</b></p>
