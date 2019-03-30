@@ -5,17 +5,17 @@ from django.conf.urls import url
 # from advertisements.views import advertisements, single_advertisement, ordering_list, new_advertisement # like_single_publication, \
 from advertisements.views import AdvertisementCreateView, AdvertisementHomeView, AdvertisementDetailView, \
     AdvertisementsSearchView, AdvertisementMarkMixinView, AdvertisementsListMarksView, MyAdvertisementActiveView, \
-    MyAdvertisementArchiveView, AdvertisementUpdateView, AdvertisementMessageView
+    MyAdvertisementArchiveView, AdvertisementUpdateView, AdvertisementDeleteView, AdvertisementMessageView
     # GetSingleAdvertisementView, CreateAdvertisementView #publications_as_json,
 
+# app_name = 'advertisement'
 urlpatterns = [
-
     # -----------CBV---------
-
+    url(r'^(?P<pk>[\d]+)$', AdvertisementDetailView.as_view(), name='advertisement_detail'),
     url(r'^create/', AdvertisementCreateView.as_view(), name='new_advertisement'),
     url(r'^(?P<pk>[\d]+)/edit/', AdvertisementUpdateView.as_view(), name='edit_ad'),
-    # url(r'^(?P<advertisement_id>[\d]+)$', AdvertisementDetailView.as_view(), name='advertisement_detail'),
-    url(r'^(?P<pk>[\d]+)$', AdvertisementDetailView.as_view(), name='advertisement_detail'),
+    url(r'^(?P<pk>[\d]+)/delete/', AdvertisementDeleteView.as_view(), name='delete_ad'),
+
     # url(r'^(?P<pk>[\d]+)$', AdvertisementMarkMixinView.as_view(), name='advertisement_detail'),
     url(r'^search-list/', AdvertisementsSearchView.as_view(), name='search_list'),
     url(r'^favorites/$', AdvertisementsListMarksView.as_view(), name='favorites'),

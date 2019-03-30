@@ -6,10 +6,10 @@ from django.forms import formset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.views import View
 
-from django.views.generic import CreateView, FormView, RedirectView, ListView, UpdateView, DetailView
+from django.views.generic import CreateView, FormView, RedirectView, ListView, UpdateView, DetailView, DeleteView
 
 from advertisements.forms import AdvertisementForm, AdvertisementMessageForm,\
                                 AdvertisementFilterForm, AdvertisementsSearchFilterMultiForm, AdvertisementImageForm,\
@@ -25,8 +25,6 @@ class AdvertisementHomeView(ListView):
     model = Advertisement
     success_url = '/advertisements/search-list/'
     template_name = 'main.html'
-    # queryset = AdvertisementImage.objects.filter(advertisementimage__image=True, advertisementimage__main_image=True)
-    # print(queryset.filter())
 
     def get_queryset(self):
         # qs = super(AdvertisementHomeView, self).get_queryset()
@@ -157,22 +155,13 @@ class AdvertisementsListMarksView(LoginRequiredMixin, ListView):
 
 class AdvertisementMarkMixinView(View):
     model = AdvertisementFollowing
+    model_ad = Advertisement
     template_name = 'advertisement_detail.html'
-    #
-    # def get(self, request, args, **kwargs):
-    #     advertisement_id = self.request.GET.get('advertisement_id')
-    #     advertisement = Advertisement.objects.get(id=advertisement_id)
-    #     current_user = MyCustomUser.objects.get(user=request.user)
-    #     current_user
 
-
-    # def options(self, request, *args, **kwargs):
-    #     """
-    #     Handles responding to requests for the OPTIONS HTTP verb.
-    #     """
-    #     response = HttpResponseRedirect()
-    #     return response
-
+    def get_object(self, queryset=None):
+        # ad = get_object_or_404()
+        advertisement = get_object_or_404(self.model_ad, pk=self.kwargs['pk'])
+        return advertisement
 
     def post(self, request, advertisement_id):
         user_follow = request.user
@@ -190,6 +179,40 @@ class AdvertisementMarkMixinView(View):
             }),
             content_type="application/json"
         )
+
+
+
+    # def get(self, request, args, **kwargs):
+    #     advertisement_id = self.request.GET.get('advertisement_id')
+    #     advertisement = Advertisement.objects.get(id=advertisement_id)
+    #     current_user = MyCustomUser.objects.get(user=request.user)
+    #     current_user
+
+
+    # def options(self, request, *args, **kwargs):
+    #     """
+    #     Handles responding to requests for the OPTIONS HTTP verb.
+    #     """
+    #     response = HttpResponseRedirect()
+    #     return response
+
+
+    # def post(self, request, advertisement_id):
+    #     user_follow = request.user
+    #     # пытаемся получить закладку из таблицы, или создать новую
+    #     advertisementmark, created = self.model.objects.get_or_create(user=user_follow, obj_id=advertisement_id)
+    #     # если не была создана новая закладка,
+    #     # то считаем, что запрос был на удаление закладки
+    #     # print(advertisementmark)
+    #     if not created:
+    #         advertisementmark.delete()
+    #     return HttpResponse(
+    #         json.dumps({
+    #             "result": created,
+    #             "count": self.model.objects.filter(obj_id=advertisement_id).count()
+    #         }),
+    #         content_type="application/json"
+    #     )
 
     # def get_context_data(self, request, advertisement_id):
     #     user = request.user
@@ -451,3 +474,16 @@ class AdvertisementDetailView(DetailView):
             except self.model_hits.DoesNotExist:
                 views = 0
         return views
+
+
+class AdvertisementDeleteView(DeleteView):
+    model = Advertisement
+    success_url = reverse_lazy('main')
+    template_name = 'advertisement_delete.html'
+
+    def get_object(self, queryset=None):
+        advertisement = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
+        return advertisement
+
+    def get_success_url(self):
+        return reverse_lazy('search_list')

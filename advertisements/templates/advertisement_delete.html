@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% load formated_datas %}
+
+    {% block title %} {{ advertisement.title }}, AppleUsed {% endblock title %}
+    {% block content %}
+
+        <hr>
+        <div class="col-lg-12">
+            <div class="row">
+                <form action="." method="POST">
+                    {% csrf_token %}
+                    <h5>Вы действительно хотите удалить объявление <a href="{% url 'advertisement_detail' pk=object.id %}">{{ advertisement.title }}?</a></h5>
+                    <input type="submit" class="btn btn-danger" value=" Да ">
+{#                    <input type="submit" class="btn btn-primary" value=" Отмена ">#}
+                    <a href="../">Отмена</a>
+
+                </form>
+            </div>
+            <hr>
+        </div>
+
+
+    {% endblock %}
+
+<div class="footer">
+</div>
