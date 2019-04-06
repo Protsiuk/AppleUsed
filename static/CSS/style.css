@@ -70,6 +70,9 @@ header{
 	background: #dcdcdc;
 	position: absolute;
 	padding: 5px 5px 5px 5px;
+	border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0 0 2px #ccc;
 	/*border: 1px solid #a7a7a7;*/
 	/*border-radius: 10px 10px;*/
 }

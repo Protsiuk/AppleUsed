@@ -223,7 +223,7 @@ INSTALLED_APPS = [
 
     # 3-d generation
     'solo',
-    # 'rest_framework',
+    'rest_framework',
     # 'rest_framework.authtoken',
     # 'password_reset',
     # 'rest_auth',

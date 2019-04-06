@@ -7,14 +7,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse_lazy
-from django.views import View
+# from django.views import View
 
-from django.views.generic import CreateView, FormView, RedirectView, ListView, UpdateView, DetailView, DeleteView
+from django.views.generic import View, CreateView, FormView, RedirectView, ListView, UpdateView, DetailView, DeleteView
 
 from advertisements.forms import AdvertisementForm, AdvertisementMessageForm,\
                                 AdvertisementFilterForm, AdvertisementsSearchFilterMultiForm, AdvertisementImageForm,\
                                 AdvertisementImageFormSet
 from advertisements.models import Advertisement, AdvertisementMessage, AdvertisementFollowing, PageHit, AdvertisementImage
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import authentication, permissions
 
 from accounts.models import MyCustomUser
 
@@ -102,7 +106,6 @@ class MyAdvertisementActiveView(LoginRequiredMixin, ListView):
         ctx = super(MyAdvertisementActiveView, self).get_queryset()
         author = self.request.user
         ctx = ctx.filter(author=author, is_active=True)
-        # print(ctx)
         return ctx
 
 
@@ -127,20 +130,20 @@ class MyAdvertisementArchiveView(LoginRequiredMixin, ListView):
 #         ctx = ctx.filter(author=author)
 #         return ctx
 
-
-class AjaxAdvertisementMarkView(View):
-    template_name = 'advertisement_detail.html'
-    model = AdvertisementFollowing
-
-    def get(self, request, args, **kwargs):
-        ctx = []
-        if request.POST:
-            advertisement_id = self.request.GET.get('advertisement_id')
-            user_follower = request.user
-            # advertisementmark = self.model.objects
-            advertisementmark, created = self.model.objects.get_or_create(user=user_follower, obj_id=advertisement_id)
-            ctx['advertisementmark'] = advertisementmark
-            return render(request, self.template_name, ctx)
+#
+# class AjaxAdvertisementMarkView(View):
+#     template_name = 'advertisement_detail.html'
+#     model = AdvertisementFollowing
+#
+#     def get(self, request, args, **kwargs):
+#         ctx = []
+#         if request.POST:
+#             advertisement_id = self.request.GET.get('advertisement_id')
+#             user_follower = request.user
+#             # advertisementmark = self.model.objects
+#             advertisementmark, created = self.model.objects.get_or_create(user=user_follower, obj_id=advertisement_id)
+#             ctx['advertisementmark'] = advertisementmark
+#             return render(request, self.template_name, ctx)
 
 
 class AdvertisementsListMarksView(LoginRequiredMixin, ListView):
@@ -153,105 +156,28 @@ class AdvertisementsListMarksView(LoginRequiredMixin, ListView):
         return qs
 
 
-class AdvertisementMarkMixinView(View):
-    model = AdvertisementFollowing
-    model_ad = Advertisement
-    template_name = 'advertisement_detail.html'
-
-    def get_object(self, queryset=None):
-        # ad = get_object_or_404()
-        advertisement = get_object_or_404(self.model_ad, pk=self.kwargs['pk'])
-        return advertisement
-
-    def post(self, request, advertisement_id):
-        user_follow = request.user
-        # пытаемся получить закладку из таблицы, или создать новую
-        advertisementmark, created = self.model.objects.get_or_create(user=user_follow, obj_id=advertisement_id)
-        # если не была создана новая закладка,
-        # то считаем, что запрос был на удаление закладки
-        # print(advertisementmark)
-        if not created:
-            advertisementmark.delete()
-        return HttpResponse(
-            json.dumps({
-                "result": created,
-                "count": self.model.objects.filter(obj_id=advertisement_id).count()
-            }),
-            content_type="application/json"
-        )
-
-
-
-    # def get(self, request, args, **kwargs):
-    #     advertisement_id = self.request.GET.get('advertisement_id')
-    #     advertisement = Advertisement.objects.get(id=advertisement_id)
-    #     current_user = MyCustomUser.objects.get(user=request.user)
-    #     current_user
-
-
-    # def options(self, request, *args, **kwargs):
-    #     """
-    #     Handles responding to requests for the OPTIONS HTTP verb.
-    #     """
-    #     response = HttpResponseRedirect()
-    #     return response
-
-
-    # def post(self, request, advertisement_id):
-    #     user_follow = request.user
-    #     # пытаемся получить закладку из таблицы, или создать новую
-    #     advertisementmark, created = self.model.objects.get_or_create(user=user_follow, obj_id=advertisement_id)
-    #     # если не была создана новая закладка,
-    #     # то считаем, что запрос был на удаление закладки
-    #     # print(advertisementmark)
-    #     if not created:
-    #         advertisementmark.delete()
-    #     return HttpResponse(
-    #         json.dumps({
-    #             "result": created,
-    #             "count": self.model.objects.filter(obj_id=advertisement_id).count()
-    #         }),
-    #         content_type="application/json"
-    #     )
-
-    # def get_context_data(self, request, advertisement_id):
-    #     user = request.user
-    #     # mark = super(AdvertisementMarkView, self).get_context_data(user=user)
-    #     advertisement_marked = get_object_or_404(user, id=advertisement_id)
-    #     try:
-    #         context = AdvertisementFollowing.objects.filter(advertisement=advertisement_marked, user=user).exists()
-    #     except Exception:
-    #         context = False
-    #     print(context)
-    #     return context
-
-    # def add_to_favorite(self, request, advertisement_id):
-    #     if self.request.user.is_authenticated():
-    #         advertisement = get_object_or_404(Advertisement, pk=advertisement_id)
-    #         if AdvertisementFollowing.objects.filter(advertisement=advertisement, user=request.user).exists():
-    #             AdvertisementFollowing.objects.filter(advertisement=advertisement, user=request.user).delete()
-    #         else:
-    #             AdvertisementFollowing.objects.create(advertisement=advertisement, user=request.user)
-    #         return HttpResponseRedirect(reverse("advertisement_detail", kwargs={"advertisement_id": advertisement_id}))
-    #     else:
-    #         return HttpResponseRedirect(reverse("signin"))
-
-
-    # def post(self, request, advertisement_id):
-    #     user_follow = request.user(request)
-    #     # пытаемся получить закладку из таблицы, или создать новую
-    #     bookmark, created = self.model.objects.get_or_create(user=user_follow, obj_id=id)
-    #     # если не была создана новая закладка,
-    #     # то считаем, что запрос был на удаление закладки
-    #     if not created:
-    #         bookmark.delete()
-    #     return HttpResponse(
-    #         json.dumps({
-    #             "result": created,
-    #             "count": self.model.objects.filter(obj_id=id).count()
-    #         }),
-    #         content_type="application/json"
-    #     )
+# class AdvertisementMarkMixinView(View):
+#     model = AdvertisementFollowing
+#     model_ad = Advertisement
+#     template_name = 'advertisement_detail.html'
+#
+#     def get_object(self, queryset=None):
+#         # ad = get_object_or_404()
+#         advertisement = get_object_or_404(self.model_ad, pk=self.kwargs['pk'])
+#         # user = self.request.user
+#         return advertisement
+#
+#     def get(self, request, advertisement_id):
+#         print('id ad is - ', advertisement_id)
+#         user_follow = request.user
+#         # пытаемся получить закладку из таблицы, или создать новую
+#         advertisementmark, created = self.model.objects.get_or_create(user=user_follow, obj_id=advertisement_id)
+#         # если не была создана новая закладка,
+#         # то считаем, что запрос был на удаление закладки
+#         # print(advertisementmark)
+#         if not created:
+#             advertisementmark.delete()
+#         return advertisementmark
 
 
 class AdvertisementMessageView(CreateView):
@@ -395,10 +321,8 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         image_form = AdvertisementImageFormSet(request.POST, request.FILES, instance=self.object)
         print(self.object)
         if (form.is_valid() and image_form.is_valid()):
-            print("bla-bla-bla")
             return self.form_valid(form, image_form)
         else:
-            print("NE bla")
             return self.form_invalid(form, image_form)
 
     def form_valid(self, form, image_form):
@@ -431,22 +355,64 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         return context
 
 
+class AjaxAdmarkView(RedirectView):
+    # в данную переменную будет устанавливаться модель закладок, которую необходимо обработать
+    # model = None
+    model = AdvertisementFollowing
+
+    def get_redirect_url(self, *args, **kwargs):
+        ad = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
+        # obj = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
+        user = self.request.user
+        admark, created = self.model.objects.get_or_create(user=user, obj_id=ad.id)
+        if not created:
+            admark.delete()
+        url_ = admark.get_absolute_url()
+        return url_
+
+
+class AjaxAPIAdmarkView(APIView):
+    # authentication_classes = (authentication.TokenAuthentication,)
+    # permission_classes = (permissions.IsAdminUser,)
+
+    authentication_classes = (authentication.SessionAuthentication,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def get(self, request, pk=None, format=None):
+        """
+        Return True if hadn't a relation .
+        """
+        # obj = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
+        user = self.request.user
+        admark, created = AdvertisementFollowing.objects.get_or_create(user=user, advertisement_id=self.kwargs['pk'])
+        # url_ = admark.get_api_absolute_url()
+        url_ = admark.get_absolute_url()
+        if not created:
+            admark.delete()
+            data = {
+                'ad_mark': False,
+                'url_favorite_icon': '/static/img/favorite_FALSE.png'
+                    }
+        else:
+            data = {
+                'ad_mark': True,
+                'url_favorite_icon': '/static/img/favorite_TRUE.png'
+            }
+
+        return Response(data)
+
+
 class AdvertisementDetailView(DetailView):
     model = Advertisement
     model_hits = PageHit
+    model_following = AdvertisementFollowing
     template_name = 'advertisement_detail.html'
 
     def get_context_data(self, **kwargs):
         context = super(AdvertisementDetailView, self).get_context_data(**kwargs)
         advertisement = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
         user = self.request.user
-        try:
-            following = AdvertisementFollowing.objects.filter(user=user, advertisement=advertisement)
-        except Exception:
-            following = None
-        if following:
-            context['following'] = True
-
+        context['img_following'] = self.following(user, advertisement)
         views_page = self.hit_count(user, advertisement)
         context['views_page'] = views_page
         if user == advertisement.author:
@@ -474,6 +440,31 @@ class AdvertisementDetailView(DetailView):
             except self.model_hits.DoesNotExist:
                 views = 0
         return views
+
+    """
+    Add or remove page to favorites list
+    Create relate current user to current ad if hasn't before, or remove if it had.
+    """
+
+    def following(self, user, advertisement):
+        try:
+            follow = AdvertisementFollowing.objects.get(user=user, advertisement=advertisement)
+            following = '/static/img/favorite_TRUE.png'
+        except AdvertisementFollowing.DoesNotExist:
+            following = '/static/img/favorite_FALSE.png'
+        return following
+
+        # # нам потребуется пользователь
+        # print("user_follow is ", user)
+        # # пытаемся получить закладку из таблицы, или создать новую
+        # # bookmark, created = self.model.objects.get_or_create(user=user, obj_id=pk)
+        # following, created = self.model_following.objects.get_or_create(user=user, advertisement=advertisement)
+        # # если не была создана новая закладка,
+        # # то считаем, что запрос был на удаление закладки
+        # if not created:
+        #     following.delete()
+        # # return HttpResponseRedirect(reverse_lazy('advertisement_detail'))
+        # return following
 
 
 class AdvertisementDeleteView(DeleteView):

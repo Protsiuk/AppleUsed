@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<title>Прогноз погоды</title>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+</head>
+ 
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+ 
+<script>
+ 
+  $( function() {
+ 
+    $('#getForecast').click( function() {
+      var data = { city: "Васюки", date: "20120318" };
+      $.get( "getForecast.txt", data, success, "json" );
+    } );
+ 
+    function success( forecastData ) {
+      var forecast = forecastData.city + " прогноз на " + forecastData.date;
+      forecast += ": " + forecastData.forecast + ". Максимальная температура: " + forecastData.maxTemp + "C";
+      alert( forecast );
+    }
+ 
+  } );
+ 
+</script>
+ 
+</head>
+ 
+<body>
+ 
+<button id="getForecast">Получить прогноз погоды</button>
+ 
+</body>
+</html>

@@ -123,7 +123,22 @@ class AdvertisementFollowing (models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='follower')
 
     def __str__(self):
-        return 'Follow user %s to %s' % (self.user.email, self.advertisement.title)
+        return 'Follow user %s to %s (%s)' % (self.user.email, self.advertisement.title, self.advertisement.id)
+
+    def get_ad_id(self):
+        return self.advertisement.id
+
+    def get_author_of_ad(self):
+        return self.advertisement.author
+
+    def get_absolute_url(self):
+        return reverse("advertisement_detail", kwargs={'pk': self.advertisement.id})
+
+    def get_api_favorite_url(self):
+        return reverse("ad-api-favorite", kwargs={'pk': self.advertisement.id})
+
+    # def get_api_favorite_url(self):
+    #     return reverse("advertisement-api:detail", kwargs={'pk': self.get_ad_id})
 
     class Meta:
         verbose_name = 'Advertisment is following'

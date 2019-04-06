@@ -18,6 +18,22 @@ class AdvertisementImageInline(admin.StackedInline):
     model = AdvertisementImage
 
 
+@admin.register(AdvertisementFollowing)
+class AdvertisementFollowingAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'advertisement',
+        'get_ad_id',
+        'get_author_of_ad',
+        'user',
+        ]
+    list_filter = ['advertisement', 'user']
+    # ordering = ['-date']
+
+    class Meta:
+        model = AdvertisementFollowing
+
+
 @admin.register(PageHit)
 class PageHitAdmin(admin.ModelAdmin):
     list_display = [
@@ -29,14 +45,6 @@ class PageHitAdmin(admin.ModelAdmin):
         ]
     # exclude = ('phone_regex',)
     list_filter = ['id', 'advertisement', 'date', 'hits_counter']
-
-#     # fieldsets = (
-#     #     (None, {'fields': ('email', 'username', 'password')}),
-    #     (_('Personal info'), {'fields': ('first_name', 'last_name', 'locations_user', 'phone_number_user', 'birth_day')}),
-    #     (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
-    #     (_('Important data'), {'fields': ('last_login', 'date_joined')}),
-    # )
-
     ordering = ['-date']
 
     class Meta:
@@ -101,6 +109,6 @@ class AdvertisementImageAdmin(admin.ModelAdmin):
 # admin.site.register(SiteConfiguration)
 # admin.site.register(Advertisement)
 # admin.site.register(AdvertisementImage)
-admin.site.register(AdvertisementFollowing)
+# admin.site.register(AdvertisementFollowing)
 admin.site.register(AdvertisementMessage)
 admin.site.register(AdvertisementImage, AdvertisementImageAdmin)

@@ -3,22 +3,26 @@
 {% load humanize %}
 {% load formated_datas %}
 
-    {% block title %} {{ advertisement.title }}, AppleUsed {% endblock title %}
+{% block title %} {{ advertisement.title }}, AppleUsed {% endblock title %}
+
+{#<script>#}
+{##}
+{#</script>#}
+
     {% block content %}
 
         <hr>
         <div class="col-lg-12">
-            <tb>
-
+{#            <tb>#}
                 <ul class=class="col-lg-3">
                     {% if you_is_author %}
-                        <h4 class="row ">Это ваше объявление.
+                        <div class="row ">Это ваше объявление.
 {#                            <form action="{% url 'delete_ad' pk=object.id %}">#}
 {#                            </form>#}
                         <a href="{% url 'edit_ad' pk=object.id %}">
                             <input type="submit" name="submit" class="btn btn-sm btn-primary" value="Редактировать?"/>
 {#                            Или удалить?#}
-                        </a></h4>
+                        </a></div>
 {#                        <input type="hidden">#}
                         <a href="{% url 'delete_ad' pk=object.id %}">
 {#                            <input type="submit" name="submit" class="btn btn-sm btn-primary"/>#}
@@ -26,34 +30,41 @@
                                     <span class="glyphicon glyphicon-trash"></span>
                                 </button>
                         </a>
-
 {#                        <button type="button" class="btn btn-default btn-lg">#}
 {#                            <span class="glyphicon glyphicon-star" aria-hidden="true"></span>STAR#}
 {#                        </button>#}
-
                     {% endif %}
                 </ul>
-                <b class="title_advertisement"><h4>{{ object.title }}</h4></b>
-                <a>Номер объявления:{{ object.id }}</a><br>
+
+                <h4 class="title_advertisement"><b>{{ object.title }}</b></h4>
+                <a id="ad_id" data-key="{{ object.id }}">Номер объявления:{{ object.id }}</a><br>
                 <a>Добавлено {{ object.created | formated_datas}}</a><br>
                 <a class="author">Автор <b>{{ object.author.first_name }} </b></a><br>
                 <a class="phone_author">Телефон для связи с автором <b>{{ object.phone_author }}</b></a><br>
                 <a class="hit_count">Количество просмотров <b>
                      <img src="{% static 'img/views.gif' %}" class="img-thumbnail align-right" width="50" height="50">
                     {{ views_page }}</b></a><br>
-            </tb>
-            <tb>
-                <div class="col-12">
-                {% if object.advertisement in object.advertisement.advertisementfollowing_set %}
-                    {{ object.advertisementfollowing_set }}
-                    <img src="{% static 'img/favorite_TRUE.png' %}" class="img-thumbnail align-right" width="50" height="50">
-                {% else %}
-                    <img src="{% static 'img/favorite_FALSE.png' %}" class="img-thumbnail align-right" width="50" height="50">
-{#                    <p4>FOLLOWING is blue {{ following }}</p4>#}
+{#            </tb>#}
+{#            <tb>#}
+
+{#                <div data-id="{{ like_obj.id }}" data-type="article" data-action="bookmark" title="Избранное">#}
+{#                    <span class="glyphicon glyphicon-star"></span>#}
+{#                    <span data-count="bookmark">{{ like_obj.get_bookmark_count }}</span>#}
+{#                </div>#}
+
+                {% if not you_is_author %}
+                    <div class="favorite-item">
+                        <a id="favorite" class="img-rounded"
+                           style='cursor: pointer'
+    {#                        data-href-template="{% static 'img/favorite_TRUE.png' %}"#}
+                            data-href-template="{% url 'ad-api-favorite' pk=object.id%}"
+                            data-id="{{ object.id }}">
+                            <img src="{{ img_following }}" class="img-thumbnail align-right" width="50" height="50">
+                        </a>
+                    </div>
                 {% endif %}
-                </div>
-            </tb>
-            <tb>
+{#            </tb>#}
+{#            <tb>#}
                 <a class="text">{{ object.description }}</a>
                 <div align="right"><b class="price">{{ object.price }} USD</b></div><br>
                 <div align="center">
@@ -71,16 +82,19 @@
                     {% endif %}
                     </ul>
                 </div>
-            </tb>
+{#            </tb>#}
 
-            <ul class=class="col-lg-3">
+            <div class=class="col-lg-3">
+{#                <li>#}
                 {% if  not you_is_author %}
-                    <b>Написать автору объявления {{ object.title }}:</b><br>
+                    <h5>Написать автору объявления:
+                    <a href="#"><b> {{ object.title }}:</b></a><br>
+                    </h5><br>
                 {% endif %}
-            </ul>
+{#                </li>#}
+            </div>
             <hr>
         </div>
-
 
 {#        <b>Написать автору объявления {{ object.title }}:</b><br>#}
 {#         <a href="{% url 'send_message' %}"><u>Написать автору объявления</u></a>#}

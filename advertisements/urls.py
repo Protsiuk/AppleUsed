@@ -2,14 +2,27 @@
 """
 
 from django.conf.urls import url
-# from advertisements.views import advertisements, single_advertisement, ordering_list, new_advertisement # like_single_publication, \
-from advertisements.views import AdvertisementCreateView, AdvertisementHomeView, AdvertisementDetailView, \
-    AdvertisementsSearchView, AdvertisementMarkMixinView, AdvertisementsListMarksView, MyAdvertisementActiveView, \
-    MyAdvertisementArchiveView, AdvertisementUpdateView, AdvertisementDeleteView, AdvertisementMessageView
+from advertisements.views import (
+    AdvertisementCreateView,
+    AdvertisementHomeView,
+    AdvertisementDetailView,
+    AdvertisementsSearchView,
+    AdvertisementsListMarksView,
+    MyAdvertisementActiveView,
+    MyAdvertisementArchiveView,
+    AdvertisementUpdateView,
+    AdvertisementDeleteView,
+    # AdvertisementMessageView,
+    AjaxAPIAdmarkView,
+    )
     # GetSingleAdvertisementView, CreateAdvertisementView #publications_as_json,
 
 # app_name = 'advertisement'
 urlpatterns = [
+
+    #---URL for API------
+    url(r'^api/(?P<pk>[\d]+)/favorite$', AjaxAPIAdmarkView.as_view(), name='ad-api-favorite'),
+
     # -----------CBV---------
     url(r'^(?P<pk>[\d]+)$', AdvertisementDetailView.as_view(), name='advertisement_detail'),
     url(r'^create/', AdvertisementCreateView.as_view(), name='new_advertisement'),
@@ -24,6 +37,7 @@ urlpatterns = [
     url(r'my_archive_advertisements/$', MyAdvertisementArchiveView.as_view(), name='archive_advertisements'),
 
     url(r'^$', AdvertisementHomeView.as_view(), name='main'),
+
 
     # url(r'^(?P<pk>[\d]+)$', AdvertisementMessageView.as_view(), name='advertisement_detail'),
     # url(r'^(?P<advertisement_id>[\d]+)/(?P<slug>[-\w]+)/$', AdvertisementDetailView.as_view(), name='advertisement_detail'),
