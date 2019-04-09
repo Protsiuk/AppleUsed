@@ -46,7 +46,11 @@
     <div class="top-content">
         <div class="row">
             <div class="col-lg-12">
-                <p>Результаты поиска:</p>
+                {% if object_list|length != 0 %}
+                    <p>В результате поиска найдено объявлений - {{ object_list|length }} : </p>
+                {% else %}
+                    <p>Извините, но ничего не найдено. Уточните поиск!</p>
+                {% endif %}
             </div>
         </div>
     </div>

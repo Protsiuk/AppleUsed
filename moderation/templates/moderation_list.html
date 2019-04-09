@@ -1,0 +1,55 @@
+{% load static %}
+{% load humanize %}
+{% load formated_datas %}
+
+{% for object in object_list %}
+            <hr>
+            <div class="row product-item">
+                <div class="col-md-4">
+{#                                <div class="product-item">#}
+                    <div class="product-item-image">
+{#                                <div class="card md-6 box-shadow">#}
+{#                                    <li class="product-image">#}
+{#                        <img src="{{ object.main_image.url|default_if_none:'img/480px-No_image_available.png'}}" class="mx-auto d-block" width="100%" height="218"/>#}
+                        {% if  object.main_image %}
+                            <a class="card-title" href="{% url 'advertisement_detail' pk=object.id%}">
+                            <img src="{{ object.main_image.url }}" class="mx-auto d-block" width="100%" height="218" alt="advertisement">
+                            </a>
+                        {% else %}
+                            <a class="card-title" href="{% url 'advertisement_detail' pk=object.id%}">
+                            <img src="{% static 'img/480px-No_image_available.png' %}" class="mx-auto d-block" width="200" alt="advertisement">
+                            </a>
+                        {% endif %}
+{#                                    </li>#}
+                    </div>
+                </div>
+                <div class="col-md-8">
+{#                    <div class="control-label favorite">#}
+{#                        {% if favorite.advertisement in favorite.advertisementfollowing_set %}#}
+{#                            {{ favorite.advertisementfollowing_set }}#}
+{#                            <img src="{% static 'img/favorite_TRUE.png' %}" class="img-thumbnail align-right" width="50" height="50">#}
+{#                        {% else %}#}
+{#                            <img src="{% static 'img/favorite_FALSE.png' %}" class="img-thumbnail align-right" width="50" height="50">#}
+{#                        {% endif %}#}
+{#                    </div>#}
+                    <div class=class="product-item-text">
+                        <a class="card-title" href="{% url 'advertisement_detail' pk=object.id%}">
+                            <h5>{{ object.title }}</h5>
+                        </a><br>
+                        <a class="card-text">{{ object.description|truncatechars:100 }}</a><br>
+                        {% if object.updated %}
+                            <a class="card-action">Обновлено {{ object.updated.date|formated_datas }}</a>
+                        {% else %}
+                            <a class="card-action">Создано {{ object.created.date|formated_datas }}</a>
+                        {% endif %}
+
+{#                            </div>#}
+
+                        <li><b class="price">{{ object.price }} $</b></li>
+
+            {#            <b>Добавлено {{ object.added | formated_datas}}</b>#}
+{#                                    </div>#}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}

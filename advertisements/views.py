@@ -58,9 +58,8 @@ class AdvertisementsSearchView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get('q')
-        # result = result.objects.filter(query)
-        result = Advertisement.objects.search(query)
-        from_min_price =self.request.GET.get('min_price')
+        result = Advertisement.objects.search(query).filter(is_visible=True)
+        from_min_price = self.request.GET.get('min_price')
         to_max_price = self.request.GET.get('max_price')
         if from_min_price:
             result = result.filter(price__gte=from_min_price)
@@ -113,32 +112,6 @@ class MyAdvertisementArchiveView(LoginRequiredMixin, ListView):
         author = self.request.user
         ctx = ctx.filter(author=author, is_active=False)
         return ctx
-
-
-# class MyAdvertisementView(LoginRequiredMixin, ListView):
-#     model = Advertisement
-#     template_name = 'my_advertisements.html'
-#
-#     def get_queryset(self):
-#         ctx = super(MyAdvertisementView, self).get_queryset()
-#         author = self.request.user
-#         ctx = ctx.filter(author=author)
-#         return ctx
-
-#
-# class AjaxAdvertisementMarkView(View):
-#     template_name = 'advertisement_detail.html'
-#     model = AdvertisementFollowing
-#
-#     def get(self, request, args, **kwargs):
-#         ctx = []
-#         if request.POST:
-#             advertisement_id = self.request.GET.get('advertisement_id')
-#             user_follower = request.user
-#             # advertisementmark = self.model.objects
-#             advertisementmark, created = self.model.objects.get_or_create(user=user_follower, obj_id=advertisement_id)
-#             ctx['advertisementmark'] = advertisementmark
-#             return render(request, self.template_name, ctx)
 
 
 class AdvertisementsListMarksView(LoginRequiredMixin, ListView):
@@ -261,21 +234,6 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         obj = self.get_object()
         return obj.author == self.request.user
 
-    # def dispatch(self, request, *args, **kwargs):
-    #     user_test_result = self.get_test_func()()
-    #     if not request.user.is_authenticated:
-    #         return self.handle_no_permission()
-    #     else:
-    #         if not user_test_result:
-    #             return self.get_permission_denied_message()
-    #     return super(AdvertisementUpdateView, self).dispatch(request, *args, **kwargs)
-
-    # def dispatch(self, request, *args, **kwargs):
-    #     obj = self.get_object()
-    #     if obj.author != self.request.user:
-    #         return Http404("You are not allowed to edit this Ad")
-    #     return super(AdvertisementUpdateView, self).dispatch(request, *args, **kwargs)
-
     def get(self, request, *args, **kwargs):
         """
         Handles GET requests and instantiates blank versions of the form
@@ -289,20 +247,6 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         return self.render_to_response(
             self.get_context_data(form=form,
                                   image_form=image_form))
-
-        # if self.object.author != self.request.user:
-        #     print('ne author')
-        #     return self.render_to_response(self.get_permission_denied_message())
-        #     # return self.handle_no_permission()
-        #     # return (self.get_permission_denied_message())
-        # else:
-        #     form_class = self.get_form_class()
-        #     form = self.get_form(form_class)
-        #     # form.instance.author = self.request.user
-        #     image_form = AdvertisementImageFormSet()
-        #     return self.render_to_response(
-        #         self.get_context_data(form=form,
-        #                               image_form=image_form))
 
     def post(self, request, *args, **kwargs):
         """

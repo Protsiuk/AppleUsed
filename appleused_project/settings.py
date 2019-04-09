@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     # project apps
     'accounts',
     'advertisements',
+    'moderation',
     'search',
     # 'send_email',
 
@@ -53,7 +54,7 @@ INSTALLED_APPS = [
     'solo',
     'rest_framework',
 
-    'moderation',
+    # 'moderation',
     # 'rest_framework.authtoken',
     # 'password_reset',
     # 'rest_auth',

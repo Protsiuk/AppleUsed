@@ -19,18 +19,14 @@ class Moderator(models.Model):
     def __str__(self):
         return 'Moderator is %s' % self.moderator.email
 
+    @property
+    def is_moderator(self):
+        """
+        Always return True. This is a way to tell if the user has been
+        authenticated and is staff in templates.
+        """
+        return True
 
-# class ModerationManager(models.Manager):
-#
-#     def search(self, query=None):
-#         qs = self.get_queryset()
-#         if query is not None:
-#             or_lookup = (Q(title__icontains=query)|
-#                          Q(description__icontains=query)|
-#                          Q(id__icontains=query)
-#                         )
-#             qs = qs.filter(or_lookup).distinct() # distinct() is often necessary with Q lookups
-#         return qs
 
 class Checklist(models.Model):
     check_title = models.BooleanField(_('Checking of title'), default=False)
