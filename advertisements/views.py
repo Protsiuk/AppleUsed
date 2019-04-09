@@ -1,13 +1,8 @@
-import json
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, get_list_or_404
 
-from django.http import HttpResponse, Http404
-from django.forms import formset_factory
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.exceptions import PermissionDenied
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse_lazy
-# from django.views import View
 
 from django.views.generic import View, CreateView, FormView, RedirectView, ListView, UpdateView, DetailView, DeleteView
 

@@ -1,8 +1,6 @@
 from django.contrib import admin
 from advertisements.models import Advertisement, AdvertisementImage, AdvertisementFollowing, AdvertisementMessage, \
     PageHit, SiteConfiguration
-# from advertisements.forms import AdvertisementForm
-
 
 # class ChoiceInline(admin.StackedInline):
 #     model = Advertisement
@@ -39,7 +37,7 @@ class PageHitAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'advertisement',
-        # 'user',
+        'advertisement_id',
         'date',
         'hits_counter',
         ]
@@ -66,6 +64,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
         'location_author',
         'main_image',
         'is_active',
+        'is_visible',
         'slug',
         'product_number',
         'created',

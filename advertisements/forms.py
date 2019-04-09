@@ -13,7 +13,6 @@ class AdvertisementForm(forms.ModelForm):
     class Meta:
         model = Advertisement
         fields = (
-            # 'id',
             'title',
             'category_equipment',
             'price',
@@ -39,22 +38,12 @@ AdvertisementImageFormSet = inlineformset_factory(
     fields=('image',),
     can_delete=True
     )
-    # form=AdvertisementImageForm,
-    # fields=('image',))
-    # extra=2)
-    # widgets={'name': Textarea(attrs={'cols': 80, 'rows': 20})})#fields=('image',),
-
-
-# class AdvertisementCreationMultiForm(MultiModelForm):
-#     form_classes = {
-#         'AdvertisementImageForm': AdvertisementImageForm,
-#         'Advertisement': AdvertisementForm,
-#     }
 
 
 class AdvertisementMessageForm(forms.Form):
     email_visitor = forms.EmailField(max_length=50)
     text = forms.CharField(widget=forms.Textarea())
+
     class Meta:
         model = Advertisement
         fields = (
@@ -62,8 +51,9 @@ class AdvertisementMessageForm(forms.Form):
             'email_visitor',
         )
 
+
 class AdvertisementsSearchForm(forms.Form):
-    q = forms.CharField(label="пошук", required=False)
+    q = forms.CharField(label="search", required=False)
 
 
 class AdvertisementFilterForm(forms.Form):

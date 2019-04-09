@@ -56,8 +56,8 @@ class Advertisement(models.Model):
         (WATCH, 'Apple Watch'),
         (ACCESSORY, 'Accessory'),
         )
-    title = models.CharField(_('Title advertisment'), max_length=255)
-    category_equipment = models.CharField(_('Category advertisment'),
+    title = models.CharField(_('Title advertisement'), max_length=255)
+    category_equipment = models.CharField(_('Category advertisement'),
                                           max_length=25,
                                           choices=CATEGORY_CHOICES,
                                           default='iPhone'
@@ -67,18 +67,19 @@ class Advertisement(models.Model):
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$',
                                  message="Phone number must be entered in the format: '+9999999999'. Up to 15 digits allowed.")
     phone_author = models.CharField(_('Phone number author'), validators=[phone_regex], max_length=15, blank=True)
-    description = models.TextField(_('Description advertisment'), default='')
+    description = models.TextField(_('Description advertisement'), default='')
     # short_description = models.TextField(_('Short Description advertisment'), blank=True, null=False)
-    price = models.CharField(_('Price advertisment'), max_length=255)
+    price = models.CharField(_('Price advertisement'), max_length=255)
     product_number = models.CharField(_('Manufacture/serial number'), max_length=25, blank=True, default='')
     slug = models.SlugField(_('slug'), blank=True, max_length=255)
     location_author = models.CharField(_('location'), default='', blank=True, max_length=512)
-    main_image = models.ImageField(_('Main image advertisment'), upload_to=get_file_path, default='', blank=True)
+    main_image = models.ImageField(_('Main image advertisement'), upload_to=get_file_path, default='', blank=True)
     # image_is_main = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
     is_active = models.BooleanField(default=True)
     # hit_counter = models.PositiveIntegerField(_('Hit count'), default=0)
+    is_visible = models.BooleanField(default=False)
 
     objects = AdvertisementManager()
 
@@ -90,8 +91,8 @@ class Advertisement(models.Model):
 
 
     class Meta:
-        verbose_name = 'Advertisment'
-        verbose_name_plural = 'Advertisments'
+        verbose_name = 'Advertisement'
+        verbose_name_plural = 'Advertisements'
 
     # @property
     # def slug(self):
@@ -111,11 +112,14 @@ class PageHit(models.Model):
     hits_counter = models.PositiveIntegerField(_('Hit count'), default=0)
 
     def __str__(self):
-        return 'Advertisement %s has %s page hits' % (self.advertisement.title, self.hits_counter)
+        return 'Advertisement %s(ad-id: %s) has %s page hits' % (self.advertisement.title, self.advertisement.id, self.hits_counter)
 
     class Meta:
-        verbose_name = 'Views of advertisment'
-        verbose_name_plural = 'Views of advertisments'
+        verbose_name = 'Views of advertisement'
+        verbose_name_plural = 'Views of advertisements'
+
+    def advertisement_id(self):
+        return self.advertisement.id
 
 
 class AdvertisementFollowing (models.Model):
@@ -141,13 +145,13 @@ class AdvertisementFollowing (models.Model):
     #     return reverse("advertisement-api:detail", kwargs={'pk': self.get_ad_id})
 
     class Meta:
-        verbose_name = 'Advertisment is following'
-        verbose_name_plural = 'Advertisments are following'
+        verbose_name = 'Advertisement is following'
+        verbose_name_plural = 'Advertisements are following'
 
 
 class AdvertisementImage(models.Model):
     advertisement = models.ForeignKey(Advertisement, on_delete=models.CASCADE, null=True, related_name='images')
-    image = models.ImageField(_('Image advertisment'), upload_to=get_file_path, default='', blank=True)
+    image = models.ImageField(_('Image advertisement'), upload_to=get_file_path, default='', blank=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
     is_active = models.BooleanField(default=True)
@@ -157,8 +161,8 @@ class AdvertisementImage(models.Model):
         return '%s' % self.image
 
     class Meta:
-        verbose_name = 'Image of Advertisment'
-        verbose_name_plural = 'Images of Advertisments'
+        verbose_name = 'Image of Advertisement'
+        verbose_name_plural = 'Images of Advertisements'
 
 
 class AdvertisementMessage (models.Model):
@@ -172,8 +176,8 @@ class AdvertisementMessage (models.Model):
         return 'Massage %s  from %s to author - %s' % (self.email_visitor, self.text, self.author.email)
 
     class Meta:
-        verbose_name = 'Advertisment massage'
-        verbose_name_plural = 'Advertisment massages'
+        verbose_name = 'Advertisement massage'
+        verbose_name_plural = 'Advertisement massages'
 
 
 class SiteConfiguration(SingletonModel):
