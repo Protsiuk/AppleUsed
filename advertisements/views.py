@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse_lazy
 
 from django.views.generic import View, CreateView, FormView, RedirectView, ListView, UpdateView, DetailView, DeleteView
 
-from advertisements.forms import AdvertisementForm, AdvertisementMessageForm,\
+from advertisements.forms import AdvertisementCreationForm, AdvertisementMessageForm,\
                                 AdvertisementFilterForm, AdvertisementsSearchFilterMultiForm, AdvertisementImageForm,\
                                 AdvertisementImageFormSet
 from advertisements.models import Advertisement, AdvertisementMessage, AdvertisementFollowing, PageHit, AdvertisementImage
@@ -29,25 +29,6 @@ class AdvertisementHomeView(ListView):
         # qs = super(AdvertisementHomeView, self).get_queryset()
         qs = Advertisement.objects.order_by('-created').filter(is_active=True)[:4]
         return qs
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(AdvertisementHomeView, self).get_context_data(**kwargs)
-    #     advertisement = get_object_or_404(Advertisement, pk=self.kwargs['advertisement_id'])
-    #     try:
-    #         context['following'] = AdvertisementFollowing.objects.filter(user=self.request.user, advertisement=advertisement)
-    #     except Exception:
-    #         context['following'] = None
-    #     return context
-
-    # def get_queryset(self):
-    #     queryset = []
-    #     advertisements = Advertisement.objects.all().order_by('-created')
-    #     # Get all images
-    #     images = AdvertisementImage.objects.all()
-    #     queryset.append(advertisements)
-    #     queryset.append(images)
-    #     print(queryset)
-    #     return queryset
 
 
 class AdvertisementsSearchView(ListView):
@@ -157,7 +138,7 @@ class AdvertisementMessageView(CreateView):
 class AdvertisementCreateView(LoginRequiredMixin, CreateView):
     model = Advertisement
     success_url = '/advertisements/'
-    form_class = AdvertisementForm
+    form_class = AdvertisementCreationForm
     template_name = 'create_advertisement.html'
     """Create NEW advertisement"""
     # fields = ['username', 'first_name', 'last_name', 'birth_day', 'email', 'location_user', 'phone_number_user']
@@ -181,7 +162,7 @@ class AdvertisementCreateView(LoginRequiredMixin, CreateView):
         formsets with the passed POST variables and then checking them for
         validity.
         """
-        # self.object = None
+        self.object = None
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         image_form = AdvertisementImageFormSet(request.POST, request.FILES)#, queryset=AdvertisementImage.objects.none())
@@ -225,7 +206,7 @@ class AdvertisementCreateView(LoginRequiredMixin, CreateView):
 class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Advertisement
     success_url = '/advertisements/my_active_advertisements/'
-    form_class = AdvertisementForm
+    form_class = AdvertisementCreationForm
     template_name = 'update_advertisement.html'
     permission_denied_message = 'You can not edit this ad.'
     """Update existing advertisement"""
@@ -271,8 +252,11 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         success page.
         """
         # form.instance.author = self.request.user
+        self.object = form.save(commit=False)
+        self.object.is_visible = False
         self.object = form.save()
         image_form.instance = self.object
+        # self.object.is_visible = False
         image_form.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -319,13 +303,15 @@ class AjaxAPIAdmarkView(APIView):
 
     def get(self, request, pk=None, format=None):
         """
-        Return True if hadn't a relation .
+        Return True and url to icon favorites True if hadn't a relation .
         """
         # obj = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
         user = self.request.user
         admark, created = AdvertisementFollowing.objects.get_or_create(user=user, advertisement_id=self.kwargs['pk'])
         # url_ = admark.get_api_absolute_url()
         url_ = admark.get_absolute_url()
+        # print('TYPE admark is -', type(admark))
+        # print('USER is -', user, ', and AD is - ', admark)
         if not created:
             admark.delete()
             data = {
@@ -337,7 +323,6 @@ class AjaxAPIAdmarkView(APIView):
                 'ad_mark': True,
                 'url_favorite_icon': '/static/img/favorite_TRUE.png'
             }
-
         return Response(data)
 
 
@@ -356,6 +341,7 @@ class AdvertisementDetailView(DetailView):
         context['views_page'] = views_page
         if user == advertisement.author:
             context['you_is_author'] = True
+        # print(advertisement.category_equipment)
         return context
 
     """

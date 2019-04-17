@@ -104,7 +104,7 @@ class UserRegistrationForm(forms.Form):
             ]
         # labels = {'title': '', 'birthday': ''}
         # widgets = {'birthday': forms.SelectDateWidget()}
-        widgets = {'birthday': DateInput(),}
+        widgets = {'birthday': DateInput()}
 
     # class Meta:
     #     model = user
@@ -136,8 +136,8 @@ class UserRegistrationForm(forms.Form):
         except ValueError:
             raise forms.ValidationError("Error. Пожалуйста проверте еще раз данные")
 
-    def save(self,commit = True):
-        user = super(UserRegistrationForm, self).save(commit = False)
+    def save(self, commit=True):
+        user = super(UserRegistrationForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
         user.first_name = self.cleaned_data['First name']
         user.last_name = self.cleaned_data['Last name']

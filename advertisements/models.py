@@ -43,8 +43,8 @@ class Advertisement(models.Model):
     IPHONE = 'iPhone'
     MEDIAPLAYER = 'iPod'
     TV = 'MeidaBox'
-    WATCH = 'Apple Watch',
-    ACCESSORY = 'Accessory',
+    WATCH = 'Apple Watch'
+    ACCESSORY = 'Accessory'
     CATEGORY_CHOICES = (
         (PC, 'iMac'),
         (NOTEBOOK, 'MacBook'),
@@ -79,6 +79,7 @@ class Advertisement(models.Model):
     updated = models.DateTimeField(auto_now_add=False, auto_now=True)
     is_active = models.BooleanField(default=True)
     # hit_counter = models.PositiveIntegerField(_('Hit count'), default=0)
+    # is_moderated = models.BooleanField(default=False)
     is_visible = models.BooleanField(default=False)
 
     objects = AdvertisementManager()

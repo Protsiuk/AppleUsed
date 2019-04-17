@@ -4,6 +4,10 @@
 from django.conf.urls import url
 from moderation.views import (
     ListForModerateView,
+    # ModerateDetailView,
+    ModerationFinishedView,
+    ModerationBeginView,
+    # TestStartview,
     )
 
 app_name = 'moderation'
@@ -21,7 +25,11 @@ urlpatterns = [
     # url(r'^(?P<pk>[\d]+)$', AdvertisementMarkMixinView.as_view(), name='advertisement_detail'),
 
     url(r'^$', ListForModerateView.as_view(), name='list_for_moderation'),
-# url(r'^(?P<pk>[\d]+)$', AdvertisementDetailView.as_view(), name='advertisement_detail'),
+    # url(r'^(?P<pk>[\d]+)$', ModerationStartView.as_view(), name='moderate_detail'),
+    # url(r'^moderate/(?P<pk>[\d]+)$', ModerationBeginView.as_view(), name='moderate_detail'),
+    url(r'^moderate/(?P<pk>[\d]+)$', ModerationFinishedView.as_view(), name='moderate_detail'),
+
+    # url(r'^moderate/create/test1', TestStartview.as_view(), name='test_moderation'),
 
     # url(r'^favorites/$', AdvertisementsListMarksView.as_view(), name='favorites'),
     # url(r'my_advertisements/$', MyAdvertisementActiveView.as_view(), name='my_advertisements'),

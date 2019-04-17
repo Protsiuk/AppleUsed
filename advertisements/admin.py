@@ -51,6 +51,7 @@ class PageHitAdmin(admin.ModelAdmin):
 
 @admin.register(Advertisement)
 class AdvertisementAdmin(admin.ModelAdmin):
+    list_per_page = 15
     # add_form = UpdateAdvertisementForm
     # form = AdvertisementForm
     list_display = [

@@ -23,7 +23,7 @@ from django.shortcuts import render, redirect, resolve_url, HttpResponseRedirect
 
 from django.template.loader import render_to_string
 from accounts.tokens import account_activation_token
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 
 from django.utils.http import is_safe_url
 from django.utils.translation import ugettext_lazy as _
@@ -311,8 +311,6 @@ class MyProfileUser(LoginRequiredMixin, DetailView):
         return self.render_to_response(context)
 
 #--------- verification email
-
-
 
 
 def signup(request):

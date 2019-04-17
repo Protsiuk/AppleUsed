@@ -95,8 +95,11 @@ class MyCustomUser(AbstractUser, PermissionsMixin):
     )
     first_name = models.CharField(_('first name'), max_length=30, blank=True)
     last_name = models.CharField(_('last name'), max_length=30, blank=True)
-    is_admin = models.BooleanField(default=False)
+    # is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_moderator = models.BooleanField(default=False)
+    # appointment_moderator = models.DateTimeField(auto_now_add=False, auto_now=False)
+    # fired_moderator = models.DateTimeField(auto_now_add=False, auto_now=False)
     is_superuser = models.BooleanField(default=False)
     is_active = models.BooleanField(_('active'), default=True,
         help_text=_('Designates whether this user should be treated as '

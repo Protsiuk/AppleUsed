@@ -4,7 +4,7 @@ from advertisements.models import Advertisement, AdvertisementImage
 from betterforms.multiform import MultiModelForm
 
 
-class AdvertisementForm(forms.ModelForm):
+class AdvertisementCreationForm(forms.ModelForm):
     # title = forms.CharField()
     # price = forms.CharField()
     # body = forms.CharField(widget=forms.Textarea())
@@ -60,11 +60,6 @@ class AdvertisementFilterForm(forms.Form):
     min_price = forms.IntegerField(label="от", required=False)
     max_price = forms.IntegerField(label="до", required=False)
 
-    # from_town = forms.CharField(max_length=100)
-    # ordering = forms.ChoiceField(label="Сортировка:", required=False, choices=[
-    #     ["-added", "самые новые"],
-    #     ["price", "по возрастанию цены"],
-    #     ["-price", "по убыванию цены"]])
 
 class AdvertisementsSearchFilterMultiForm(MultiModelForm):
     form_classes = {

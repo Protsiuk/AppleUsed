@@ -30,6 +30,7 @@
                 </ul>
 
                 <h4 class="title_advertisement"><b>{{ object.title }}</b></h4>
+                <a class="text-capitalize">Категория: {{ object.category_equipment }}</a><br>
                 <a id="ad_id" data-key="{{ object.id }}">Номер объявления:{{ object.id }}</a><br>
                 <a>Добавлено {{ object.created | formated_datas}}</a><br>
                 <a class="author">Автор <b>{{ object.author.first_name }} </b></a><br>
