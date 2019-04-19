@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+{% load formated_datas %}
+
+
+{% block content %}
+
+    <hr>
+    <div class="top-content">
+        <div class="row">
+            <div class="col-lg-12">
+                {% if object_list|length != 0 %}
+                    <p>Список объявлений, которые Вы проверили: </p>
+                {% else %}
+                    <p>Извините, но Вы еще не проверяли!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        {% for object in object_list %}
+            <hr>
+        {#    <form id="advertisement_form" method="get" action="" enctype="multipart/form-data">#}
+        {#        {% csrf_token %}#}
+                <div class="row product-item">
+                    <div class="col-md-4">
+            {#                                <div class="product-item">#}
+                        <div class="product-item-image">
+                            {% if  object.ad_to_moderate.main_image %}
+        {#                                <a class="card-title" href="{% url 'advertisement_detail' pk=object.id%}">#}
+                                <img src="{{ object.ad_to_moderate.main_image.url }}" class="mx-auto d-block" width="100%" height="200" alt="advertisement">
+{#                                </a>#}
+                            {% else %}
+            {#                            <a class="card-title" href="{% url 'advertisement_detail' pk=object.id%}">#}
+                                <img src="{% static 'img/480px-No_image_available.png' %}" class="mx-auto d-block" width="200" alt="advertisement">
+{#                                </a>#}
+                            {% endif %}
+            {#                                    </li>#}
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+
+                        <div class=class="product-item-text">
+                            <h5>{{ object.ad_to_moderate.title }}</h5>
+                            <br>
+
+                            <a class="card-text">{{ object.ad_to_moderate.description|truncatechars:100 }}</a><br>
+                            {% if object.updated %}
+                                <a class="card-action">Обновлено {{ object.ad_to_moderate.updated.date|formated_datas }}</a>
+                            {% else %}
+                                <a class="card-action">Создано {{ object.ad_to_moderate.created.date|formated_datas }}</a>
+                            {% endif %}
+                        </div>
+                            <li><b class="price">{{ object.ad_to_moderate.price }} $</b></li>
+
+                        <a class="card-action">Проверено {{ object.end_moderate.date|formated_datas }}</a>
+                        {% if  object.status == 1 %}
+                            <img src="{% static 'img/approved.png' %}" class="mx-auto d-block" width="50" alt="advertisement">
+                        {% elif object.status == 0 %}
+                            <img src="{% static 'img/rejected.png' %}" class="mx-auto d-block" width="50" alt="advertisement">
+                        {% endif %}
+
+                {#            <b>Добавлено {{ object.added | formated_datas}}</b>#}
+            {#                                    </div>#}
+            {#                    <a href="{% url 'moderate_detail' pk=object.advertisement.id %}">#}
+                            </div>
+                                <a href="{% url 'moderation:moderate_detail_archive' pk=object.moderation_id %}">
+                                   <button class="btn btn-primary">Проcмотреть</button>
+                                </a>
+                            <div>
+
+        {#                            <a href="{% url 'moderate2_detail' pk=object.id%}">#}
+        {#                               <button class="btn btn-primary">Проверить</button>#}
+        {#                            </a>#}
+        {#                            <button class="btn btn-primary">Проверить</button>#}
+            {#                        <a href="{% url 'moderate_detail' pk=object.id %}">#}
+
+                        </div>
+                    </div>
+
+            {#            <input type="submit" value="Go to my link location" #}
+            {#                 name="Submit" id="frm1_submit" />#}
+
+                </div>
+        {% endfor %}
+        {% include 'pagination.html' %}
+    </div>
+
+{% endblock content %}

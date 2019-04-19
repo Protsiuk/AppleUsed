@@ -15,17 +15,17 @@ class CustomUserAdmin(admin.ModelAdmin):
     # form = EditProfileUserForm
 
     list_display = ([field.name for field in MyCustomUser._meta.fields])
-        # 'id', 'email', 'first_name', 'last_name', 'phone_number_user', 'location_user', 'date_joined', 'birth_day'
-        # ]
+    # list_display = ['id', 'email', 'first_name', 'last_name', 'phone_number_user', 'location_user', 'date_joined', 'birth_day'
+    #     ]
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'is_moderator', 'date_joined',)
 
     fieldsets = (
-        (None, {'fields': ('email', 'username', 'password')}),
+        (None, {'fields': ('email', 'username', 'password1', 'password2')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name', 'location_user', 'phone_number_user', 'birth_day')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_moderator', 'is_superuser')}),
-        (_('Important data'), {'fields': ('last_login', 'date_joined')}),
-    )
-    ordering = ["email"]
+        (_('Important data'), {'fields': ('last_login', 'date_joined')}),)
+
+    # ordering = ["email"]
 
 
 
@@ -54,4 +54,3 @@ class CustomUserAdmin(admin.ModelAdmin):
 # Register your models here.
 # admin.site.register(MyCustomUser, UserAdmin)
 admin.site.register(WebsiteSettings, SingletonModelAdmin)
-

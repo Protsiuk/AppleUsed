@@ -5,7 +5,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse_lazy
 
 from django.views.generic import View, CreateView, FormView, RedirectView, ListView, UpdateView, DetailView, DeleteView
-
+from django.utils import timezone
 from advertisements.forms import AdvertisementCreationForm, AdvertisementMessageForm,\
                                 AdvertisementFilterForm, AdvertisementsSearchFilterMultiForm, AdvertisementImageForm,\
                                 AdvertisementImageFormSet
@@ -209,6 +209,7 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
     form_class = AdvertisementCreationForm
     template_name = 'update_advertisement.html'
     permission_denied_message = 'You can not edit this ad.'
+
     """Update existing advertisement"""
 
     def test_func(self):
@@ -223,7 +224,6 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
-        # form.instance.author = self.request.user
         image_form = AdvertisementImageFormSet()
         return self.render_to_response(
             self.get_context_data(form=form,
@@ -239,7 +239,7 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         image_form = AdvertisementImageFormSet(request.POST, request.FILES, instance=self.object)
-        print(self.object)
+        # print(self.object)
         if (form.is_valid() and image_form.is_valid()):
             return self.form_valid(form, image_form)
         else:
@@ -254,9 +254,11 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         # form.instance.author = self.request.user
         self.object = form.save(commit=False)
         self.object.is_visible = False
+        self.object.updated = timezone.now()
+        print('UPDATED IS', self.object.updated)
         self.object = form.save()
         image_form.instance = self.object
-        # self.object.is_visible = False
+        self.object.is_visible = False
         image_form.save()
         return HttpResponseRedirect(self.get_success_url())
 
@@ -285,7 +287,6 @@ class AjaxAdmarkView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
         ad = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
-        # obj = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
         user = self.request.user
         admark, created = self.model.objects.get_or_create(user=user, obj_id=ad.id)
         if not created:

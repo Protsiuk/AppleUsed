@@ -76,7 +76,7 @@ class Advertisement(models.Model):
     main_image = models.ImageField(_('Main image advertisement'), upload_to=get_file_path, default='', blank=True)
     # image_is_main = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
-    updated = models.DateTimeField(auto_now_add=False, auto_now=True)
+    updated = models.DateTimeField(auto_now_add=False, auto_now=False)
     is_active = models.BooleanField(default=True)
     # hit_counter = models.PositiveIntegerField(_('Hit count'), default=0)
     # is_moderated = models.BooleanField(default=False)

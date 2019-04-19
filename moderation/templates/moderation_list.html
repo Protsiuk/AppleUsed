@@ -36,11 +36,11 @@
                          >
                     </div>
                     <a class="card-text">{{ object.description|truncatechars:100 }}</a><br>
-                    {% if object.updated %}
-                        <a class="card-action">Обновлено {{ object.updated.date|formated_datas }}</a>
-                    {% else %}
-                        <a class="card-action">Создано {{ object.created.date|formated_datas }}</a>
-                    {% endif %}
+{#                    {% if object.updated %}#}
+{#                        <a class="card-action">Обновлено {{ object.updated.date|formated_datas }}</a>#}
+{#                    {% else %}#}
+{#                        <a class="card-action">Создано {{ object.created.date|formated_datas }}</a>#}
+{#                    {% endif %}#}
     {#                            </div>#}
                     <li><b class="price">{{ object.price }} $</b></li>
 
@@ -48,7 +48,7 @@
     {#                                    </div>#}
     {#                    <a href="{% url 'moderate_detail' pk=object.advertisement.id %}">#}
                     </div>
-                        <a href="{% url 'moderation:moderate_detail' pk=object.id%}">
+                        <a href="{% url 'moderation:moderate_begin' pk=object.id%}">
                            <button class="btn btn-primary">Проверить</button>
                         </a>
 
