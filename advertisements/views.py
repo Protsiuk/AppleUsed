@@ -27,7 +27,7 @@ class AdvertisementHomeView(ListView):
 
     def get_queryset(self):
         # qs = super(AdvertisementHomeView, self).get_queryset()
-        qs = Advertisement.objects.order_by('-created').filter(is_active=True)[:4]
+        qs = Advertisement.objects.order_by('-created').filter(is_active=True, is_visible=True)[:4]
         return qs
 
 
@@ -80,7 +80,7 @@ class MyAdvertisementActiveView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         ctx = super(MyAdvertisementActiveView, self).get_queryset()
         author = self.request.user
-        ctx = ctx.filter(author=author, is_active=True)
+        ctx = ctx.filter(author=author, is_active=True).order_by('-created')
         return ctx
 
 
@@ -91,7 +91,7 @@ class MyAdvertisementArchiveView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         ctx = super(MyAdvertisementArchiveView, self).get_queryset()
         author = self.request.user
-        ctx = ctx.filter(author=author, is_active=False)
+        ctx = ctx.filter(author=author, is_active=False).order_by('-created')
         return ctx
 
 
@@ -254,11 +254,11 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         # form.instance.author = self.request.user
         self.object = form.save(commit=False)
         self.object.is_visible = False
+        self.object.is_moderated = False
         self.object.updated = timezone.now()
         print('UPDATED IS', self.object.updated)
         self.object = form.save()
         image_form.instance = self.object
-        self.object.is_visible = False
         image_form.save()
         return HttpResponseRedirect(self.get_success_url())
 

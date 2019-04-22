@@ -13,7 +13,7 @@
 {#                        <img src="{{ object.main_image.url|default_if_none:'img/480px-No_image_available.png'}}" class="mx-auto d-block" width="100%" height="218"/>#}
                         {% if  object.main_image %}
                             <a class="card-title" href="{% url 'advertisement_detail' pk=object.id%}">
-                            <img src="{{ object.main_image.url }}" class="mx-auto d-block" width="100%" height="218" alt="advertisement">
+                            <img src="{{ object.main_image.url }}" class="mx-auto d-block" width="100%" height="200" alt="advertisement">
                             </a>
                         {% else %}
                             <a class="card-title" href="{% url 'advertisement_detail' pk=object.id%}">

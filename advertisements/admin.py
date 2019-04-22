@@ -66,6 +66,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
         'main_image',
         'is_active',
         'is_visible',
+        'is_moderated',
         'slug',
         'product_number',
         'created',
@@ -73,7 +74,7 @@ class AdvertisementAdmin(admin.ModelAdmin):
         # 'hit_counter',
         ]
     # exclude = ('phone_regex',)
-    list_filter = ['author', 'title', 'price', 'is_active', 'created', 'updated', 'phone_author']
+    list_filter = ['author', 'title', 'price', 'is_active', 'is_moderated', 'created', 'updated', 'phone_author']
     inlines = [AdvertisementImageInline]
 #     # fieldsets = (
 #     #     (None, {'fields': ('email', 'username', 'password')}),

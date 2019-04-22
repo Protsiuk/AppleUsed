@@ -3,7 +3,15 @@
 {% load formated_datas %}
 {% load static %}
 {% block content %}
-
+    <br>
+    <div class="top-content">
+        <div class="row">
+            <div class="col-lg-12">
+{#                <a href="{% url 'advertisements:archive_advertisements' %}" class="href-on-page"><p>Архив Вашых объявлений</p></a>#}
+                <a href="{% url 'archive_advertisements' %}" class="href-on-page"><p>Архив Вашых объявлений</p></a>
+            </div>
+        </div>
+    </div>
     <hr>
     <div class="section-top">
         <p>Ваши активные объявления:</p>
