@@ -22,75 +22,9 @@
         </div>
     </div>
 
-
-{#    <div class="container">#}
-{#      <div class="row">#}
-{#        <div class="col-sm">#}
-{#          One of three columns#}
-{#        </div>#}
-{#        <div class="col-sm">#}
-{#          One of three columns#}
-{#        </div>#}
-{#        <div class="col-sm">#}
-{#          One of three columns#}
-{#        </div>#}
-{#      </div>#}
-{#    </div>#}
-
-
     <div class="container">
         {% include 'moderation_list.html' %}
         {% include 'pagination.html' %}
     </div>
-
-
-{#<nav aria-label="...">#}
-{#{% if is_paginated %}#}
-{#    <ul class="pagination">#}
-{#    {% if page_obj.has_previous %}#}
-{#        <li><a href="?page={{ page_obj.previous_page_number }}{% include 'search_get_parametr.html' %}">&laquo;</a></li>#}
-{#    {% else %}#}
-{#        <li class="disabled"><span>&laquo;</span></li>#}
-{#    {% endif %}#}
-{#    {% for i in paginator.page_range %}#}
-{#        {% if page_obj.number == i %}#}
-{#            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>#}
-{#        {% else %}#}
-{#            <li><a href="?page={{ i }}{% include 'search_get_parametr.html' %}">{{ i }}</a></li>#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-{#    {% if page_obj.has_next %}#}
-{#        <li><a href="?page={{ page_obj.next_page_number }}{% include 'search_get_parametr.html' %}">&raquo;</a></li>#}
-{#    {% else %}#}
-{#        <li class="disabled"><span>&raquo;</span></li>#}
-{#    {% endif %}#}
-{#  </ul>#}
-{#{% endif %}#}
-{#</nav>#}
-
-
-{#{% include 'pagination.html' %}#}
-{#_________________________________________#}
-
-{#    <div class="pagination">#}
-{##}
-{#    {% if advertisements.has_previous %}#}
-{#        <a href="?page={{ advertisements.previous_page_number }}">←</a>#}
-{#    {% endif %}#}
-{##}
-{#    {% for num in advertisements.paginator.page_range %}#}
-{#        {% if num == advertisements.number %}#}
-{#            <span class="current"><b>{{ num }}</b></span>#}
-{#        {% else %}#}
-{#            <a href="?page={{ num }}"> {{ num }}</a>#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-{##}
-{#    {% if advertisement_list.has_next %}#}
-{#        <a href="?page={{ advertisements_list.next_page_number }}">→</a>#}
-{#    {% endif %}#}
-{##}
-{#    </div>#}
-
 
 {% endblock content %}

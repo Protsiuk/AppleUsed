@@ -47,7 +47,8 @@
         <div class="row">
             <div class="col-lg-12">
                 {% if object_list|length != 0 %}
-                    <p>В результате поиска найдено объявлений - {{ object_list|length }} : </p>
+{#                    <p>В результате поиска найдено объявлений - {{ object_list|length }} : </p>#}
+                    <p>В результате поиска найдено объявлений - {{ count_ads_searches }} : </p>
                 {% else %}
                     <p>Извините, но ничего не найдено. Уточните поиск!</p>
                 {% endif %}
@@ -70,8 +71,10 @@
 {#      </div>#}
 {#    </div>#}
 
+    {{ advertisement.favorites.all }}
 
     <div class="container">
+
         {% include 'list_advertisements.html' %}
         {% include 'pagination.html' %}
     </div>
