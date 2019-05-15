@@ -12,10 +12,8 @@ from advertisements.views import (
     MyAdvertisementArchiveView,
     AdvertisementUpdateView,
     AdvertisementDeleteView,
-    # AdvertisementMessageView,
     AjaxAPIAdmarkView,
     )
-    # GetSingleAdvertisementView, CreateAdvertisementView #publications_as_json,
 
 # app_name = 'advertisement'
 urlpatterns = [
@@ -37,7 +35,6 @@ urlpatterns = [
     url(r'my_archive_advertisements/$', MyAdvertisementArchiveView.as_view(), name='archive_advertisements'),
 
     url(r'^$', AdvertisementHomeView.as_view(), name='main'),
-
 
     # url(r'^(?P<pk>[\d]+)$', AdvertisementMessageView.as_view(), name='advertisement_detail'),
     # url(r'^(?P<advertisement_id>[\d]+)/(?P<slug>[-\w]+)/$', AdvertisementDetailView.as_view(), name='advertisement_detail'),

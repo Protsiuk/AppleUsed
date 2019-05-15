@@ -201,7 +201,6 @@ def editProfileUserViews(request):
     # return render(request, 'edit-profile-user.html', {'form': form})
 
 
-
 class LoginView(FormView):
     """
     Provides the ability to login as a user with a username and password
@@ -326,8 +325,8 @@ def signup(request):
             message = render_to_string('acc_active_email.html', {
                 'user': user,
                 'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':account_activation_token.make_token(user),
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': account_activation_token.make_token(user),
             })
             to_email = form.cleaned_data.get('email')
             email = EmailMessage(
@@ -493,11 +492,11 @@ class UserPasswordResetCompleteView(PasswordResetCompleteView):
         return context
 
 
-
 # _________________________________________________________________________________________________________________
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.messages.views import SuccessMessageMixin
+
 
 class SignUp(generic.CreateView):
     form_class = MyCustomUserCreationForm

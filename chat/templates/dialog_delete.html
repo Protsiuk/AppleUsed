@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static %}
+{% load humanize %}
+{% load formated_datas %}
+
+    {% block title %} Удаление диалога относительно {{ chat.last_send_message.subject_ad.title }} {% endblock title %}
+    {% block content %}
+
+        <hr>
+        <div class="col-lg-12">
+            <div class="row">
+                <form action="." method="POST">
+                    {% csrf_token %}
+                    <h5>Вы действительно хотите удалить Ваш <a href="{% url 'chat:current_dialog' pk=object.id %}"> диалог </a>
+                        относительно <b>{{ chat.last_send_message.subject_ad.title }}</b>
+                        {% if request.user.is_authenticated %}
+                            {% if request.user == object.last_send_message.sender_msg %}
+                                c {{ object.last_send_message.receiver_msg }}?
+                            {% else %}
+                                c {{ object.last_send_message.sender_msg }}?
+                            {% endif %}
+                        {% else %}
+                                c {{ object.last_send_message.temporary_user_email }}?
+                        {% endif %}
+                    </h5>
+                    <input type="submit" class="btn btn-danger" value=" Да ">
+{#                    <input type="submit" class="btn btn-primary" value=" Отмена ">#}
+                    <a href="{% url 'chat:current_dialog' pk=object.id %}">Отмена</a>
+
+                </form>
+            </div>
+            <hr>
+        </div>
+
+    {% endblock content %}
+
+<div class="footer">
+</div>

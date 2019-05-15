@@ -65,7 +65,7 @@ Requires jQuery, core.js, and SelectBox.js.
 
             quickElement(
                 'span', search_filter_label, '',
-                'class', 'help-tooltip search-label-icon',
+                'class', 'help-tooltip chat-label-icon',
                 'title', interpolate(gettext("Type into this box to filter down the list of available %s."), [field_name])
             );
 

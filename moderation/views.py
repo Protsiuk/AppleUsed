@@ -29,22 +29,8 @@ class ListForModerateView(LoginModeratorRequiredMixin, ListView):
     template_name = 'list_for_moderation.html'
     paginate_by = 15
 
-    # def get(self, request, *args, **qwargs):
-    #     context = self.get_context_data()
-    #     return self.render_to_response(context)
-
     def get_queryset(self, **kwargs):
-        # ad_at_work = self.model.objects.filter(status=2)
-        # ad_rejected = self.model.objects.filter(status=0)
         qs = Advertisement.objects.filter(is_visible=False, is_moderated=False)
-        # # qs = list_ad
-        # # qs = [list_ad.exclude(pk=ad.ad_to_moderate_id) for ad in ad_at_work if list_ad.filter(pk=ad.ad_to_moderate_id).exists()]
-        #
-        # for ad in ad_at_work:
-        #     pk = ad.ad_to_moderate_id
-        #     if qs.filter(pk=pk).exists():
-        #         qs = qs.exclude(pk=pk)
-
         return qs
 
 
@@ -87,7 +73,6 @@ class ModerationBeginView(LoginModeratorRequiredMixin, View):
     def is_moderated_ad(self):
         ad = get_object_or_404(self.model2, pk=self.object.ad_to_moderate.id)
         ad.is_moderated = True
-        # ad.updated = ad.updated
         ad.save()
         return True
 
@@ -143,13 +128,11 @@ class ModerationFinishedView(LoginModeratorRequiredMixin, UpdateView):
         """
         if self.object.status == 1:
             self.activate_visible_ad()
-        # print('FINISHEd CHECKING')
         return super(ModerationFinishedView, self).form_valid(form)
 
     def activate_visible_ad(self):
         ad = get_object_or_404(self.model2, pk=self.object.ad_to_moderate.id)
         ad.is_visible = True
-        # ad.updated = ad.updated
         ad.save()
         return True
 
@@ -157,9 +140,3 @@ class ModerationFinishedView(LoginModeratorRequiredMixin, UpdateView):
 class ModerationDetailView(LoginModeratorRequiredMixin, DetailView):
     model = Moderation
     template_name = 'detail_moderation.html'
-
-    # def get_context_data(self, **kwargs):
-    #     context = super(ModerationDetailView, self).get_context_data(**kwargs)
-    #     return context
-
-

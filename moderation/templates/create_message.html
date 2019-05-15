@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% load humanize %}
+{% load formated_datas %}
+{% load widget_tweaks %}
+{#{% load trans %}#}
+{% load tz %}
+
+{% block content %}
+
+    <p>Ваше сообщение по {{ object }}:</p>
+
+    <form name="dialog-message" method="POST">
+        {% csrf_token %}
+{#        {{ form.as_p }}#}
+        <div class="form-group">
+            {% if form.errors %}
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <span class="text-danger small">{{ form_message.errors }}</span>
+                    </div>
+                </div>
+            {% endif %}
+
+            <label for="{{ form_message.message.label }}">Сообщение:</label>
+            {% render_field form_message.message rows="3" class='form-control' %}
+        </div>
+
+
+        <button type="submit" class="btn btn-success">Отправить</button>
+    </form>
+
+
+{#    <div class="filter_price">#}
+{#        <p>Фильтрация по цене:</p>#}
+{#        <form action="" method="GET" enctype="multipart/form-data">#}
+{#            {% csrf_token %}#}
+{#            {{ form.as_p }}#}
+{#            <form action="task_1.1.html" name="home_work_1_Protsiuk"; method="post"; enctype="multipart/form-data">#}
+{#            <input type="text"; name="firstname"; placeholder="Enter your Firstname">#}
+{#            <input type="text" name="lastname"; placeholder="Enter your Lastname">#}
+{#            <input type="email" name="email"; placeholder="Enter your email">#}
+{##}
+{#            <input type="submit" value="Фильтровать">#}
+{#        </form>#}
+{##}
+{#    </div>#}
+
+    {% for dialog in object_list %}
+        <hr>
+        <div class="advertisement list-group-item">
+{#            <img src="{{ advertisement.image.url }}" width="100">#}
+{#            <a href="{% url 'single_advertisement' advertisement_id=advertisement.id %}">{{ advertisement.title }}</a>#}
+    {#            <a class="title_advertisement" >{{ advertisement.title }} </a>#}
+{#            <div align="right"><b class="price">chats id#{{ dialog.id }} </b></div>#}
+
+                <ul class="list-inline">
+                    <li class="drop-left-padding">
+                        <h6 class="list-group-item-heading">Относительно {{ dialog.last_send_message.subject_ad }} <{{ dialog.id }}></h6>
+                    </li>
+                    <li class="text-lg-left">
+                        <small class="font-italic">Отправлено {{ dialog.last_send_message.pub_date|utc }}</small>
+                    </li>
+                    <li class="text-sm-left">
+                        <small class="text-justify text-gray">Отправитель {{ dialog.last_send_message.sender_msg }}</small>
+{#                        ({{ dialog.last_send_message.receiver_msg }})#}
+                    </li>
+                    <li class="text-sm-right">
+                        <p> {{ dialog.last_send_message.message|truncatechars:50 }} </p>
+                    </li>
+                    <li class="text-sm-right">
+                        {% if request.user == dialog.last_send_message.sender_msg %}
+                            {#                            <small>{{ dialog.last_send_message.is_readed|default_if_none:'img/480px-No_image_available.png'}}</small>#}
+                            <small class="font-italic">Прочитано {{ dialog.last_send_message.reading_date|utc }}</small>
+                        {% endif %}
+                    </li>
+                </ul>
+{#        <hr>#}
+        </div>
+    {% endfor %}
+
+{% endblock content %}

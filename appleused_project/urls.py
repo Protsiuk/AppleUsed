@@ -16,6 +16,8 @@ urlpatterns = [
     url(r'accounts/', include('accounts.urls')),
     url(r'advertisements/', include('advertisements.urls')),
     url(r'moderation/', include('moderation.urls')),
+    url(r'^captcha/', include('captcha.urls')),
+    url(r'^chat/', include('chat.urls')),
 
     # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # url(r'^rest-auth/', include('rest_auth.urls')),

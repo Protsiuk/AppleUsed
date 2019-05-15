@@ -473,16 +473,16 @@ XRegExp = XRegExp || (function (undef) {
     };
 
 /**
- * Executes a regex search in a specified string. Returns a match array or `null`. If the provided
+ * Executes a regex chat in a specified string. Returns a match array or `null`. If the provided
  * regex uses named capture, named backreference properties are included on the match array.
- * Optional `pos` and `sticky` arguments specify the search start position, and whether the match
+ * Optional `pos` and `sticky` arguments specify the chat start position, and whether the match
  * must start at the specified position only. The `lastIndex` property of the provided regex is not
  * used, but is updated for compatibility. Also fixes browser bugs compared to the native
  * `RegExp.prototype.exec` and can be used reliably cross-browser.
  * @memberOf XRegExp
- * @param {String} str String to search.
- * @param {RegExp} regex Regex to search with.
- * @param {Number} [pos=0] Zero-based index at which to start the search.
+ * @param {String} str String to chat.
+ * @param {RegExp} regex Regex to chat with.
+ * @param {Number} [pos=0] Zero-based index at which to start the chat.
  * @param {Boolean|String} [sticky=false] Whether the match must start at the specified position
  *   only. The string `'sticky'` is accepted as an alternative to `true`.
  * @returns {Array} Match array with named backreference properties, or null.
@@ -517,8 +517,8 @@ XRegExp = XRegExp || (function (undef) {
 /**
  * Executes a provided function once per regex match.
  * @memberOf XRegExp
- * @param {String} str String to search.
- * @param {RegExp} regex Regex to search with.
+ * @param {String} str String to chat.
+ * @param {RegExp} regex Regex to chat with.
  * @param {Function} callback Function to execute for each match. Invoked with four arguments:
  *   <li>The match array, with named backreference properties.
  *   <li>The zero-based match index.
@@ -626,13 +626,13 @@ XRegExp = XRegExp || (function (undef) {
     };
 
 /**
- * Retrieves the matches from searching a string using a chain of regexes that successively search
+ * Retrieves the matches from searching a string using a chain of regexes that successively chat
  * within previous matches. The provided `chain` array can contain regexes and objects with `regex`
  * and `backref` properties. When a backreference is specified, the named or numbered backreference
  * is passed forward to the next regex or returned.
  * @memberOf XRegExp
- * @param {String} str String to search.
- * @param {Array} chain Regexes that each search for matches within preceding results.
+ * @param {String} str String to chat.
+ * @param {Array} chain Regexes that each chat for matches within preceding results.
  * @returns {Array} Matches by the last regex in the chain, or an empty array.
  * @example
  *
@@ -672,12 +672,12 @@ XRegExp = XRegExp || (function (undef) {
 /**
  * Returns a new string with one or all matches of a pattern replaced. The pattern can be a string
  * or regex, and the replacement can be a string or a function to be called for each match. To
- * perform a global search and replace, use the optional `scope` argument or include flag `g` if
+ * perform a global chat and replace, use the optional `scope` argument or include flag `g` if
  * using a regex. Replacement strings can use `${n}` for named and numbered backreferences.
  * Replacement functions can use named backreferences via `arguments[0].name`. Also fixes browser
  * bugs compared to the native `String.prototype.replace` and can be used reliably cross-browser.
  * @memberOf XRegExp
- * @param {String} str String to search.
+ * @param {String} str String to chat.
  * @param {RegExp|String} search Search pattern to be replaced.
  * @param {String|Function} replacement Replacement string or a function invoked to create it.
  *   Replacement strings can include special replacement syntax:
@@ -693,25 +693,25 @@ XRegExp = XRegExp || (function (undef) {
  *     <li>The matched substring (corresponds to $& above). Named backreferences are accessible as
  *       properties of this first argument.
  *     <li>0..n arguments, one for each backreference (corresponding to $1, $2, etc. above).
- *     <li>The zero-based index of the match within the total search string.
+ *     <li>The zero-based index of the match within the total chat string.
  *     <li>The total string being searched.
  * @param {String} [scope='one'] Use 'one' to replace the first match only, or 'all'. If not
  *   explicitly specified and using a regex with flag `g`, `scope` is 'all'.
  * @returns {String} New string with one or all matches replaced.
  * @example
  *
- * // Regex search, using named backreferences in replacement string
+ * // Regex chat, using named backreferences in replacement string
  * var name = XRegExp('(?<first>\\w+) (?<last>\\w+)');
  * XRegExp.replace('John Smith', name, '${last}, ${first}');
  * // -> 'Smith, John'
  *
- * // Regex search, using named backreferences in replacement function
+ * // Regex chat, using named backreferences in replacement function
  * XRegExp.replace('John Smith', name, function (match) {
  *   return match.last + ', ' + match.first;
  * });
  * // -> 'Smith, John'
  *
- * // Global string search/replacement
+ * // Global string chat/replacement
  * XRegExp.replace('RegExp builds RegExps', 'RegExp', 'XRegExp', 'all');
  * // -> 'XRegExp builds XRegExps'
  */
@@ -765,15 +765,15 @@ XRegExp = XRegExp || (function (undef) {
     };
 
 /**
- * Executes a regex search in a specified string. Returns `true` or `false`. Optional `pos` and
- * `sticky` arguments specify the search start position, and whether the match must start at the
+ * Executes a regex chat in a specified string. Returns `true` or `false`. Optional `pos` and
+ * `sticky` arguments specify the chat start position, and whether the match must start at the
  * specified position only. The `lastIndex` property of the provided regex is not used, but is
  * updated for compatibility. Also fixes browser bugs compared to the native
  * `RegExp.prototype.test` and can be used reliably cross-browser.
  * @memberOf XRegExp
- * @param {String} str String to search.
- * @param {RegExp} regex Regex to search with.
- * @param {Number} [pos=0] Zero-based index at which to start the search.
+ * @param {String} str String to chat.
+ * @param {RegExp} regex Regex to chat with.
+ * @param {Number} [pos=0] Zero-based index at which to start the chat.
  * @param {Boolean|String} [sticky=false] Whether the match must start at the specified position
  *   only. The string `'sticky'` is accepted as an alternative to `true`.
  * @returns {Boolean} Whether the regex matched the provided value.
@@ -893,7 +893,7 @@ XRegExp = XRegExp || (function (undef) {
  * bugs in the native `RegExp.prototype.exec`. Calling `XRegExp.install('natives')` uses this to
  * override the native method. Use via `XRegExp.exec` without overriding natives.
  * @private
- * @param {String} str String to search.
+ * @param {String} str String to chat.
  * @returns {Array} Match array with named backreference properties, or null.
  */
     fixed.exec = function (str) {

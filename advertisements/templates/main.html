@@ -6,7 +6,7 @@
 {% block content %}
     <div class="input-group mb-3">
         <form action="/advertisements/search-list/" method="GET">
-            {% csrf_token %}
+{#            {% csrf_token %}#}
     {#        <input type="text" name="q" placeholder="Введите название желаемой продукции Apple" value="{{ request.GET.q }}">#}
             <input type="text" name="q" placeholder="Введите название желаемой продукции Apple">
             <button type="submit" class="btn btn-primary">Искать</button>

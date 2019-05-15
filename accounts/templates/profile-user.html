@@ -23,7 +23,7 @@
                 {% endif %}
                 <a href="{% url 'favorites' %}" class="href-on-page"><p>Перейти к избранным объявлениям</p></a>
                 <a href="{% url 'my_active_advertisements' %}" class="href-on-page"><p>Перейти к вашым объявлениям</p></a>
-                <a href="" class="href-on-page"><p>Перейти к вашым сообщениям</p></a>
+                <a href="{% url 'chat:dialog_list' %}" class="href-on-page"><p>Перейти к вашым сообщениям</p></a>
 {#                <p>Phone number<b> {{ user.phone_number_user }}</b> </p>#}
                 {% if user.birth_day == None %}
                     <p>День рождения пользователя: <b>Не заполнено</b></p>

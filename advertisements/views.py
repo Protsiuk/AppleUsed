@@ -1,24 +1,33 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, get_list_or_404
 
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
+from django.core.mail import send_mail, EmailMessage
 
 from django.views.generic import CreateView, RedirectView, ListView, UpdateView, DetailView, DeleteView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.sites.shortcuts import get_current_site
+from django.views.generic.edit import FormMixin
 from django.utils import timezone
-from advertisements.forms import AdvertisementCreationForm, AdvertisementMessageForm, AdvertisementImageFormSet
-from advertisements.models import Advertisement, AdvertisementMessage, AdvertisementFollowing, PageHit
+from django.urls import reverse
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 
-from accounts.models import MyCustomUser
-from utils import gen_page_list
+from advertisements.forms import AdvertisementCreationForm, AdvertisementMessageForm, AdvertisementImageFormSet
+from advertisements.models import Advertisement, AdvertisementMessage, AdvertisementFollowing, PageHit
+from chat.forms import UserMessageForm, GuestMessageForm
+from chat.models import Message, Chat
+
+# from accounts.models import MyCustomUser
+# from utils import gen_page_list
 
 
 class AdvertisementHomeView(ListView):
     model = Advertisement
-    success_url = '/advertisements/search-list/'
+    success_url = '/advertisements/chat-list/'
     template_name = 'main.html'
 
     def get_queryset(self):
@@ -27,13 +36,13 @@ class AdvertisementHomeView(ListView):
         return qs
 
 
-class AdsFollowingUserMixin(ListView):
-    model_2 = None
-
-    def get_context_data(self, **kwargs):
-        context = super(AdsFollowingUserMixin, self).get_context_data(**kwargs)
-        context['following_ads'] = self.model.objects.filter(favorites__user=self.request.user)
-        return context
+# class AdsFollowingUserMixin(ListView):
+#     model_2 = None
+#
+#     def get_context_data(self, **kwargs):
+#         context = super(AdsFollowingUserMixin, self).get_context_data(**kwargs)
+#         context['following_ads'] = self.model.objects.filter(favorites__user=self.request.user)
+#         return context
 
 
 class AdvertisementsSearchView(ListView):
@@ -61,7 +70,8 @@ class AdvertisementsSearchView(ListView):
     def get_context_data(self, **kwargs):
         context = super(AdvertisementsSearchView, self).get_context_data(**kwargs)
         # context['count_ads_searches'] = len(context)
-        context['following_ads'] = self.model.objects.filter(favorites__user=self.request.user)
+        if self.request.user.is_authenticated:
+            context['following_ads'] = self.model.objects.filter(favorites__user=self.request.user)
         return context
 
 
@@ -176,7 +186,7 @@ class AdvertisementCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+class AdvertisementUpdateView(LoginRequiredMixin, UpdateView):
     model = Advertisement
     success_url = '/advertisements/my_active_advertisements/'
     form_class = AdvertisementCreationForm
@@ -185,9 +195,9 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
 
     """Update existing advertisement"""
 
-    def test_func(self):
-        obj = self.get_object()
-        return obj.author == self.request.user
+    # def test_func(self):
+    #     obj = self.get_object()
+    #     return obj.author == self.request.user
 
     def get(self, request, *args, **kwargs):
         """
@@ -229,7 +239,6 @@ class AdvertisementUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         self.object.is_visible = False
         self.object.is_moderated = False
         self.object.updated = timezone.now()
-        print('UPDATED IS', self.object.updated)
         self.object = form.save()
         image_form.instance = self.object
         image_form.save()
@@ -267,7 +276,7 @@ class AjaxAdmarkView(RedirectView):
         url_ = admark.get_absolute_url()
         return url_
 
-
+# it's use
 class AjaxAPIAdmarkView(APIView):
     # authentication_classes = (authentication.TokenAuthentication,)
     # permission_classes = (permissions.IsAdminUser,)
@@ -299,24 +308,95 @@ class AjaxAPIAdmarkView(APIView):
             }
         return Response(data)
 
-
-class AdvertisementDetailView(DetailView):
+# FormMixin,
+class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
     model = Advertisement
+    form_class = UserMessageForm
+    form_class_2 = GuestMessageForm
     model_hits = PageHit
     model_following = AdvertisementFollowing
     template_name = 'advertisement_detail.html'
+    success_message = 'Ваше сообщение отправлено!'
+
+    def get_success_url(self):
+        return reverse('advertisement_detail', kwargs={'pk': self.kwargs['pk']})
+
+    def get_form(self, form_class=None):
+        """
+        Returns an instance of the form to be used in this view.
+        """
+        if self.request.user.is_authenticated:
+            form_class = self.form_class
+        else:
+            form_class = self.form_class_2
+        # if form_class is None:
+        #     form_class = self.get_form_class()
+        return form_class(**self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
         context = super(AdvertisementDetailView, self).get_context_data(**kwargs)
         advertisement = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
         user = self.request.user
-        context['img_following'] = self.following(user, advertisement)
+        context['form'] = self.get_form()
         views_page = self.hit_count(user, advertisement)
         context['views_page'] = views_page
         if user == advertisement.author:
             context['you_is_author'] = True
-        # print(advertisement.category_equipment)
         return context
+
+    def post(self, request, *args, **kwargs):
+        # self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        """
+        Called if form is valid. Create a NEW message in current dialog or create NEW dialog and then redirects to a
+        success page (current dialog).
+        """
+        new_message = form.save(commit=False)
+        new_message.subject_ad = get_object_or_404(self.model, id=self.kwargs['pk'])
+        new_message.receiver_msg = new_message.subject_ad.author
+        if self.request.user.is_authenticated:
+            new_message.sender_msg = self.request.user
+        # else:
+        #     new_message.temporary_user_email = self.kwargs['temporary_user_email']
+            # 'temporary_user_email'
+        try:
+            if self.request.user.is_authenticated:
+                chat_id = Message.objects.filter(sender_msg=new_message.sender_msg,
+                                                 receiver_msg=new_message.receiver_msg,
+                                                 subject_ad=new_message.subject_ad).values('chat_id')
+            else:
+                chat_id = Message.objects.filter(temporary_user_email=new_message.temporary_user_email,
+                                                 receiver_msg=new_message.receiver_msg,
+                                                 subject_ad=new_message.subject_ad).values('chat_id')
+
+            new_message.chat = Chat.objects.get(id=chat_id)
+            # print('Nasholsja takoj chat -', chat_id)
+        except ObjectDoesNotExist:
+            # print('Net takogo chata')
+            new_message.chat = Chat.objects.create()
+
+        new_message = form.save()
+        print('FORM IS -', form)
+        print(new_message.temporary_user_email)
+        chat = Chat.objects.get(pk=new_message.chat.id)
+        chat.last_send_message = new_message
+        chat.save()
+        self.send_mail_to_receiver(receiver=new_message.receiver_msg, subject=new_message.subject_ad.title)
+        return super(AdvertisementDetailView, self).form_valid(form)
+
+    def form_invalid(self, form):
+        """
+        Called if a form is invalid. Re-renders the context data with the
+        data-filled forms and errors.
+        """
+        return self.render_to_response(
+            self.get_context_data(form=form))
 
     """
     Counter for views pages
@@ -353,8 +433,18 @@ class AdvertisementDetailView(DetailView):
             following = '/static/img/favorite_FALSE.png'
         return following
 
+    def send_mail_to_receiver(self, receiver, subject):
+        current_site = get_current_site(self.request)
+        domen = current_site.domain
+        subject_msg = 'Вы получили ответ на объявление '+subject
+        receiver = receiver.email
+        body = 'Вы получили новое сообщение по '+subject+'\n перейдите по адресу '+self.get_success_url()
+        email_message = EmailMessage(subject=subject_msg, body=body, to=[receiver])
+        email_message.send()
+        return 'ok'
 
-class AdvertisementDeleteView(DeleteView):
+
+class AdvertisementDeleteView(LoginRequiredMixin, DeleteView):
     model = Advertisement
     success_url = reverse_lazy('main')
     template_name = 'advertisement_delete.html'

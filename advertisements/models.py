@@ -5,10 +5,10 @@ from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from utils import get_file_path
 from solo.models import SingletonModel
-from django.contrib.auth import get_user_model
-from django.utils.text import slugify
+# from django.contrib.auth import get_user_model
+# from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
-from django.contrib import admin
+# from django.contrib import admin
 
 
 class AdvertisementManager(models.Manager):

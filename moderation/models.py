@@ -1,32 +1,8 @@
 from django.db import models
 from appleused_project import settings
 from django.core.urlresolvers import reverse
-from utils import get_file_path
 from advertisements.models import Advertisement
-from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
-
-
-# class Moderator(models.Model):
-#     moderator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='moderator')
-#     appointment = models.DateTimeField(auto_now_add=True, auto_now=False)
-#     is_active = models.BooleanField(default=True)
-#
-#     class Meta:
-#         verbose_name = 'Moderator'
-#         verbose_name_plural = 'Moderators'
-#
-#     def __str__(self):
-#         return 'Moderator is %s' % self.moderator.email
-#
-#
-#     @property
-#     def is_moderator(self):
-#         """
-#         Always return True. This is a way to tell if the user has been
-#         authenticated and is staff in templates.
-#         """
-#         return True
 
 
 class Checklist(models.Model):
@@ -71,9 +47,3 @@ class Moderation(models.Model):
 
     def get_absolute_url(self):
         return reverse("moderation:detail", kwargs={'pk': self.id})
-
-    # def get_list_url(self):
-    #     return reverse("moderation:detail", kwargs={'pk': self.id})
-
-    # def spent_time_moderation(self):
-    #     pass

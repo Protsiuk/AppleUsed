@@ -1,0 +1,31 @@
+/*html, logo             pagination, footer, header, nav, general-container*/
+/*.product-item{*/
+	/*height: 228px;*/
+	/*width: 1080px;*/
+	/*background: #dcdcdc;*/
+	/*position: relative;*/
+	/*border: 1px solid #a7a7a7;*/
+	/*border-radius: 10px 10px;*/
+	/*!*border: 1px solid lightgray;*!*/
+	/*!*padding: 10px;*!*/
+	/*!*text-align: center;*!*/
+/*}*/
+
+.unreaded{
+
+}
+
+.reply-body{
+    background: #dcdcdc;
+	position: relative;
+	border: 1px solid #a7a7a7;
+	border-radius: 10px 10px;
+    padding: 5px 10px;
+}
+
+.tab-block{
+    background: #8ddc97;
+    margin: 0 0 0 75px;
+    border: 1px solid #a7a7a7;
+	border-radius: 10px 10px;
+}

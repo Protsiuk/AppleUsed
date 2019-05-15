@@ -40,25 +40,25 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'crispy_forms',
-    'betterforms',
+    'widget_tweaks',
+    # 'betterforms',
 
 
     # project apps
     'accounts',
     'advertisements',
     'moderation',
-    'search',
+    'chat',
+    # 'chat_b2b',
     # 'send_email',
 
     # 3-d generation
     'solo',
     'rest_framework',
+    'captcha',
 
-    # 'moderation',
+
     # 'rest_framework.authtoken',
-    # 'password_reset',
-    # 'rest_auth',
-    # 'registration',
 ]
 
 
@@ -81,6 +81,7 @@ MIDDLEWARE_CLASSES = (
     # 'django.contrib.send_email.middleware.MessageMiddleware',
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 # ]
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 ROOT_URLCONF = 'appleused_project.urls'
 
@@ -117,6 +118,18 @@ DATABASES = {
         "PASSWORD":'test123'
     }
 }
+
+# POSTGRESQL
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'appleused_DB',
+#         'USER': 'postgres',
+#         'PASSWORD': '210980',
+#         'HOST': '127.0.0.1',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -182,6 +195,8 @@ LOGOUT_REDIRECT_URL = '/'
 
 DATE_INPUT_FORMATS = ('%d/%m/%Y')
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # LOGIN_REDIRECT_URL = 'home'
 # LOGOUT_REDIRECT_URL = 'home'
 
@@ -220,6 +235,5 @@ try:
     from .local_settings import *
 except ImportError:
     pass
-
 
 # OBJECT_SEARCH = 'advertisements.models.Advertisement'

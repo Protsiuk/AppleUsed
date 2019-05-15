@@ -2,8 +2,14 @@
 {% load static %}
 {% load humanize %}
 {% load formated_datas %}
+{% load widget_tweaks %}
 
 {% block title %} {{ advertisement.title }}, AppleUsed {% endblock title %}
+
+{% block add_static %}
+    <!--Import my JS sheet -->
+    <script type="text/javascript" src="{% static "js/scripts.js" %}"></script>
+{% endblock add_static %}
 
     {% block content %}
 
@@ -22,6 +28,10 @@
 {#                        <input type="hidden">#}
                         <a href="{% url 'delete_ad' pk=object.id %}">
 {#                            <input type="submit" name="submit" class="btn btn-sm btn-primary"/>#}
+{#                            <button type="button" class="btn btn-danger">#}
+{#                                <span class="glyphicon glyphicon-trash"></span>#}
+{#                            </button>#}
+
                                 <button type="submit" class="btn btn-default btn-sm">
                                     <span class="glyphicon glyphicon-trash"></span>
                                 </button>
@@ -48,13 +58,15 @@
 
                 {% if not you_is_author %}
                     <div class="favorite-item">
-                        <a id="favorite" class="img-rounded"
-                           style='cursor: pointer'
-    {#                        data-href-template="{% static 'img/favorite_TRUE.png' %}"#}
-                            data-href-template="{% url 'ad-api-favorite' pk=object.id%}"
-                            data-id="{{ object.id }}">
-                            <img src="{{ img_following }}" class="img-thumbnail align-right" width="50" height="50">
-                        </a>
+                        {% if user.is_authenticated %}
+                            <a id="favorite" class="img-rounded"
+                               style='cursor: pointer'
+        {#                        data-href-template="{% static 'img/favorite_TRUE.png' %}"#}
+                                data-href-template="{% url 'ad-api-favorite' pk=object.id%}"
+                                data-id="{{ object.id }}">
+                                <img src="{{ img_following }}" class="img-thumbnail align-right" width="50" height="50">
+                            </a>
+                        {% endif %}
                     </div>
                 {% endif %}
 {#            </tb>#}
@@ -63,7 +75,7 @@
                 <div align="right"><b class="price">{{ object.price }} USD</b></div><br>
                 <div align="center">
                     <ul class=class="col-lg-3">
-                    {% if  object.main_image %}
+                    {% if object.main_image %}
                         <img src="{{ object.main_image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
                         {% if object.images.all %}
                             {% for image_item in object.images.all %}
@@ -89,6 +101,43 @@
             </div>
             <hr>
         </div>
+
+        <form name="dialog-message" method="POST">
+            {% csrf_token %}
+    {#            {{ form.as_p }}#}
+{#            {% if not user.is_authenticated %}#}
+{#                <div class="form-group">#}
+{#                    {% if form.errors %}#}
+{#                        <div class="form-group">#}
+{#                            <div class="col-sm-offset-2 col-sm-10">#}
+{#                                <span class="text-danger small">{{ form.errors }}</span>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    {% endif %}#}
+{##}
+{#                    <label for="{{ form.e.label }}">Сообщение:</label>#}
+{#                    {% render_field form. class='form-control' %}#}
+{#                </div>#}
+{#            {% endif %}#}
+
+
+            <div class="form-group">
+                {% for field in form %}
+                    {% if field.errors %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <span class="text-danger small">{{ field.errors }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <label for="{{ field.label }}">{{ field.label }}</label>
+                    {% render_field field rows="3" class='form-control' %}
+                {% endfor %}
+
+            </div>
+
+        <button type="submit" class="btn btn-success">Отправить</button>
+        </form>
 
     {% endblock %}
 

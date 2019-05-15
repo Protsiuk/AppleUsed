@@ -53,7 +53,7 @@ class AdvertisementMessageForm(forms.Form):
 
 
 class AdvertisementsSearchForm(forms.Form):
-    q = forms.CharField(label="search", required=False)
+    q = forms.CharField(label="chat", required=False)
 
 
 class AdvertisementFilterForm(forms.Form):

@@ -35,7 +35,7 @@
         },
         filter: function(id, text) {
             // Redisplay the HTML select box, displaying only the choices containing ALL
-            // the words in text. (It's an AND search.)
+            // the words in text. (It's an AND chat.)
             var tokens = text.toLowerCase().split(/\s+/);
             var node, token;
             var cache = SelectBox.cache[id];
