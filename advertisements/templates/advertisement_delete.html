@@ -14,7 +14,7 @@
                     <h5>Вы действительно хотите удалить объявление <a href="{% url 'advertisement_detail' pk=object.id %}">{{ advertisement.title }}?</a></h5>
                     <input type="submit" class="btn btn-danger" value=" Да ">
 {#                    <input type="submit" class="btn btn-primary" value=" Отмена ">#}
-                    <a href="../">Отмена</a>
+                    <a href="{% url 'advertisement_detail' pk=object.id %}">Отмена</a>
 
                 </form>
             </div>

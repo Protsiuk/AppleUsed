@@ -12,88 +12,86 @@
 {% endblock add_static %}
 
     {% block content %}
-
         <hr>
-        <div class="col-lg-12">
-{#            <tb>#}
-                <ul class=class="col-lg-3">
-                    {% if you_is_author %}
-                        <div class="row ">Это ваше объявление.
-{#                            <form action="{% url 'delete_ad' pk=object.id %}">#}
-{#                            </form>#}
-                        <a href="{% url 'edit_ad' pk=object.id %}">
-                            <input type="submit" name="submit" class="btn btn-sm btn-primary" value="Редактировать?"/>
-{#                            Или удалить?#}
-                        </a></div>
-{#                        <input type="hidden">#}
-                        <a href="{% url 'delete_ad' pk=object.id %}">
-{#                            <input type="submit" name="submit" class="btn btn-sm btn-primary"/>#}
-{#                            <button type="button" class="btn btn-danger">#}
-{#                                <span class="glyphicon glyphicon-trash"></span>#}
-{#                            </button>#}
+        <div class="row">
+            <div class="col-lg-12 ">
+    {#            <tb>#}
+                {% if you_is_author %}
+                    <div class="container-body select-body">
+                        <a class=class="col-lg-3">
 
-                                <button type="submit" class="btn btn-default btn-sm">
-                                    <span class="glyphicon glyphicon-trash"></span>
-                                </button>
+                                <div class="text-nowrap">
+                                    Это ваше объявление.
+                                    <a href="{% url 'edit_ad' pk=object.id %}">
+                                        <input type="submit" name="submit" class="btn btn-sm btn-primary" value="Редактировать?"/>
+                                    </a>
+                                    <a href="{% url 'delete_ad' pk=object.id %}">
+                                        <img src="/static/img/basket-trash.png" class="img-thumbnail align-right" width="33" height="30">
+            {#                                <button type="submit" class="btn btn-default btn-sm">#}
+            {#                                    <span class="glyphicon glyphicon-trash"></span>#}
+            {#                                </button>#}
+                                    </a>
+                                </div>
+
                         </a>
-                    {% endif %}
-                </ul>
-
-                <h4 class="title_advertisement"><b>{{ object.title }}</b></h4>
-                <a class="text-capitalize">Категория: {{ object.category_equipment }}</a><br>
-                <a id="ad_id" data-key="{{ object.id }}">Номер объявления:{{ object.id }}</a><br>
-                <a>Добавлено {{ object.created | formated_datas}}</a><br>
-                <a class="author">Автор <b>{{ object.author.first_name }} </b></a><br>
-                <a class="phone_author">Телефон для связи с автором <b>{{ object.phone_author }}</b></a><br>
-                <a class="hit_count">Количество просмотров <b>
-                     <img src="{% static 'img/views.gif' %}" class="img-thumbnail align-right" width="50" height="50">
-                    {{ views_page }}</b></a><br>
-{#            </tb>#}
-{#            <tb>#}
-
-                {% if not you_is_author %}
-                    <div class="favorite-item">
-                        {% if user.is_authenticated %}
-                            <a id="favorite" class="img-rounded"
-                               style='cursor: pointer'
-{#                                data-href-template="{% static 'img/favorite_TRUE.png' %}"#}
-                                data-href-template="{% url 'ad-api-favorite' pk=object.id%}"
-                                data-id="{{ object.id }}">
-                                <img src="{{ img_following }}" class="img-thumbnail align-right" width="50" height="50">
-                            </a>
-                        {% endif %}
                     </div>
                 {% endif %}
-{#            </tb>#}
-{#            <tb>#}
-                <a class="text">{{ object.description }}</a>
-                <div align="right"><b class="price">{{ object.price }} USD</b></div><br>
-                <div align="center">
-                    <ul class=class="col-lg-3">
-                    {% if object.main_image %}
-                        <img src="{{ object.main_image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
-                        {% if object.images.all %}
-                            {% for image_item in object.images.all %}
-                                <img src="{{ image_item.image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
-                                <hr>
-                            {% endfor %}
-                        {% endif %}
-                    {% else %}
-                        <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="500" alt="advertisement">
+                <br>
+                <div class="container-body">
+                    <h4 class="title_advertisement"><b>{{ object.title }}</b></h4>
+                    <a class="text-capitalize">Категория: {{ object.category_equipment }}</a><br>
+                    <a id="ad_id" data-key="{{ object.id }}">Номер объявления:{{ object.id }}</a><br>
+                    <a>Добавлено {{ object.created | formated_datas}}</a><br>
+                    <a class="author">Автор <b>{{ object.author.first_name }} </b></a><br>
+                    <a class="phone_author">Телефон для связи с автором <b>{{ object.phone_author }}</b></a><br>
+                    <a class="hit_count">Количество просмотров <b>
+                         <img src="{% static 'img/views.gif' %}" class="img-thumbnail align-right" width="50" height="50">
+                        {{ views_page }}</b></a><br>
+                    {% if not you_is_author %}
+                        <div class="favorite-item">
+                            {% if user.is_authenticated %}
+                                <a id="favorite" class="img-rounded"
+                                   style='cursor: pointer'
+                                    data-href-template="{% url 'ad-api-favorite' pk=object.id%}"
+                                    data-id="{{ object.id }}">
+                                    <img src="{{ img_following }}" class="img-thumbnail align-right" width="50" height="50">
+                                </a>
+                            {% endif %}
+                        </div>
                     {% endif %}
-                    </ul>
+                    <a class="text">{{ object.description }}</a>
+                    <div align="right">
+                        <b class="price">{{ object.price }} USD</b></div>
                 </div>
-{#            </tb>#}
-            <div class=class="col-lg-3">
-{#                <li>#}
-                {% if  not you_is_author %}
-                    <h5>Написать автору объявления:
-                    <a href="#"><b> {{ object.title }}:</b></a><br>
-                    </h5><br>
-                {% endif %}
-{#                </li>#}
+                <br>
+                <div class="container-body">
+                    <div align="center">
+                        <ul class=class="col-lg-3">
+                        {% if object.main_image %}
+                            <img src="{{ object.main_image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
+                            {% if object.images.all %}
+                                {% for image_item in object.images.all %}
+                                    <img src="{{ image_item.image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
+                                    <hr>
+                                {% endfor %}
+                            {% endif %}
+                        {% else %}
+                            <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="500" alt="advertisement">
+                        {% endif %}
+                        </ul>
+                    </div>
+    {#            </tb>#}
+                </div>
+                <div class=class="col-lg-3">
+    {#                <li>#}
+                    {% if  not you_is_author %}
+                        <h5>Написать автору объявления:
+                        <a href="#"><b> {{ object.title }}:</b></a><br>
+                        </h5><br>
+                    {% endif %}
+    {#                </li>#}
+                </div>
             </div>
-            <hr>
         </div>
 
         <form name="dialog-message" method="POST">
