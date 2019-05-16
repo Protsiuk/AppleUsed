@@ -17,10 +17,11 @@
     <p>Диалог по <a href="{% url 'advertisement_detail' pk=object.last_send_message.subject_ad.id %}">{{ object.last_send_message.subject_ad.title }}</a>:</p>
     <hr>
 
-{#            {% load tz %}#}
     {% for message_item in object.message_set.all %}
-        <div class="list-group-item {% if not message_item.is_readed and request.user != message_item.sender_msg %}unreaded{% endif %}">
-            <div class="reply-body {% if request.user != message_item.sender_msg %}tab-block{% endif %}">
+        <div class="list-group-item ">
+            <div class="reply-body
+                {% if request.user != message_item.sender_msg %}tab-block{% endif %}
+                {% if not message_item.is_readed and request.user != message_item.sender_msg %}unreaded{% endif %}">
                 <ul class="list-inline">
                     <li class="text-lg-left">
                         <small class="font-italic">Отправлено {{ message_item.pub_date|utc }}</small>
@@ -82,7 +83,7 @@
 
     <div class="pagination">
         <span class="step-links">
-            {% if advertisements.has_previous %}
+            {% if object.has_previous %}
                 <a href="page={{ advertisements.previous_page_number }}"><-</a>
             {% endif %}
 

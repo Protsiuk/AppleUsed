@@ -262,39 +262,32 @@ class AdvertisementUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class AjaxAdmarkView(RedirectView):
-    # в данную переменную будет устанавливаться модель закладок, которую необходимо обработать
-    # model = None
-    model = AdvertisementFollowing
-
-    def get_redirect_url(self, *args, **kwargs):
-        ad = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
-        user = self.request.user
-        admark, created = self.model.objects.get_or_create(user=user, obj_id=ad.id)
-        if not created:
-            admark.delete()
-        url_ = admark.get_absolute_url()
-        return url_
+# class AjaxAdmarkView(RedirectView):
+#     # в данную переменную будет устанавливаться модель закладок, которую необходимо обработать
+#     # model = None
+#     model = AdvertisementFollowing
+#
+#     def get_redirect_url(self, *args, **kwargs):
+#         ad = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
+#         user = self.request.user
+#         admark, created = self.model.objects.get_or_create(user=user, obj_id=ad.id)
+#         if not created:
+#             admark.delete()
+#         url_ = admark.get_absolute_url()
+#         return url_
 
 # it's use
 class AjaxAPIAdmarkView(APIView):
-    # authentication_classes = (authentication.TokenAuthentication,)
-    # permission_classes = (permissions.IsAdminUser,)
-
     authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
 
     def get(self, request, pk=None, format=None):
         """
-        Return True and url to icon favorites True if hadn't a relation .
+        Return True and url to icon favorites True if hadn't a relation.
         """
-        # obj = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
         user = self.request.user
         admark, created = AdvertisementFollowing.objects.get_or_create(user=user, advertisement_id=self.kwargs['pk'])
-        # url_ = admark.get_api_absolute_url()
         url_ = admark.get_absolute_url()
-        # print('TYPE admark is -', type(admark))
-        # print('USER is -', user, ', and AD is - ', admark)
         if not created:
             admark.delete()
             data = {
@@ -308,7 +301,7 @@ class AjaxAPIAdmarkView(APIView):
             }
         return Response(data)
 
-# FormMixin,
+
 class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
     model = Advertisement
     form_class = UserMessageForm
@@ -329,14 +322,13 @@ class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
             form_class = self.form_class
         else:
             form_class = self.form_class_2
-        # if form_class is None:
-        #     form_class = self.get_form_class()
         return form_class(**self.get_form_kwargs())
 
     def get_context_data(self, **kwargs):
         context = super(AdvertisementDetailView, self).get_context_data(**kwargs)
         advertisement = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
         user = self.request.user
+        context['img_following'] = self.following(user, advertisement)
         context['form'] = self.get_form()
         views_page = self.hit_count(user, advertisement)
         context['views_page'] = views_page
@@ -362,9 +354,6 @@ class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
         new_message.receiver_msg = new_message.subject_ad.author
         if self.request.user.is_authenticated:
             new_message.sender_msg = self.request.user
-        # else:
-        #     new_message.temporary_user_email = self.kwargs['temporary_user_email']
-            # 'temporary_user_email'
         try:
             if self.request.user.is_authenticated:
                 chat_id = Message.objects.filter(sender_msg=new_message.sender_msg,
@@ -374,16 +363,10 @@ class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
                 chat_id = Message.objects.filter(temporary_user_email=new_message.temporary_user_email,
                                                  receiver_msg=new_message.receiver_msg,
                                                  subject_ad=new_message.subject_ad).values('chat_id')
-
             new_message.chat = Chat.objects.get(id=chat_id)
-            # print('Nasholsja takoj chat -', chat_id)
         except ObjectDoesNotExist:
-            # print('Net takogo chata')
             new_message.chat = Chat.objects.create()
-
         new_message = form.save()
-        print('FORM IS -', form)
-        print(new_message.temporary_user_email)
         chat = Chat.objects.get(pk=new_message.chat.id)
         chat.last_send_message = new_message
         chat.save()
@@ -395,15 +378,13 @@ class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
         Called if a form is invalid. Re-renders the context data with the
         data-filled forms and errors.
         """
-        return self.render_to_response(
-            self.get_context_data(form=form))
+        return self.render_to_response(self.get_context_data(form=form))
 
     """
     Counter for views pages
     If user is not author counter increment +1
     """
     def hit_count(self, user, advertisement):
-
         if user != advertisement.author:
             hit_count, created = self.model_hits.objects.get_or_create(advertisement=advertisement)
             if created:

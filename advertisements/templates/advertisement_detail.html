@@ -51,17 +51,12 @@
 {#            </tb>#}
 {#            <tb>#}
 
-{#                <div data-id="{{ like_obj.id }}" data-type="article" data-action="bookmark" title="Избранное">#}
-{#                    <span class="glyphicon glyphicon-star"></span>#}
-{#                    <span data-count="bookmark">{{ like_obj.get_bookmark_count }}</span>#}
-{#                </div>#}
-
                 {% if not you_is_author %}
                     <div class="favorite-item">
                         {% if user.is_authenticated %}
                             <a id="favorite" class="img-rounded"
                                style='cursor: pointer'
-        {#                        data-href-template="{% static 'img/favorite_TRUE.png' %}"#}
+{#                                data-href-template="{% static 'img/favorite_TRUE.png' %}"#}
                                 data-href-template="{% url 'ad-api-favorite' pk=object.id%}"
                                 data-id="{{ object.id }}">
                                 <img src="{{ img_following }}" class="img-thumbnail align-right" width="50" height="50">
@@ -89,7 +84,6 @@
                     </ul>
                 </div>
 {#            </tb>#}
-
             <div class=class="col-lg-3">
 {#                <li>#}
                 {% if  not you_is_author %}
@@ -104,23 +98,6 @@
 
         <form name="dialog-message" method="POST">
             {% csrf_token %}
-    {#            {{ form.as_p }}#}
-{#            {% if not user.is_authenticated %}#}
-{#                <div class="form-group">#}
-{#                    {% if form.errors %}#}
-{#                        <div class="form-group">#}
-{#                            <div class="col-sm-offset-2 col-sm-10">#}
-{#                                <span class="text-danger small">{{ form.errors }}</span>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    {% endif %}#}
-{##}
-{#                    <label for="{{ form.e.label }}">Сообщение:</label>#}
-{#                    {% render_field form. class='form-control' %}#}
-{#                </div>#}
-{#            {% endif %}#}
-
-
             <div class="form-group">
                 {% for field in form %}
                     {% if field.errors %}
@@ -133,12 +110,9 @@
                     <label for="{{ field.label }}">{{ field.label }}</label>
                     {% render_field field rows="3" class='form-control' %}
                 {% endfor %}
-
             </div>
-
         <button type="submit" class="btn btn-success">Отправить</button>
         </form>
-
     {% endblock %}
 
 <div class="footer">
