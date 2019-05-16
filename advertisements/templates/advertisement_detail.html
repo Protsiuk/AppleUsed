@@ -15,24 +15,21 @@
         <hr>
         <div class="row">
             <div class="col-lg-12 ">
-    {#            <tb>#}
                 {% if you_is_author %}
                     <div class="container-body select-body">
                         <a class=class="col-lg-3">
-
-                                <div class="text-nowrap">
-                                    Это ваше объявление.
-                                    <a href="{% url 'edit_ad' pk=object.id %}">
-                                        <input type="submit" name="submit" class="btn btn-sm btn-primary" value="Редактировать?"/>
-                                    </a>
-                                    <a href="{% url 'delete_ad' pk=object.id %}">
-                                        <img src="/static/img/basket-trash.png" class="img-thumbnail align-right" width="33" height="30">
-            {#                                <button type="submit" class="btn btn-default btn-sm">#}
-            {#                                    <span class="glyphicon glyphicon-trash"></span>#}
-            {#                                </button>#}
-                                    </a>
-                                </div>
-
+                            <div class="text-nowrap">
+                                Это ваше объявление.
+                                <a href="{% url 'edit_ad' pk=object.id %}">
+                                    <input type="submit" name="submit" class="btn btn-sm btn-primary" value="Редактировать?"/>
+                                </a>
+                                <a href="{% url 'delete_ad' pk=object.id %}">
+                                    <img src="/static/img/basket-trash.png" class="img-thumbnail align-right" width="33" height="30">
+                                </a>
+                                <a href="{% url 'deactivate_ad' pk=object.id %}">
+                                    <img src="/static/img/deactivated.png" class="img-thumbnail align-right" width="33" height="30">
+                                </a>
+                            </div>
                         </a>
                     </div>
                 {% endif %}
@@ -44,9 +41,11 @@
                     <a>Добавлено {{ object.created | formated_datas}}</a><br>
                     <a class="author">Автор <b>{{ object.author.first_name }} </b></a><br>
                     <a class="phone_author">Телефон для связи с автором <b>{{ object.phone_author }}</b></a><br>
-                    <a class="hit_count">Количество просмотров <b>
-                         <img src="{% static 'img/views.gif' %}" class="img-thumbnail align-right" width="50" height="50">
-                        {{ views_page }}</b></a><br>
+                    <a class="hit_count">Количество просмотров
+                       <img src="{% static 'img/views.gif' %}" class="img-thumbnail align-right" width="50" height="50">
+                         <b>{{ views_page }}</b>
+                    </a>
+                    <br>
                     {% if not you_is_author %}
                         <div class="favorite-item">
                             {% if user.is_authenticated %}
@@ -60,8 +59,7 @@
                         </div>
                     {% endif %}
                     <a class="text">{{ object.description }}</a>
-                    <div align="right">
-                        <b class="price">{{ object.price }} USD</b></div>
+                    <div align="right"><b class="price">{{ object.price }} USD</b></div>
                 </div>
                 <br>
                 <div class="container-body">
@@ -80,16 +78,13 @@
                         {% endif %}
                         </ul>
                     </div>
-    {#            </tb>#}
                 </div>
                 <div class=class="col-lg-3">
-    {#                <li>#}
                     {% if  not you_is_author %}
                         <h5>Написать автору объявления:
                         <a href="#"><b> {{ object.title }}:</b></a><br>
                         </h5><br>
                     {% endif %}
-    {#                </li>#}
                 </div>
             </div>
         </div>
@@ -112,6 +107,3 @@
         <button type="submit" class="btn btn-success">Отправить</button>
         </form>
     {% endblock %}
-
-<div class="footer">
-</div>

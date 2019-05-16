@@ -13,9 +13,11 @@
         </div>
     </div>
     <hr>
+    {% if object_list|length > 0 %}
     <div class="section-top">
         <p>Ваши активные объявления:</p>
     </div>
+    {% endif %}
     {% if object_list|length is 0 %}
        <p> У Вас нет активных объявлений.</p>
     {% endif %}

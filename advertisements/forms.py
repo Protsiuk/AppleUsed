@@ -5,11 +5,6 @@ from betterforms.multiform import MultiModelForm
 
 
 class AdvertisementCreationForm(forms.ModelForm):
-    # title = forms.CharField()
-    # price = forms.CharField()
-    # body = forms.CharField(widget=forms.Textarea())
-    # image = forms.FileField(label=u'Фотографии', widget=forms.FileInput(attrs={'multiple': 'multiple'}))
-
     class Meta:
         model = Advertisement
         fields = (

@@ -7,58 +7,24 @@
     <div class="top-content">
         <div class="row">
             <div class="col-lg-12">
-{#                <a href="{% url 'advertisements:archive_advertisements' %}" class="href-on-page"><p>Архив Вашых объявлений</p></a>#}
                 <a href="{% url 'my_active_advertisements' %}" class="href-on-page"><p>Ваши активные объявления</p></a>
             </div>
         </div>
     </div>
     <hr>
+    {% if object_list|length > 0 %}
     <div class="section-top">
         <p>Ваши архивные объявления:</p>
     </div>
+    {% endif %}
     {% if object_list|length is 0 %}
        <p> У Вас нет архивных объявлений.</p>
     {% endif %}
-        <div class="section">
-            <div class="container">
-                <div class="row">
-    {#                <div class="col-lg-3">#}
-                        {% for obj in object_list %}
-                            <tr>
-                            <div class="col-lg-3">
-                                < class="product-item">
-                                    <a class="text-title" href="{% url 'advertisement_detail' pk=obj.id %}">{{ obj.title }}
-                                    <p><b>{{ obj.price }}USD </b></p>
-                                    {% if  obj.main_image %}
-                                        <img src="{{ obj.main_image.url }}" class="img-responsive" width="150" height="150" alt="advertisement">
-                                    {% else %}
-                                        <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="120" alt="advertisement">
-                                    {% endif %}
-
-    {#                                {% endfor %}#}
-
-    {#                                {% if  object.main_image %}#}
-    {#                                    <img src="{{ object.main_image.url }}" class="img-responsive" width="150" height="150" alt="advertisement">#}
-    {#                                {% else %}#}
-    {#                                    <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="120" alt="advertisement">#}
-    {#                                {% endif %}#}
-
-    {#                                <li>#}
-    {#                                    <a class="text-title" href="{% url 'advertisement_detail' pk=object.id %}">{{ object.title }} </a><br>#}
-    {#                                </li>#}
-    {#                                <li>#}
-    {#                                    <a class="card-action">{{ object.created.date|formated_datas }}</a><br>#}
-    {#                                </li>#}
-    {#                                    <div align="center">#}
-    {#                                    <b class="price">{{ object.price }} USD</b>#}
-    {#                                </div>#}
-                                    </a>
-                                </div>
-                            </div>
-    {#                        </tr>#}
-                        {% endfor %}
-                </div>
-            </div>
+    <div class="section">
+        <div class="container">
+            {% include 'list_advertisements.html' %}
+            {% include 'pagination.html' %}
         </div>
+    </div>
 
 {% endblock content %}

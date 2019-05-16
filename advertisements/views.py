@@ -1,11 +1,11 @@
-from django.shortcuts import render, get_object_or_404, HttpResponseRedirect, get_list_or_404
+from django.shortcuts import get_object_or_404, HttpResponseRedirect
 
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse_lazy
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import EmailMessage
 
-from django.views.generic import CreateView, RedirectView, ListView, UpdateView, DetailView, DeleteView
+from django.views.generic import CreateView, ListView, UpdateView, DetailView, DeleteView, View
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib.sites.shortcuts import get_current_site
 from django.views.generic.edit import FormMixin
@@ -21,9 +21,6 @@ from advertisements.models import Advertisement, AdvertisementMessage, Advertise
 from chat.forms import UserMessageForm, GuestMessageForm
 from chat.models import Message, Chat
 
-# from accounts.models import MyCustomUser
-# from utils import gen_page_list
-
 
 class AdvertisementHomeView(ListView):
     model = Advertisement
@@ -31,18 +28,8 @@ class AdvertisementHomeView(ListView):
     template_name = 'main.html'
 
     def get_queryset(self):
-        # qs = super(AdvertisementHomeView, self).get_queryset()
         qs = Advertisement.objects.order_by('-created').filter(is_active=True, is_visible=True)[:4]
         return qs
-
-
-# class AdsFollowingUserMixin(ListView):
-#     model_2 = None
-#
-#     def get_context_data(self, **kwargs):
-#         context = super(AdsFollowingUserMixin, self).get_context_data(**kwargs)
-#         context['following_ads'] = self.model.objects.filter(favorites__user=self.request.user)
-#         return context
 
 
 class AdvertisementsSearchView(ListView):
@@ -69,7 +56,6 @@ class AdvertisementsSearchView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AdvertisementsSearchView, self).get_context_data(**kwargs)
-        # context['count_ads_searches'] = len(context)
         if self.request.user.is_authenticated:
             context['following_ads'] = self.model.objects.filter(favorites__user=self.request.user)
         return context
@@ -191,13 +177,9 @@ class AdvertisementUpdateView(LoginRequiredMixin, UpdateView):
     success_url = '/advertisements/my_active_advertisements/'
     form_class = AdvertisementCreationForm
     template_name = 'update_advertisement.html'
-    permission_denied_message = 'You can not edit this ad.'
+    # permission_denied_message = 'You can not edit this ad.'
 
     """Update existing advertisement"""
-
-    # def test_func(self):
-    #     obj = self.get_object()
-    #     return obj.author == self.request.user
 
     def get(self, request, *args, **kwargs):
         """
@@ -222,7 +204,6 @@ class AdvertisementUpdateView(LoginRequiredMixin, UpdateView):
         form_class = self.get_form_class()
         form = self.get_form(form_class)
         image_form = AdvertisementImageFormSet(request.POST, request.FILES, instance=self.object)
-        # print(self.object)
         if (form.is_valid() and image_form.is_valid()):
             return self.form_valid(form, image_form)
         else:
@@ -234,7 +215,6 @@ class AdvertisementUpdateView(LoginRequiredMixin, UpdateView):
         associated AdvertisementImage (ImageFormsets Images) and then redirects to a
         success page.
         """
-        # form.instance.author = self.request.user
         self.object = form.save(commit=False)
         self.object.is_visible = False
         self.object.is_moderated = False
@@ -261,20 +241,6 @@ class AdvertisementUpdateView(LoginRequiredMixin, UpdateView):
             context['formset_image'] = AdvertisementImageFormSet(instance=self.object)
         return context
 
-
-# class AjaxAdmarkView(RedirectView):
-#     # в данную переменную будет устанавливаться модель закладок, которую необходимо обработать
-#     # model = None
-#     model = AdvertisementFollowing
-#
-#     def get_redirect_url(self, *args, **kwargs):
-#         ad = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
-#         user = self.request.user
-#         admark, created = self.model.objects.get_or_create(user=user, obj_id=ad.id)
-#         if not created:
-#             admark.delete()
-#         url_ = admark.get_absolute_url()
-#         return url_
 
 # it's use
 class AjaxAPIAdmarkView(APIView):
@@ -380,11 +346,12 @@ class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
         """
         return self.render_to_response(self.get_context_data(form=form))
 
-    """
-    Counter for views pages
-    If user is not author counter increment +1
-    """
+
     def hit_count(self, user, advertisement):
+        """
+        Counter for views pages
+        If user is not author counter increment +1
+        """
         if user != advertisement.author:
             hit_count, created = self.model_hits.objects.get_or_create(advertisement=advertisement)
             if created:
@@ -401,12 +368,11 @@ class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
                 views = 0
         return views
 
-    """
-    Add or remove page to favorites list
-    Create relate current user to current ad if hasn't before, or remove if it had.
-    """
-
     def following(self, user, advertisement):
+        """
+        Add or remove page to favorites list
+        Create relate current user to current ad if hasn't before, or remove if it had.
+        """
         try:
             follow = AdvertisementFollowing.objects.get(user=user, advertisement=advertisement)
             following = '/static/img/favorite_TRUE.png'
@@ -436,3 +402,23 @@ class AdvertisementDeleteView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('search_list')
+
+
+class AdvertisementDeactivateView(LoginRequiredMixin, DeleteView):
+    model = Advertisement
+    success_url = reverse_lazy('main')
+    template_name = 'advertisement_deactivate.html'
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Calls the delete() method on the fetched object and then
+        redirects to the success URL.
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.is_active = False
+        self.object.save()
+        return HttpResponseRedirect(success_url)
+
+    def get_success_url(self):
+        return reverse_lazy('archive_advertisements')

@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import EmailMessage
 from django.utils import timezone
 from django.urls import reverse, reverse_lazy
 from django.views.generic import ListView, DetailView, DeleteView
@@ -104,7 +104,7 @@ class CurrentDialogView(LoginRequiredMixin, FormMixin, DetailView):
         domen = current_site.domain
         subject_msg = 'Вы получили ответ на объявление '+subject
         receiver = receiver.email
-        body = 'Вы получили новое сообщение по '+subject+'\n перейдите по адресу '+self.get_success_url()
+        body = 'Вы получили новое сообщение по '+subject+'\n перейдите по адресу http://'+domen+self.get_success_url()
         email_message = EmailMessage(subject=subject_msg, body=body, to=[receiver])
         email_message.send()
         return 'ok'
