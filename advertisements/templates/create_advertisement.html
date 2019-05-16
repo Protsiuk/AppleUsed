@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
-<div class="container">
-    {% block content %}
+{% block content %}
+    <div class="container">
         <b><h4>Создание объявления</h4></b><br>
         <form id="advertisement_form" method="post" action="" enctype="multipart/form-data">
             {% csrf_token %}
@@ -22,42 +22,5 @@
             {% endfor %}
             <input type="submit" name="submit" class="btn btn-success" value="Submit" />
         </form>
-
-{#        <form action="." method="post">#}
-{#            {% csrf_token %}#}
-{#            <div>#}
-{#                {{ form.as_p }}#}
-{#            </div>#}
-{#            <fieldset>#}
-{#                <legend>Recipe Ingredient</legend>#}
-{#                {{ image_form.management_form }}#}
-{#                {{ image_form.non_form_errors }}#}
-{#                {% for form in image_form %}#}
-{#                    {{ form.id }}#}
-{#                    <div class="inline {{ image_form.prefix }}">#}
-{#                        {{ form.description.errors }}#}
-{#                        {{ form.description.label_tag }}#}
-{#                        {{ form.description }}#}
-{#                    </div>#}
-{#                {% endfor %}#}
-{#            </fieldset>#}
-{#            <fieldset>#}
-{#                <legend>Recipe instruction</legend>#}
-{#                {{ instruction_form.management_form }}#}
-{#                {{ instruction_form.non_form_errors }}#}
-{#                {% for form in instruction_form %}#}
-{#                    {{ form.id }}#}
-{#                    <div class="inline {{ instruction_form.prefix }}">#}
-{#                        {{ form.number.errors }}#}
-{#                        {{ form.number.label_tag }}#}
-{#                        {{ form.number }}#}
-{#                        {{ form.description.errors }}#}
-{#                        {{ form.description.label_tag }}#}
-{#                        {{ form.description }}#}
-{#                    </div>#}
-{#                {% endfor %}#}
-{#            </fieldset>#}
-{#            <input type="submit" value="Add recipe" class="submit" />#}
-{#        </form>#}
-    {% endblock %}
-</div>
+    </div>
+{% endblock content %}

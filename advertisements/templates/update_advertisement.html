@@ -21,10 +21,6 @@
             {% if form.can_delete %}
                 <li>{{ form.DELETE }}</li>
             {% endif %}
-
-{#            {% if form.instance.pk %}#}
-{#                {{ form.DELETE }}#}
-{#            {% endif %}#}
         {% endfor %}
         <input type="submit" name="submit" class="btn btn-primary" value="Редактировать" />
     </form>

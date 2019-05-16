@@ -16,8 +16,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import authentication, permissions
 
-from advertisements.forms import AdvertisementCreationForm, AdvertisementMessageForm, AdvertisementImageFormSet
-from advertisements.models import Advertisement, AdvertisementMessage, AdvertisementFollowing, PageHit
+from advertisements.forms import AdvertisementCreationForm, AdvertisementImageFormSet
+from advertisements.models import Advertisement, AdvertisementFollowing, PageHit
 from chat.forms import UserMessageForm, GuestMessageForm
 from chat.models import Message, Chat
 
@@ -36,7 +36,7 @@ class AdvertisementsSearchView(ListView):
     model = Advertisement
     model_2 = AdvertisementFollowing
     template_name = 'search_list.html'
-    paginate_by = 10
+    paginate_by = 15
 
     def get_queryset(self):
         query = self.request.GET.get('q')
@@ -58,6 +58,7 @@ class AdvertisementsSearchView(ListView):
         context = super(AdvertisementsSearchView, self).get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['following_ads'] = self.model.objects.filter(favorites__user=self.request.user)
+        # context['count_serching_ads'] = len(context)
         return context
 
 
@@ -101,17 +102,13 @@ class AdvertisementsListMarksView(LoginRequiredMixin, ListView):
         return context
 
 
-class AdvertisementMessageView(CreateView):
-    model = AdvertisementMessage
-    form_class = AdvertisementMessageForm
-    template_name = 'advertisement_detail.html'
-
-
-class AdvertisementCreateView(LoginRequiredMixin, CreateView):
+class AdvertisementCreateView(SuccessMessageMixin, LoginRequiredMixin, CreateView):
     model = Advertisement
     success_url = '/advertisements/'
     form_class = AdvertisementCreationForm
     template_name = 'create_advertisement.html'
+    success_message = 'Ваше сообщение будет опубликовано после одобрения модератором!'
+
     """Create NEW advertisement"""
 
     def get(self, request, *args, **kwargs):
@@ -172,12 +169,12 @@ class AdvertisementCreateView(LoginRequiredMixin, CreateView):
         return context
 
 
-class AdvertisementUpdateView(LoginRequiredMixin, UpdateView):
+class AdvertisementUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateView):
     model = Advertisement
     success_url = '/advertisements/my_active_advertisements/'
     form_class = AdvertisementCreationForm
     template_name = 'update_advertisement.html'
-    # permission_denied_message = 'You can not edit this ad.'
+    success_message = 'Ваше сообщение будет опубликовано после одобрения модератором!'
 
     """Update existing advertisement"""
 

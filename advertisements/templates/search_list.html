@@ -1,14 +1,9 @@
 {% extends 'base.html' %}
 {% block content %}
     <form action="" method="GET">
-{#        {% csrf_token %}#}
-{#        {{ class_form.as_p }}#}
-
-{#        <input type="text" name="q" placeholder="Введите название желаемой продукции Apple" value="{{ request.GET.q }}">#}
         <div class="input-group mb-3">
             <input type="text" class="form-control" name="q" placeholder="Введите название желаемой продукции Apple" value="{{ request.GET.q }}" aria-describedby="button-addon2">
             <div class="input-group-append">
-{#                <input class="btn btn-outline-secondary" type="button" id="button-addon2">Поиск>#}
                 <button class="btn btn-primary" type="submit" id="button-addon2">Поиск</button>
             </div>
         </div>
@@ -16,12 +11,7 @@
         <a class="text-description">Фильтровать по цене</a>
         <input type="text" name="min_price" placeholder="от" value="{{ request.GET.min_price }}">
         <input type="text" name="max_price" placeholder="до" value="{{ request.GET.max_price }}">
-{#        <input type="submit" value="Искать">#}
 
-{#        <div class="input-group mb-3">#}
-{#            <div class="input-group-prepend">#}
-{#                <label class="input-group-text" for="inputGroupSelect01">Options</label>#}
-{#            </div>#}
         <div class="input-group mb-3">
             <div class="input-group-prepend">
                 <button class="btn btn-outline-secondary" type="button">Сортировать</button>
@@ -34,21 +24,13 @@
             </select>
         </div>
     </form>
-{#    <form type='text' action="" name="filter" method="GET">#}
-{#        {{ class_form.as_p }}#}
-{#        <a class="text-description">Фильтровать по цене</a>#}
-{#        <input type="text" name="min_price" placeholder="от" value="{{ request.GET.min_price }}">#}
-{#        <input type="text" name="max_price" placeholder="до" value="{{ request.GET.max_price }}">#}
-{#        <input type="submit" value="фильтровать">#}
-{#    </form>#}
 
     <hr>
     <div class="top-content">
         <div class="row">
             <div class="col-lg-12">
                 {% if object_list|length != 0 %}
-{#                    <p>В результате поиска найдено объявлений - {{ object_list|length }} : </p>#}
-                    <p>В результате поиска найдено объявлений - {{ count_ads_searches }} : </p>
+                    <p>В результате поиска найдено объявлений - {{ object_list|length }}: </p>
                 {% else %}
                     <p>Извините, но ничего не найдено. Уточните поиск!</p>
                 {% endif %}
@@ -56,77 +38,10 @@
         </div>
     </div>
 
-
-{#    <div class="container">#}
-{#      <div class="row">#}
-{#        <div class="col-sm">#}
-{#          One of three columns#}
-{#        </div>#}
-{#        <div class="col-sm">#}
-{#          One of three columns#}
-{#        </div>#}
-{#        <div class="col-sm">#}
-{#          One of three columns#}
-{#        </div>#}
-{#      </div>#}
-{#    </div>#}
-
-{#    {{ advertisement.favorites.all }}#}
-
     <div class="container">
 
         {% include 'list_advertisements.html' %}
         {% include 'pagination.html' %}
     </div>
-
-
-
-{#<nav aria-label="...">#}
-{#{% if is_paginated %}#}
-{#    <ul class="pagination">#}
-{#    {% if page_obj.has_previous %}#}
-{#        <li><a href="?page={{ page_obj.previous_page_number }}{% include 'search_get_parametr.html' %}">&laquo;</a></li>#}
-{#    {% else %}#}
-{#        <li class="disabled"><span>&laquo;</span></li>#}
-{#    {% endif %}#}
-{#    {% for i in paginator.page_range %}#}
-{#        {% if page_obj.number == i %}#}
-{#            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>#}
-{#        {% else %}#}
-{#            <li><a href="?page={{ i }}{% include 'search_get_parametr.html' %}">{{ i }}</a></li>#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-{#    {% if page_obj.has_next %}#}
-{#        <li><a href="?page={{ page_obj.next_page_number }}{% include 'search_get_parametr.html' %}">&raquo;</a></li>#}
-{#    {% else %}#}
-{#        <li class="disabled"><span>&raquo;</span></li>#}
-{#    {% endif %}#}
-{#  </ul>#}
-{#{% endif %}#}
-{#</nav>#}
-
-
-{#{% include 'pagination.html' %}#}
-{#_________________________________________#}
-
-{#    <div class="pagination">#}
-{##}
-{#    {% if advertisements.has_previous %}#}
-{#        <a href="?page={{ advertisements.previous_page_number }}">←</a>#}
-{#    {% endif %}#}
-{##}
-{#    {% for num in advertisements.paginator.page_range %}#}
-{#        {% if num == advertisements.number %}#}
-{#            <span class="current"><b>{{ num }}</b></span>#}
-{#        {% else %}#}
-{#            <a href="?page={{ num }}"> {{ num }}</a>#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-{##}
-{#    {% if advertisement_list.has_next %}#}
-{#        <a href="?page={{ advertisements_list.next_page_number }}">→</a>#}
-{#    {% endif %}#}
-{##}
-{#    </div>#}
 
 {% endblock content %}
