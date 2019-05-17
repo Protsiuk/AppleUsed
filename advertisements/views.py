@@ -58,7 +58,6 @@ class AdvertisementsSearchView(ListView):
         context = super(AdvertisementsSearchView, self).get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['following_ads'] = self.model.objects.filter(favorites__user=self.request.user)
-        # context['count_serching_ads'] = len(context)
         return context
 
 

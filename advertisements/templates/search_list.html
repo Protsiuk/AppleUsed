@@ -1,8 +1,10 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 {% block content %}
     <form action="" method="GET">
         <div class="input-group mb-3">
             <input type="text" class="form-control" name="q" placeholder="Введите название желаемой продукции Apple" value="{{ request.GET.q }}" aria-describedby="button-addon2">
+{#            {% render_field form.search_query type="search" %}#}
             <div class="input-group-append">
                 <button class="btn btn-primary" type="submit" id="button-addon2">Поиск</button>
             </div>

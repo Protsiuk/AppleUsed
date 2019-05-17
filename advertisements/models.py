@@ -132,21 +132,6 @@ class AdvertisementImage(models.Model):
         verbose_name_plural = 'Images of Advertisements'
 
 
-# class AdvertisementMessage (models.Model):
-#     advertisement = models.ForeignKey(Advertisement)
-#     author = models.ForeignKey(settings.AUTH_USER_MODEL)
-#     email_visitor = models.EmailField(_('Email'), max_length=50)
-#     text = models.TextField(_('Text message'), max_length=500)
-#     added = models.DateTimeField(auto_now_add=True)
-#
-#     def __str__(self):
-#         return 'Massage %s  from %s to author - %s' % (self.email_visitor, self.text, self.author.email)
-#
-#     class Meta:
-#         verbose_name = 'Advertisement massage'
-#         verbose_name_plural = 'Advertisement massages'
-
-
 class SiteConfiguration(SingletonModel):
     site_name = models.CharField(max_length=255, default='Site name')
     maintenance_mode = models.BooleanField(default=False)

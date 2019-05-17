@@ -12,14 +12,14 @@ class Command(BaseCommand):
         rand_user = random.choice(users)
         rend_price = random.randrange(270, 350)
 
-        for ads in range(1000):
+        for ads in range(20):
             Advertisement.objects.create(
                 title="iPhone",
                 description="Some description about",
                 category_equipment='iPhone',
                 price=rend_price,
-                is_visible = True,
-                is_moderated = True,
+                is_visible = False,
+                is_moderated = False,
                 author=MyCustomUser.objects.get(pk=rand_user),
                 main_image="advertisements/f9eaf973-5585-4aa7-82b3-222ed2122e22.jpg"
                                        )

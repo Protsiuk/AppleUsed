@@ -1,7 +1,4 @@
 from django.db import models
-# from django.contrib.auth.models import User
-
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from advertisements.models import Advertisement
 from appleused_project import settings

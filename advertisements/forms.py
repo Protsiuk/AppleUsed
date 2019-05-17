@@ -26,6 +26,7 @@ class AdvertisementImageForm(forms.ModelForm):
             'image',
             ]
 
+
 AdvertisementImageFormSet = inlineformset_factory(
     Advertisement,
     AdvertisementImage,
