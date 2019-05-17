@@ -17,10 +17,6 @@
     {% for dialog in object_list %}
         <hr>
         <div class="advertisement reply-body {% if not dialog.last_send_message.is_readed and request.user != dialog.last_send_message.sender_msg %}unreaded{% endif %}">
-{#            <img src="{{ advertisement.image.url }}" width="100">#}
-{#            <a href="{% url 'single_advertisement' advertisement_id=advertisement.id %}">{{ advertisement.title }}</a>#}
-    {#            <a class="title_advertisement" >{{ advertisement.title }} </a>#}
-{#            <div align="right"><b class="price">chats id#{{ dialog.id }} </b></div>#}
 
                 <ul class="list-inline">
                     <li class="drop-left-padding">
@@ -47,7 +43,7 @@
                         <p> {{ dialog.last_send_message.message|truncatechars:50 }} </p>
                     </li>
                     <li class="text-sm-right">
-                        {% if request.user == dialog.last_send_message.sender_msg %}
+                        {% if request.user == dialog.last_send_message.sender_msg and dialog.last_send_message.is_readed %}
                             <small class="font-italic">Прочитано {{ dialog.last_send_message.reading_date|utc }}</small>
                         {% endif %}
                     </li>

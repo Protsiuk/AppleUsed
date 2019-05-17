@@ -1,58 +1,20 @@
 {% extends "base.html" %}
 
+{% block title %}Вход{% endblock title %}
 <div class="row">
     {% block content %}
-        {% if request.user.is_authenticated %}
-            <p align="center">Вы уже авторизованы. Хотите выйти?</p>
+        <h2>Bxoд</h2>
+        {% if user.is_authenticated %}
+            <p>Вы уже выполнили вход.</p>
         {% else %}
-            <form class="col s12" action="{% url 'login' %}" method="post">
+            <form method="post">
                 {% csrf_token %}
-                <ul class='form-errors'>
-                    {% for error in form.non_field_errors %}
-                        <li>{{ error|escape }}</li>
-                    {% endfor %}
-                </ul>
-
-                <div class="input-field col s6">
-{#                    <input placeholder="Email" id="">#}
-                    <label for="{{ form.email.id_for_label }}">Email</label>
-                    {{ form.email }}
-{#                    {{ form.as_p }}#}
-                </div>
-
-                <div class="input-field col s6">
-{#                    <input placeholder="Email" id="">#}
-                    <label for="{{ form.password.id_for_label }}">Password</label>
-                    {{ form.password }}
-                </div>
-                <button type="submit" class="waves-effect waves-light btn">Войти</button>
-                <a href="">Забыли пароль</a>
-                 <p align="center">Еще нет акаунта?<a href="{% url 'registration' %}">Регистрация</a></p>
-
-    {#            {% for error in form.non_field_errors %}#}
-    {#                    <strong>{{ error|escape }}</strong>#}
-    {#            {% endfor %}#}
-{#                    {% if request.user.is_authenticated %}#}
-{#                        ТРА-Л/-Л/#}
-{#                        <button type="submit" class="waves-effect waves-light btn">Вти</button>#}
-{#                    {% else %}#}
-{#                        <div class="input-field col s6">#}
-    {#                    <input placeholder="Email" id="">#}
-{#                        <label for="{{ form.email.id_for_label }}">Email</label>#}
-{#                        {{ form.email }}#}
-    {#                    {{ form.as_p }}#}
-{#                        </div>#}
-{#    #}
-{#                        <div class="input-field col s6">#}
-        {#                    <input placeholder="Email" id="">#}
-{#                            <label for="{{ form.password.id_for_label }}">Password</label>#}
-{#                            {{ form.password }}#}
-{#                        </div>#}
-{#                        <button type="submit" class="waves-effect waves-light btn">Войти</button>#}
-    {#                    Пожалуста авторизуйтесь!#}
-{#                    {% endif %}#}
-
+                {{ form.as_p }}
+{#                        <input type="hidden" name="next" value="{{ next }}">#}
+                <input type="submit" value="Войти">
             </form>
+            <p>Забыли пароль?<a href="{% url 'password_reset' %}">Сбросить!</a><a href="{% url 'signup' %}">Зарегестрироваться</a>!</p>
         {% endif %}
     {% endblock content %}
 </div>
+

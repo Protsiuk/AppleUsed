@@ -1,42 +1,25 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
+
 {% block content %}
-{#    <div class="container">#}
-{#        <div class="row">#}
-{#            <form>#}
-{#                <div class="form-group">#}
-{#                    <label for="exampleInputEmail1">Email address</label>#}
-{#                    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">#}
-{#                    <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>#}
-{#                </div>#}
-{#                <div class="form-group">#}
-{#                    <label for="exampleInputPassword1">Password</label>#}
-{#                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">#}
-{#                </div>#}
-{#                  <div class="form-group form-check">#}
-{#                    <input type="checkbox" class="form-check-input" id="exampleCheck1">#}
-{#                    <label class="form-check-label" for="exampleCheck1">Check me out</label>#}
-{#                </div>#}
-{#                    <button type="submit" class="btn btn-primary">Submit</button>#}
-{#            </form>#}
-{##}
-{#        </div>#}
-{##}
-{#    </div>#}
-  <h2>Sign up</h2>
-  <form method="post">
-    {% csrf_token %}
-      {% for field in form %}
-      <p>
-        {{ field.label_tag }}<br>
-        {{ field }}
-        {% if field.help_text %}
-          <small style="display: none">{{ field.help_text }}</small>
-        {% endif %}
-        {% for error in field.errors %}
-          <p style="color: red">{{ error }}</p>
-        {% endfor %}
-{#      </p>#}
-      {% endfor %}
-    <button type="submit">Sign up</button>
-  </form>
+
+    <h2>Регистрация пользователя</h2>
+    <form method="post">
+        {% csrf_token %}
+            <div class="form-group">
+                {% for field in form %}
+                    {% if field.errors %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <span class="text-danger small">{{ field.errors }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                    <label for="{{ field.label }}">{{ field.label }}</label>
+                    {% render_field field rows="3" class='form-control' %}
+                {% endfor %}
+            </div>
+
+        <button type="submit">Зарегестрироваться</button>
+    </form>
 {% endblock %}

@@ -56,9 +56,6 @@ INSTALLED_APPS = [
     'solo',
     'rest_framework',
     'captcha',
-
-
-    # 'rest_framework.authtoken',
 ]
 
 
@@ -72,15 +69,6 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-# MIDDLEWARE = [
-#     'django.middleware.security.SecurityMiddleware',
-    # 'django.contrib.sessions.middleware.SessionMiddleware',
-    # 'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
-    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
-    # 'django.contrib.send_email.middleware.MessageMiddleware',
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-# ]
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 ROOT_URLCONF = 'appleused_project.urls'
@@ -106,30 +94,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'appleused_project.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# POSTGRESQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        'USER':'sqlite3',
-        "PASSWORD":'test123'
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'appleused_DB',
+        'USER': 'postgres',
+        'PASSWORD': '210980',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
-
-# POSTGRESQL
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': 'appleused_DB',
-#         'USER': 'postgres',
-#         'PASSWORD': '210980',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
 
 
 # Password validation
@@ -155,7 +133,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
-# LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
@@ -179,26 +156,20 @@ STATIC_ROOT = os.path.join(BASE_DIR, '/static/')
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
 AUTH_USER_MODEL = 'accounts.MyCustomUser'
-
-# ACCOUNT_ACTIVATION_DAYS = 3
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # my_project for testing
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
-LOGIN_URL = 'accounts/signin/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = 'accounts/login/'
+LOGIN_REDIRECT_URL = 'accounts/profile_user/'
+LOGOUT_REDIRECT_URL = 'accounts/login/'
 
 DATE_INPUT_FORMATS = ('%d/%m/%Y')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-# LOGIN_REDIRECT_URL = 'home'
-# LOGOUT_REDIRECT_URL = 'home'
 
 # AUTH_PROFILE_MODULE = 'list.UserProfile'
 

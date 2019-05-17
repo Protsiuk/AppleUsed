@@ -4,22 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %} AppleUsed {% endblock title %}</title>
-{#    <title>{% block title %}<img src="{% static 'img/apple_icon.ico' %}"> AppleUsed {% endblock title %}</title>#}
-
-{#     <!-- Compiled and minified CSS -->#}
-{#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">#}
-{#    <!--Import jQuery before materialize.js-->#}
-{#    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>#}
-{#    <!-- Compiled and minified JavaScript -->#}
-{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/js/materialize.min.js"></script>#}
-
-
-    <!-- MATERIALIZE Compiled and minified CSS -->
-{#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">#}
-
-{#    <!-- MATERIALIZE Compiled and minified JavaScript -->#}
-{#    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>#}
-
 
 {#    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>#}
 
@@ -28,16 +12,7 @@
 
 {% include 'base js.html' %}
 
-
-{#    <script src="https://code.jquery.com/jquery-2.1.4.min.js"#}
-
-{#    <script src="https://code.jquery.com/jquery-3.3.1.js"#}
-{#  src="https://code.jquery.com/jquery-3.3.1.js"#}
-{#  integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="#}
-{#  crossorigin="anonymous"></script>#}
-
     {% load static %}
-{#    <link rel="stylesheet" type="text/css" href={% static "css/style.css" %} />#}
     <link rel="stylesheet" type="text/css" href={% static "css/style.css" %} />
 
 {% block add_static %} {% endblock add_static %}
@@ -55,7 +30,6 @@
             <div class="row flex-nowrap justify-content-between align-items-center">
                 <div class="col-4 pt-1">
                     <a class="text-header" href="{% url 'main' %}">AppleUsed</a>
-{#                    <a class="text-muted" href="#">Subscribe</a>#}
                 </div>
                 <div class="col-4 text-center">
                     <img src="{% static 'img/apple_logo.gif' %}" class="brand-logo center" width="50" height="50">
@@ -65,143 +39,60 @@
                         <div class="alert alert-danger" role="alert">
                             <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
                             <span class="sr-only">Error:</span>
-                            Your username and password didn't math
+{#                            Your username and password didn't math#}
+                            Вы ввели неправильные либо Email либо пароль
                         </div>
 {#                        <p> Your username and password didn't math</p>#}
                     {% endif %}
                     {% if request.user.is_authenticated %}
                         <span class="text-center"> Вы ввошли как <a href="{% url 'profile_user' %}" class="href-on-page"><p><b class="text-accent-1">{{ request.user.username }}</b></p></a></span>
-                        <a class="btn btn-primary btn-outline-secondary" href="{% url 'sign_out' %}">Выйти</a>
+                        <a class="btn btn-primary btn-outline-secondary" href="{% url 'logout' %}">Выйти</a>
                     {% else %}
-                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'signin' %}">Войти</a>
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'login' %}">Войти</a>
                     {% endif %}
                 </div>
             </div>
         </header>
 
-{#{% include 'navbar.html' %}#}
-<!-- TOP CONTENT -->
-{#<div class="wrapper">#}
-{#<nav class="navbar navbar-light" style="background-color: #ee6e73;">#}
+        {% block navbar %}
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="{% url 'search_list' %}">К списку обьявлений<span class="sr-only">(current)</span></a>
+                        </li>
 
-{#  <!-- Navbar content -->#}
-{#        <img src="{% static 'img/apple_logo.gif' %}" width="50" height="50">#}
-{#        <a href="{% url 'main' %}" class="brand-logo">AppleUsed</a>#}
-{#        <ul id="nav-mobile" class="right hide-on-med-and-down"></ul>#}
-{#</nav>#}
-
-
-
-{#<nav class="navbar navbar-expand-lg navbar-light bg-light">#}
-{#<div class="container">#}
-{#    <div class="row">#}
-{#        <div class="col-lg-12">#}
-{#            <nav class="navbar navbar-expand-lg navbar-light bg-light">#}
-{#                <a class="navbar-brand" href="#">AppleUsed</a>#}
-{#                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">#}
-{#                    <span class="navbar-toggler-icon"></span>#}
-{#                </button>#}
-{##}
-{#                <div class="collapse navbar-collapse" id="navbarSupportedContent">#}
-{#                    <ul class="navbar-nav mr-auto">#}
-{#                        <li class="nav-item active">#}
-{#                            <a class="nav-link" href="#">К списку обьявлений <span class="sr-only">(current)</span></a>#}
-{#                        </li>#}
-{#                        <li class="nav-item">#}
-{#                            <a class="nav-link" href="#">Обьявления</a>#}
-{#                        </li>#}
-{#                        <li class="nav-item dropdown">#}
-{#                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
-{#                                Dropdown#}
-{#                            </a>#}
-{#                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">#}
-{#                            <a class="dropdown-item" href="#">Action</a>#}
-{#                            <a class="dropdown-item" href="#">Another action</a>#}
-{#                            <a class="dropdown-item" href="#">Something else here</a>#}
-{#                        </div>#}
-{#                        </li>#}
-{#                        <div class="navbar navbar-light bg-light">#}
-{#                            <a class="navbar-brand" href="#">#}
-{#                            <img src="{% static 'img/apple_logo.gif' %}" width="50" height="50">#}
-{#                            </a>#}
-{#                        </div>#}
-{#                        <li class="nav-item">#}
-{#                            <div class="dropdown-divider">#}
-{#                                <img src="{% static 'img/apple_logo.gif' %}" width="20" height="20">#}
-{#                                <a href="" class="logo">AppleUsed</a>#}
-{#                            </div>#}
-{#                        </li>#}
-{#                    </ul>#}
-{#                    <form class="form-inline my-2 my-lg-0">#}
-{#                        <input class="form-control mr-sm-2" type="chat" placeholder="Search" aria-label="Search">#}
-{#                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>#}
-{#                    </form>#}
-{#                    <ul>#}
-{#                        <div class="general-container">#}
-{#                            <div class="container top-container">#}
-{#                                <div class="nav-wrapper">#}
-{#                                    <img src="{% static 'img/apple_logo.gif' %}" width="50" height="50">#}
-{#                                    <a href="" class="logo">AppleUsed</a>#}
-{#                                    <a href="{% url 'new_advertisement' %}" class="brand-logo">AppleUsed</a>#}
-{#                                    <ul id="nav-mobile" class="right hide-on-med-and-down">#}
-{#                                        {% if request.user.is_authenticated %}#}
-{#                                            <span> Вы ввошли как <b>{{ request.user.username }}</b></span>#}
-{#                                            <li><b><a href="{% url 'sign_out' %}">Выйти</a></b></li>#}
-{#                                        {% else %}#}
-{#                                            <li><a href="{% url 'signin' %}">Авторизоваться</a></li>#}
-{#                                        {% endif %}#}
-{#                                    </ul>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </ul>#}
-{#                </div>#}
-{#            </nav>#}
-{#        </div>#}
-{#    </div>#}
-{#</div>#}
-{##}
-
-{% block navbar %}
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url 'search_list' %}">К списку обьявлений<span class="sr-only">(current)</span></a>
-                </li>
-
-                <li class="nav-item active">
-                    {% if request.user.is_authenticated %}
-                        <a class="nav-link" href="{% url 'profile_user' %}">Личный кабинет</a>
-                    {% endif %}
-                </li>
-                <div class="col-4 d-flex justify-content-end align-items-center">
-                    {% if request.user.is_authenticated %}
-    {#                    <a class="nav-link" href="{% url 'new_advertisement' %}">Создать обьявление</a>#}
-                        <a class="btn btn-sm btn-primary btn-top-right" href="{% url 'new_advertisement' %}">Создать обьявление</a>
-                    {% else %}
-                        <a class="btn btn-sm btn-primary btn-top-right" href="{% url 'signin' %}">Создать обьявление</a>
-                    {% endif %}
+                        <li class="nav-item active">
+                            {% if request.user.is_authenticated %}
+                                <a class="nav-link" href="{% url 'profile_user' %}">Личный кабинет</a>
+                            {% endif %}
+                        </li>
+                        <div class="col-4 d-flex justify-content-end align-items-center">
+                            {% if request.user.is_authenticated %}
+            {#                    <a class="nav-link" href="{% url 'new_advertisement' %}">Создать обьявление</a>#}
+                                <a class="btn btn-sm btn-primary btn-top-right" href="{% url 'new_advertisement' %}">Создать обьявление</a>
+                            {% else %}
+                                <a class="btn btn-sm btn-primary btn-top-right" href="{% url 'login' %}">Создать обьявление</a>
+                            {% endif %}
+                        </div>
+                    </ul>
                 </div>
-            </ul>
-        </div>
-    </nav>
-{% endblock navbar %}
+            </nav>
+        {% endblock navbar %}
 
-
+        <br>
         {% block content %}
         {% endblock content %}
 
 
-    <div class="constanta_low">
-        {% block constanta_low %}
+    {#    <div class="constanta_low">#}
+    {#        {% block constanta_low %}#}
+    {##}
+    {#        {% endblock constanta_low %}#}
+    {#        <hr>#}
+    {#    </div>#}
 
-        {% endblock constanta_low %}
-        <hr>
-    </div>
-
-
-    {% include 'footer.html' %}
+        {% include 'footer.html' %}
     </div>
 </body>
 
