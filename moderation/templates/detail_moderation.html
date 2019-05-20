@@ -19,38 +19,29 @@
         </div>
         <hr>
         <div class="col-lg-12">
-            <tb>
+            <h4 class="title_advertisement"><b>{{ object.ad_to_moderate.title }}</b></h4>
+            <a class="text-capitalize">Категория: {{ object.ad_to_moderate.category_equipment }}</a><br>
+            <a id="ad_id" data-key="{{ object.ad_to_moderate.id }}">Номер объявления:{{ object.ad_to_moderate.id }}</a><br>
+            <a>Добавлено {{ object.ad_to_moderate.created | formated_datas}}</a><br>
+            <a class="author">Автор <b>{{ object.ad_to_moderate.author.first_name }} </b></a><br>
+            <a class="phone_author">Телефон для связи с автором <b>{{ object.ad_to_moderate.phone_author }}</b></a><br>
+            <a class="text">{{ object.ad_to_moderate.description }}</a>
+            <div align="right"><b class="price">{{ object.ad_to_moderate.price }} USD</b></div><br>
+            <div align="center">
                 <ul class=class="col-lg-3">
-                </ul>
-                <h4 class="title_advertisement"><b>{{ object.ad_to_moderate.title }}</b></h4>
-                <a class="text-capitalize">Категория: {{ object.ad_to_moderate.category_equipment }}</a><br>
-                <a id="ad_id" data-key="{{ object.ad_to_moderate.id }}">Номер объявления:{{ object.ad_to_moderate.id }}</a><br>
-                <a>Добавлено {{ object.ad_to_moderate.created | formated_datas}}</a><br>
-                <a class="author">Автор <b>{{ object.ad_to_moderate.author.first_name }} </b></a><br>
-                <a class="phone_author">Телефон для связи с автором <b>{{ object.ad_to_moderate.phone_author }}</b></a><br>
-                <a class="text">{{ object.ad_to_moderate.description }}</a>
-                <div align="right"><b class="price">{{ object.ad_to_moderate.price }} USD</b></div><br>
-                <div align="center">
-                    <ul class=class="col-lg-3">
-                    {% if  object.ad_to_moderate.main_image %}
-                        <img src="{{ object.ad_to_moderate.main_image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
-                        {% if object.ad_to_moderate.images.all %}
-                            {% for image_item in object.ad_to_moderate.images.all %}
-                                <img src="{{ image_item.image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
-                                <hr>
-                            {% endfor %}
-                        {% endif %}
-                    {% else %}
-                        <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="500" alt="advertisement">
+                {% if  object.ad_to_moderate.main_image %}
+                    <img src="{{ object.ad_to_moderate.main_image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
+                    {% if object.ad_to_moderate.images.all %}
+                        {% for image_item in object.ad_to_moderate.images.all %}
+                            <img src="{{ image_item.image.url }}" class="img-thumbnail align-center" width="500" height="500"><br>
+                            <hr>
+                        {% endfor %}
                     {% endif %}
-                    </ul>
-                </div>
-            </tb>
-
+                {% else %}
+                    <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="500" alt="advertisement">
+                {% endif %}
+                </ul>
+            </div>
             <hr>
         </div>
-
     {% endblock %}
-
-<div class="footer">
-</div>

@@ -10,8 +10,6 @@
         {{ object.ad_to_moderate.author }}
 
 
-
-
         <hr>
         <div class="col-lg-12">
             <tb>
@@ -42,17 +40,13 @@
                     </ul>
                 </div>
             </tb>
-
             <hr>
         </div>
 
         <form method="POST" action="">
 {#            <div class="form-group">#}
-                {% csrf_token %}
-                {{ form.as_p }}
-{#            {{ form }}#}
-{#                <textarea type="text" class="form-control" placeholder="Comment"></textarea>#}
-{#                <input type="text" class="form-control" placeholder="Email">#}
+            {% csrf_token %}
+            {{ form.as_p }}
             <div class="form-control">
                 <input class="btn btn-sm btn-primary" type="submit" value="Отправить">
             </div>
@@ -60,5 +54,3 @@
 
     {% endblock %}
 
-<div class="footer">
-</div>

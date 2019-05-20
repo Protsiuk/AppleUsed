@@ -25,7 +25,8 @@ SECRET_KEY = '51+!8wr#+fg@$@6+78-2@6r02q9h*o)+_rdsl4s(o2utea8362'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['18.185.170.148']
+# ALLOWED_HOSTS = ['18.185.170.148:80']
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition

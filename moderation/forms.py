@@ -9,4 +9,3 @@ class ModerationForm(forms.ModelForm):
             'comment_to_ad',
             'status'
         )
-        # widget = forms.Textarea(attrs={'class': 60, 'rows': 10}))
