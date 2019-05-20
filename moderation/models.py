@@ -20,7 +20,6 @@ STATUS_CHOICES = (
     (MODERATION_STATUS_AT_WORK, 'at_work'),
 )
 
-
 class Moderation(models.Model):
     moderation_id = models.AutoField(primary_key=True)
     moderator = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='moderator')

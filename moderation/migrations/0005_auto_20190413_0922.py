@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='moderation',
             name='status',
-            field=models.SmallIntegerField(choices=[(0, 'rejected'), (1, 'approved'), (2, 'pending'), (3, 'at_work')], default='2', verbose_name='Choices status'),
+            field=models.SmallIntegerField(choices=[(0, 'rejected'), (1, 'approved'), (2, 'pending'), (3, 'at_work')], default=2, verbose_name='Choices status'),
         ),
         migrations.DeleteModel(
             name='Moderator',
