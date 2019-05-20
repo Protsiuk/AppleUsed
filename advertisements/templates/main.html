@@ -1,43 +1,49 @@
 {% extends 'base.html' %}
 {% load formated_datas %}
+{% load widget_tweaks %}
 {% load static %}
 {% block content %}
-    <div class="input-group mb-3">
+    <div>
         <form action="/advertisements/search-list/" method="GET">
-            <input type="text" name="q" placeholder="Введите название желаемой продукции Apple">
-            <button type="submit" class="btn btn-primary">Искать</button>
+            <div class="input-group">
+                <input type="text" class="form-control" name="q" placeholder="Введите название желаемой продукции Apple">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" type="submit" id="button-addon2">Поиск</button>
+                </div>
+            </div>
         </form>
-    </div>
 
-    <hr>
-    <div class="section-top">
-        <p>Последние объявления на сайте:</p>
-    </div>
 
-    <div class="section">
-        <div class="container">
-            <div class="row">
-                {% for object in object_list %}
-                    <div class="col-lg-3">
-                        <div class="product-item-main">
-                            {% if  object.main_image %}
-                                <img src="{{ object.main_image.url }}" class="img-responsive" width="150" height="150" alt="advertisement">
-                            {% else %}
-                                <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="120" alt="advertisement">
-                            {% endif %}
+        <hr>
+        <div class="section-top">
+            <p>Последние объявления на сайте:</p>
+        </div>
 
-                            <li>
-                                <a class="text-title" href="{% url 'advertisement_detail' pk=object.id %}">{{ object.title }} </a><br>
-                            </li>
-                            <li>
-                                <a class="card-action">{{ object.created.date|formated_datas }}</a><br>
-                            </li>
-                                <div align="center">
-                                <b class="price">{{ object.price }} USD</b>
+        <div class="section">
+            <div class="container">
+                <div class="row">
+                    {% for object in object_list %}
+                        <div class="col-lg-3">
+                            <div class="product-item-main">
+                                {% if  object.main_image %}
+                                    <img src="{{ object.main_image.url }}" class="img-responsive" width="150" height="150" alt="advertisement">
+                                {% else %}
+                                    <img src="{% static 'img/480px-No_image_available.png' %}" class="img-thumbnail" width="120" alt="advertisement">
+                                {% endif %}
+
+                                <li>
+                                    <a class="text-title" href="{% url 'advertisement_detail' pk=object.id %}">{{ object.title }} </a><br>
+                                </li>
+                                <li>
+                                    <a class="card-action">{{ object.created.date|formated_datas }}</a><br>
+                                </li>
+                                    <div align="center">
+                                    <b class="price">{{ object.price }} USD</b>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>

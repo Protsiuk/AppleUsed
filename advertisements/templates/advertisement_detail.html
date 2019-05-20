@@ -50,7 +50,7 @@
                         <div class="favorite-item">
                             {% if user.is_authenticated %}
                                 <a id="favorite" class="img-rounded"
-                                   style='cursor: pointer'
+                                    style='cursor: pointer'
                                     data-href-template="{% url 'ad-api-favorite' pk=object.id%}"
                                     data-id="{{ object.id }}">
                                     <img src="{{ img_following }}" class="img-thumbnail align-right" width="50" height="50">

@@ -52,6 +52,12 @@ class AdvertisementsSearchView(ListView):
             ordering = self.request.GET.get('ordering')
         else:
             ordering = '-created'
+
+        ordering_ch = {'-created':'Сначала самые новые',
+                      '-price': 'По убыванию цены',
+                      'price': 'По аозрастаанию цены'
+                      }
+
         return result.order_by(ordering)
 
     def get_context_data(self, **kwargs):

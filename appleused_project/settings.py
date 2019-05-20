@@ -25,7 +25,7 @@ SECRET_KEY = '51+!8wr#+fg@$@6+78-2@6r02q9h*o)+_rdsl4s(o2utea8362'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['18.185.170.148']
 
 
 # Application definition
@@ -41,16 +41,13 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'crispy_forms',
     'widget_tweaks',
-    # 'betterforms',
-
 
     # project apps
     'accounts',
     'advertisements',
     'moderation',
     'chat',
-    # 'chat_b2b',
-    # 'send_email',
+
 
     # 3-d generation
     'solo',
@@ -101,7 +98,7 @@ WSGI_APPLICATION = 'appleused_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'appleused_DB',
+        'NAME': 'appleused_prod_db',
         'USER': 'postgres',
         'PASSWORD': '210980',
         'HOST': '127.0.0.1',
@@ -158,8 +155,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'accounts.MyCustomUser'
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # my_project for testing
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # my_project for testing
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
 
@@ -171,15 +168,7 @@ DATE_INPUT_FORMATS = ('%d/%m/%Y')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-# AUTH_PROFILE_MODULE = 'list.UserProfile'
-
-# email server settings
-# EMAIL_HOST = 'smtp.gmail.com'
-# EMAIL_HOST_USER = 'your-username@gmail.com'
-# EMAIL_HOST_PASSWORD = 'Application spectific password(for eg: smbumqjiurmqrywn)'
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# --------------------------------------------------
+# Email Backend settings
 from .email_info import EMAIL_HOST, EMAIL_USE_TLS, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = EMAIL_USE_TLS
 EMAIL_HOST = EMAIL_HOST
@@ -189,8 +178,6 @@ EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 DEFAULT_FROM_EMAIL = 'Your name'
 DEFAULT_TO_EMAIL = 'Your email'
 
-# EMAIL_HOST = 'localhost'
-# EMAIL_PORT = 1025
 
 # REST FRAMEWORK
 REST_FRAMEWORK = {
@@ -206,5 +193,3 @@ try:
     from .local_settings import *
 except ImportError:
     pass
-
-# OBJECT_SEARCH = 'advertisements.models.Advertisement'

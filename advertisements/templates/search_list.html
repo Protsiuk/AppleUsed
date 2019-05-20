@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% block content %}
     <form action="" method="GET">
-        <div class="input-group mb-3">
+        <div class="input-group">
             <input type="text" class="form-control" name="q" placeholder="Введите название желаемой продукции Apple" value="{{ request.GET.q }}" aria-describedby="button-addon2">
 {#            {% render_field form.search_query type="search" %}#}
             <div class="input-group-append">
@@ -13,16 +13,22 @@
         <a class="text-description">Фильтровать по цене</a>
         <input type="text" name="min_price" placeholder="от" value="{{ request.GET.min_price }}">
         <input type="text" name="max_price" placeholder="до" value="{{ request.GET.max_price }}">
-
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <button class="btn btn-outline-secondary" type="button">Сортировать</button>
-            </div>
+        <br>
+        <div class="input-group">
+            <a class="text-description">Выбирите метод сортировки</a>
             <select class="custom-select" name="ordering" id="inputGroupSelect03" aria-label="Example select with button addon">
-                <option value="">--Выбирите способ сортировки--</option>
+                <option value={{ request.GET.ordering }}>
+                    {% if request.GET.ordering == '-created' %}
+                        Сначала самые новые
+                    {% elif request.GET.ordering == '-price' %}
+                        По убыванию цены
+                    {% elif request.GET.ordering == 'price' %}
+                        По возрастанию цены
+                    {% endif %}
+                </option>
+                <option value="-created">Сначала самые новые</option>
                 <option value="-price">По убыванию цены</option>
                 <option value="price">По возрастанию цены</option>
-                <option value="-created">Сначала самые новые</option>
             </select>
         </div>
     </form>
