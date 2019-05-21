@@ -296,7 +296,8 @@ class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
         context = super(AdvertisementDetailView, self).get_context_data(**kwargs)
         advertisement = get_object_or_404(Advertisement, pk=self.kwargs['pk'])
         user = self.request.user
-        context['img_following'] = self.following(user, advertisement)
+        if user.is_authenticated:
+            context['img_following'] = self.following(user, advertisement)
         context['form'] = self.get_form()
         views_page = self.hit_count(user, advertisement)
         context['views_page'] = views_page
@@ -305,7 +306,6 @@ class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
         return context
 
     def post(self, request, *args, **kwargs):
-        # self.object = self.get_object()
         form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)

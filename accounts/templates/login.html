@@ -10,7 +10,6 @@
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
-{#                        <input type="hidden" name="next" value="{{ next }}">#}
                 <input type="submit" value="Войти">
             </form>
             <p>Забыли пароль?<a href="{% url 'password_reset' %}">Сбросить!</a><a href="{% url 'signup' %}">Зарегестрироваться</a>!</p>

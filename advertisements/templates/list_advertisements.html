@@ -20,9 +20,13 @@
             <div class="col-md-8">
                 <div class="control-label favorite">
                     {% if object in following_ads.all %}
-                        <img src="{% static 'img/favorite_TRUE.png' %}" class="img-thumbnail align-right" width="50" height="50">
+                        <a class="card-title" href="{% url 'advertisement_detail' pk=object.id%}">
+                            <img src="{% static 'img/favorite_TRUE.png' %}" class="img-thumbnail align-right" width="50" height="50">
+                        </a>
                     {% else %}
-                        <img src="{% static 'img/favorite_FALSE.png' %}" class="img-thumbnail align-right" width="50" height="50">
+                        <a class="card-title" href="{% url 'advertisement_detail' pk=object.id%}">
+                            <img src="{% static 'img/favorite_FALSE.png' %}" class="img-thumbnail align-right" width="50" height="50">
+                        </a>
                     {% endif %}
                 </div>
                 <div class=class="product-item-text">

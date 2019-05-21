@@ -47,16 +47,18 @@
                     </a>
                     <br>
                     {% if not you_is_author %}
-                        <div class="favorite-item">
-                            {% if user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
+                            <div class="favorite-item">
                                 <a id="favorite" class="img-rounded"
                                     style='cursor: pointer'
                                     data-href-template="{% url 'ad-api-favorite' pk=object.id%}"
                                     data-id="{{ object.id }}">
                                     <img src="{{ img_following }}" class="img-thumbnail align-right" width="50" height="50">
                                 </a>
-                            {% endif %}
-                        </div>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'login' %}"><img src="{% static 'img/favorite_FALSE.png' %}" width="50" height="50"></a>
+                        {% endif %}
                     {% endif %}
                     <a class="text">{{ object.description }}</a>
                     <div align="right"><b class="price">{{ object.price }} USD</b></div>
@@ -79,16 +81,14 @@
                         </ul>
                     </div>
                 </div>
-                <div class=class="col-lg-3">
-                    {% if  not you_is_author %}
-                        <h5>Написать автору объявления:
-                        <a href="#"><b> {{ object.title }}:</b></a><br>
-                        </h5><br>
-                    {% endif %}
-                </div>
             </div>
         </div>
         {% if not you_is_author %}
+            <div class=class="col-lg-3">
+                <h5>Написать автору объявления:
+                <a href="#"><b> {{ object.title }}:</b></a><br>
+                </h5><br>
+            </div>
             <form name="dialog-message" method="POST">
                 {% csrf_token %}
                 <div class="form-group">
@@ -104,7 +104,7 @@
                         {% render_field field rows="3" class='form-control' %}
                     {% endfor %}
                 </div>
-            <button type="submit" class="btn btn-success">Отправить</button>
+                <button type="submit" class="btn btn-success">Отправить</button>
             </form>
         {% endif %}
     {% endblock %}

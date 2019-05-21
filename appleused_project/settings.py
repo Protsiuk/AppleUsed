@@ -25,8 +25,8 @@ SECRET_KEY = '51+!8wr#+fg@$@6+78-2@6r02q9h*o)+_rdsl4s(o2utea8362'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-# ALLOWED_HOSTS = ['18.185.170.148:80']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["18.185.170.148"]
+# ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -149,14 +149,13 @@ STATICFILES_DIRS = (
 )
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, '/static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, '/media')
 
 AUTH_USER_MODEL = 'accounts.MyCustomUser'
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # my_project for testing
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 # EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
