@@ -21,5 +21,5 @@ class Command(BaseCommand):
                 is_visible = True,
                 is_moderated = True,
                 author=MyCustomUser.objects.get(pk=rand_user),
-                main_image="advertisements/f9eaf973-5585-4aa7-82b3-222ed2122e22.jpg"
+                # main_image="advertisements/f9eaf973-5585-4aa7-82b3-222ed2122e22.jpg"
                                        )
