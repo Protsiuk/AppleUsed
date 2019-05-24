@@ -1,5 +1,5 @@
 from django.db import models
-from appleused_project import settings
+from AppleUsed import settings
 from django.core.urlresolvers import reverse
 from advertisements.models import Advertisement
 from django.utils.translation import ugettext_lazy as _

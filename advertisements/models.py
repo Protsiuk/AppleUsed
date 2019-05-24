@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.models import Q
-from appleused_project import settings
+from AppleUsed import settings
 from django.core.urlresolvers import reverse
 from django.core.validators import RegexValidator
 from utils import get_file_path

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from advertisements.models import Advertisement
-from appleused_project import settings
+from AppleUsed import settings
 
 
 class ChatManager(models.Manager):

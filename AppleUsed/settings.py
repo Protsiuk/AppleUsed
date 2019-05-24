@@ -69,7 +69,7 @@ MIDDLEWARE_CLASSES = (
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
-ROOT_URLCONF = 'appleused_project.urls'
+ROOT_URLCONF = 'AppleUsed.urls'
 
 TEMPLATES = [
     {
@@ -90,7 +90,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'appleused_project.wsgi.application'
+WSGI_APPLICATION = 'AppleUsed.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -145,14 +145,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'dev_static'),
-)
+    os.path.join(BASE_DIR, 'static'),
+    )
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, '/static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, '/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 AUTH_USER_MODEL = 'accounts.MyCustomUser'
 
