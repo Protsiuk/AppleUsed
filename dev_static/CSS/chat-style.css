@@ -1,0 +1,21 @@
+/*html, logo             pagination, footer, header, nav, general-container*/
+
+.reply-body{
+    background: #dcdcdc;
+	position: relative;
+	border: 1px solid #a7a7a7;
+	border-radius: 10px 10px;
+    padding: 5px 10px;
+}
+
+.tab-block{
+    background: #8ddc97;
+    margin: 0 0 0 75px;
+    border: 1px solid #a7a7a7;
+	border-radius: 10px 10px;
+}
+
+.unreaded{
+	border-width: medium;
+    border-color: #0D47A1;
+}
