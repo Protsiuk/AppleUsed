@@ -24,7 +24,6 @@ from chat.models import Message, Chat
 
 class AdvertisementHomeView(ListView):
     model = Advertisement
-    success_url = '/advertisements/chat-list/'
     template_name = 'main.html'
 
     def get_queryset(self):
