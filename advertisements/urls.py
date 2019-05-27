@@ -1,4 +1,4 @@
-"""Urls of advertisements in project "appleused_project"
+"""Urls of advertisements in project "AppleUsed"
 """
 
 from django.conf.urls import url

@@ -1,4 +1,4 @@
-"""Urls of Chats in project "appleused_project"
+"""Urls of Chats in project "AppleUsed"
 """
 
 from django.conf.urls import url

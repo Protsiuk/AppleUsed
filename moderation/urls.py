@@ -1,4 +1,4 @@
-"""Urls of moderation in project "appleused_project"
+"""Urls of moderation in project "AppleUsed"
 """
 
 from django.conf.urls import url

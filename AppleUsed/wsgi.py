@@ -1,5 +1,5 @@
 """
-WSGI config for appleused_project project.
+WSGI config for AppleUsed project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
