@@ -140,7 +140,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files (css, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 
@@ -169,6 +169,7 @@ DATE_INPUT_FORMATS = ('%d/%m/%Y')
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Email Backend settings
+
 from .email_info import EMAIL_HOST, EMAIL_USE_TLS, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD
 EMAIL_USE_TLS = EMAIL_USE_TLS
 EMAIL_HOST = EMAIL_HOST

@@ -1,4 +1,4 @@
-# email information for send maseges to users
+# email information for send messages to users
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
