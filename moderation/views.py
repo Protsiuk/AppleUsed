@@ -13,8 +13,6 @@ class LoginModeratorRequiredMixin(LoginRequiredMixin):
     """
     Abstract CBV mixin that gives access mixins the same customizable
     functionality.
-    """
-    """
     CBV mixin which verifies that the current user is moderator or superuser authenticated.
     """
 
@@ -30,14 +28,14 @@ class ListForModerateView(LoginModeratorRequiredMixin, ListView):
     paginate_by = 15
 
     def get_queryset(self, **kwargs):
-        qs = Advertisement.objects.filter(is_visible=False, is_moderated=False)
+        qs = Advertisement.objects.filter(is_visible=False, is_moderated=False).order_by('ad_to_moderate__moderation_id')
         return qs
 
 
 class MyListModerationView(LoginModeratorRequiredMixin, ListView):
-    """
-    Return a list Ads, which request user are moderated.
-    """
+
+    """Return a list Ads, which request user are moderated."""
+
     model = Moderation
     template_name = 'my_list_moderation.html'
     paginate_by = 15

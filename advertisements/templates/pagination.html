@@ -2,7 +2,9 @@
     {% if is_paginated %}
         <ul class="pagination justify-content-center">
         {% if page_obj.has_previous %}
-            <li><a href="?page={{ page_obj.previous_page_number }}{% include 'search_get_parametr.html' %}">&laquo;</a></li>
+            <li><a href="?page={{ page_obj.previous_page_number }}
+                    {% if request.GET.q %}{% include 'search_get_parametr.html' %}{% endif %}">&laquo;</a>
+            </li>
         {% else %}
             <li class="disabled"><span>&laquo;</span></li>
         {% endif %}
@@ -14,7 +16,8 @@
             {% endif %}
         {% endfor %}
         {% if page_obj.has_next %}
-            <li><a href="?page={{ page_obj.next_page_number }}{% include 'search_get_parametr.html' %}">&raquo;</a></li>
+            <li><a href="?page={{ page_obj.next_page_number }}
+                    {% if request.GET.q %}{% include 'search_get_parametr.html' %}{% endif %}">&raquo;</a></li>
         {% else %}
             <li class="disabled"><span>&raquo;</span></li>
         {% endif %}
