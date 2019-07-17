@@ -69,6 +69,7 @@ class AdvertisementsSearchView(ListView):
 class MyAdvertisementActiveView(LoginRequiredMixin, ListView):
     model = Advertisement
     template_name = 'my_active_advertisements.html'
+    paginate_by = 15
 
     def get_queryset(self):
         ctx = super(MyAdvertisementActiveView, self).get_queryset()
@@ -80,6 +81,7 @@ class MyAdvertisementActiveView(LoginRequiredMixin, ListView):
 class MyAdvertisementArchiveView(LoginRequiredMixin, ListView):
     model = Advertisement
     template_name = 'archive_advertisements.html'
+    paginate_by = 15
 
     def get_queryset(self):
         ctx = super(MyAdvertisementArchiveView, self).get_queryset()

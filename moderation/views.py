@@ -5,11 +5,13 @@ from moderation.models import Moderation
 from moderation.forms import ModerationForm
 from advertisements.models import Advertisement
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import View, ListView, UpdateView, DetailView
 
 
 class LoginModeratorRequiredMixin(LoginRequiredMixin):
+
     """
     Abstract CBV mixin that gives access mixins the same customizable
     functionality.
@@ -28,7 +30,7 @@ class ListForModerateView(LoginModeratorRequiredMixin, ListView):
     paginate_by = 15
 
     def get_queryset(self, **kwargs):
-        qs = Advertisement.objects.filter(is_visible=False, is_moderated=False).order_by('ad_to_moderate__moderation_id')
+        qs = Advertisement.objects.filter(is_visible=False, is_moderated=False).order_by('-created')
         return qs
 
 
@@ -41,13 +43,15 @@ class MyListModerationView(LoginModeratorRequiredMixin, ListView):
     paginate_by = 15
 
     def get_queryset(self, **kwargs):
+        # qs = self.model.objects.filter(moderator=self.request.user)
         qs = self.model.objects.filter(moderator=self.request.user).order_by('-end_moderate')
         return qs
 
 
-class ModerationBeginView(LoginModeratorRequiredMixin, View):
+class ModerationBeginView(SuccessMessageMixin, LoginModeratorRequiredMixin, View):
     model = Moderation
     model2 = Advertisement
+    # success_message = 'Объявление, уже открыто другим модератором.'
 
     """Create object of moderation"""
 
@@ -57,13 +61,18 @@ class ModerationBeginView(LoginModeratorRequiredMixin, View):
         self.object.moderator = user
         pk = self.kwargs['pk']
         self.object.ad_to_moderate = get_object_or_404(self.model2, pk=pk)
-        self.object.status = 2
-        self.object.save()
-        """
-        Changed Advertisement's field 'is_moderated' to True.
-        """
-        self.is_moderated_ad()
-        return redirect(self.get_absolute_url(pk=self.object.moderation_id))
+        if not self.object.ad_to_moderate.is_moderated:
+            self.object.status = 2
+            self.object.save()
+
+            """
+            Changed Advertisement's field 'is_moderated' to True.
+            """
+
+            self.is_moderated_ad()
+            return redirect(self.get_absolute_url(pk=self.object.moderation_id))
+        else:
+            return reverse('moderation:list_for_moderation')
 
     def get_absolute_url(self, pk):
         return reverse('moderation:moderate_ad', args=(pk,))
@@ -100,10 +109,12 @@ class ModerationFinishedView(LoginModeratorRequiredMixin, UpdateView):
             return HttpResponseRedirect(self.get_success_url())
 
     def post(self, request, *args, **kwargs):
+
         """
         Handles POST requests, instantiating a form instance with the passed POST variables and then checking them for
         validity.
         """
+
         self.object = self.get_object()
         form_class = self.get_form_class()
         form = self.get_form(form_class)
@@ -120,7 +131,6 @@ class ModerationFinishedView(LoginModeratorRequiredMixin, UpdateView):
         self.object = form.save(commit=False)
         self.object.end_moderate = timezone.now()
         self.object = form.save()
-
         """
         If Ad is approved changed Advertisement's field 'is_visible' to True.
         """
