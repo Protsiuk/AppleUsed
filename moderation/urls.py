@@ -11,6 +11,7 @@ from moderation.views import (
     )
 
 app_name = 'moderation'
+
 urlpatterns = [
 
     # -----------CBV---------
@@ -20,5 +21,4 @@ urlpatterns = [
     url(r'^moderate/(?P<pk>[\d]+)/start/$', ModerationBeginView.as_view(), name='moderate_begin'),
     url(r'^moderate/(?P<pk>[\d]+)$', ModerationFinishedView.as_view(), name='moderate_ad'),
     url(r'^my_list_moderation/$', MyListModerationView.as_view(), name='my_list_moderation'),
-
 ]

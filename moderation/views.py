@@ -27,12 +27,13 @@ class LoginModeratorRequiredMixin(LoginRequiredMixin):
 class ListForModerateView(LoginModeratorRequiredMixin, ListView):
     model = Moderation
     template_name = 'list_for_moderation.html'
-    paginate_by = 15
+    paginate_by = 1
 
     def get_queryset(self, **kwargs):
         qs = Advertisement.objects.filter(is_visible=False, is_moderated=False).order_by('-created')
         return qs
 
+    # print(paginate_by)
 
 class MyListModerationView(LoginModeratorRequiredMixin, ListView):
 
@@ -45,12 +46,14 @@ class MyListModerationView(LoginModeratorRequiredMixin, ListView):
     def get_queryset(self, **kwargs):
         # qs = self.model.objects.filter(moderator=self.request.user)
         qs = self.model.objects.filter(moderator=self.request.user).order_by('-end_moderate')
+        print(qs)
         return qs
 
 
-class ModerationBeginView(SuccessMessageMixin, LoginModeratorRequiredMixin, View):
+class ModerationBeginView(LoginModeratorRequiredMixin, View):
     model = Moderation
     model2 = Advertisement
+    template_name = 'begin_moderation.html'
     # success_message = 'Объявление, уже открыто другим модератором.'
 
     """Create object of moderation"""
@@ -60,6 +63,8 @@ class ModerationBeginView(SuccessMessageMixin, LoginModeratorRequiredMixin, View
         user = self.request.user
         self.object.moderator = user
         pk = self.kwargs['pk']
+        """!!!!!!"""
+        print(pk)
         self.object.ad_to_moderate = get_object_or_404(self.model2, pk=pk)
         if not self.object.ad_to_moderate.is_moderated:
             self.object.status = 2
