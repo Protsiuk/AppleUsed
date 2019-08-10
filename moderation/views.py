@@ -7,7 +7,7 @@ from advertisements.models import Advertisement
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.urlresolvers import reverse_lazy
-from django.views.generic import View, ListView, UpdateView, DetailView
+from django.views.generic import View, ListView, UpdateView, DetailView, CreateView
 
 
 class LoginModeratorRequiredMixin(LoginRequiredMixin):
@@ -50,6 +50,81 @@ class MyListModerationView(LoginModeratorRequiredMixin, ListView):
         return qs
 
 
+class ModerationAdsView(LoginModeratorRequiredMixin, CreateView):
+    model = Moderation
+    model2 = Advertisement
+    template_name = 'begin_moderation.html'
+
+    def get(self, request, *args, **kwargs):
+        self.object = Moderation()
+        user = self.request.user
+        self.object.moderator = user
+        pk = self.kwargs['pk']
+        """!!!!!!"""
+        print('ad_to_moderation id is -', pk)
+        self.object.ad_to_moderate = get_object_or_404(self.model2, pk=pk)
+        if not self.object.ad_to_moderate.is_moderated:
+            self.object.status = 2
+            self.object.save()
+
+            """
+            Changed Advertisement's field 'is_moderated' to True.
+            """
+
+            self.is_moderated_ad()
+            return redirect(self.get_absolute_url(pk=self.object.moderation_id))
+        else:
+            return reverse('moderation:list_for_moderation')
+
+    def post(self, request, *args, **kwargs):
+
+        """
+        Handles POST requests, instantiating a form instance with the passed POST variables and then checking them for
+        validity.
+        """
+
+        self.object = self.get_object()
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        if form.is_valid() and self.object.status != 2:
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        """
+        Called if all forms are valid. Updates a moderation and then redirects to a
+        success page.
+        """
+        self.object = form.save(commit=False)
+        self.object.end_moderate = timezone.now()
+        self.object = form.save()
+        """
+        If Ad is approved changed Advertisement's field 'is_visible' to True.
+        """
+        if self.object.status == 1:
+            self.activate_visible_ad()
+        return super(ModerationAdsView, self).form_valid(form)
+
+    def activate_visible_ad(self):
+        ad = get_object_or_404(self.model2, pk=self.object.ad_to_moderate.id)
+        ad.is_visible = True
+        ad.save()
+        return True
+
+    def get_absolute_url(self, pk):
+        return reverse('moderation:moderate_ad', args=(pk,))
+
+    def is_moderated_ad(self):
+        ad = get_object_or_404(self.model2, pk=self.object.ad_to_moderate.id)
+        ad.is_moderated = True
+        ad.save()
+        return True
+
+
+
+
+
 class ModerationBeginView(LoginModeratorRequiredMixin, View):
     model = Moderation
     model2 = Advertisement
@@ -64,7 +139,7 @@ class ModerationBeginView(LoginModeratorRequiredMixin, View):
         self.object.moderator = user
         pk = self.kwargs['pk']
         """!!!!!!"""
-        print(pk)
+        print('ad_to_moderation id is -', pk)
         self.object.ad_to_moderate = get_object_or_404(self.model2, pk=pk)
         if not self.object.ad_to_moderate.is_moderated:
             self.object.status = 2
