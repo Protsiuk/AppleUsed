@@ -121,7 +121,7 @@ class MyListModerationView(LoginModeratorRequiredMixin, ListView):
 #         return True
 
 
-class ModerationBeginView(LoginModeratorRequiredMixin, View):
+class ModerationBeginView(LoginModeratorRequiredMixin, CreateView):
     model = Moderation
     model2 = Advertisement
     template_name = 'begin_moderation.html'
@@ -131,11 +131,12 @@ class ModerationBeginView(LoginModeratorRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         self.object = Moderation()
-        user = self.request.user
-        self.object.moderator = user
+        self.object.moderator = self.request.user
         pk = self.kwargs['pk']
+
         """!!!!!!"""
         print('ad_to_moderation id is -', pk)
+
         self.object.ad_to_moderate = get_object_or_404(self.model2, pk=pk)
         if not self.object.ad_to_moderate.is_moderated:
             self.object.status = 2
@@ -146,15 +147,22 @@ class ModerationBeginView(LoginModeratorRequiredMixin, View):
             """
 
             self.is_moderated_ad()
+            # return redirect(self.get_success_url(pk=self.object.moderation_id))
             return redirect(self.get_absolute_url(pk=self.object.moderation_id))
         else:
             return reverse('moderation:list_for_moderation')
 
+    # def get_success_url(self, pk):
+    #     return reverse('moderation:moderate_ad',  args=(pk,))
+
     def get_absolute_url(self, pk):
+        print(pk)
         return reverse('moderation:moderate_ad', args=(pk,))
 
     def is_moderated_ad(self):
         ad = get_object_or_404(self.model2, pk=self.object.ad_to_moderate.id)
+
+        print(ad.id)
         ad.is_moderated = True
         ad.save()
         return True
@@ -220,6 +228,7 @@ class ModerationFinishedView(LoginModeratorRequiredMixin, UpdateView):
         ad.save()
         return True
 
+    # print('finish moderate is -')
 
 class ModerationDetailView(LoginModeratorRequiredMixin, DetailView):
     model = Moderation
