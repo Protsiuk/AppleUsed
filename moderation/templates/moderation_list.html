@@ -29,7 +29,7 @@
                         <b align= class="price">{{ object.price }} $</b>
 
                     <div>
-                        <a href="{% url 'moderation:moderate_begin' pk=object.id%}">
+                        <a href="{% url 'moderation:moderate_begin' pk=object.id %}">
                            <button class="btn btn-primary">Проверить</button>
                         </a>
                     </div>
