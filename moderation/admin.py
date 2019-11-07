@@ -1,20 +1,19 @@
 from django.contrib import admin
 from moderation.models import Checklist, Moderation
 
-
-@admin.register(Checklist)
-class ChecklistAdmin(admin.ModelAdmin):
-    list_display = [
-        'id',
-        'check_title',
-        'check_description',
-        'check_photos',
-        ]
-    list_filter = ['id', 'check_title', 'check_description']
-    exclude = ()
-
-    class Meta:
-        model = Checklist
+# @admin.register(Checklist)
+# class ChecklistAdmin(admin.ModelAdmin):
+#     list_display = [
+#         'id',
+#         'check_title',
+#         'check_description',
+#         'check_photos',
+#         ]
+#     list_filter = ['id', 'check_title', 'check_description']
+#     exclude = ()
+#
+#     class Meta:
+#         model = Checklist
 
 
 @admin.register(Moderation)
