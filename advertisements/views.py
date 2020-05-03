@@ -14,7 +14,7 @@ from django.urls import reverse
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import authentication, permissions
+from rest_framework import authentication, permissions, viewsets
 
 from advertisements.forms import AdvertisementCreationForm, AdvertisementImageFormSet
 from advertisements.models import Advertisement, AdvertisementFollowing, PageHit
@@ -52,10 +52,10 @@ class AdvertisementsSearchView(ListView):
         else:
             ordering = '-created'
 
-        ordering_ch = {'-created':'Сначала самые новые',
-                      '-price': 'По убыванию цены',
-                      'price': 'По аозрастаанию цены'
-                      }
+        # ordering_ch = {'-created':'Сначала самые новые',
+        #               '-price': 'По убыванию цены',
+        #               'price': 'По аозрастаанию цены'
+        #               }
 
         return result.order_by(ordering)
 
@@ -245,7 +245,6 @@ class AdvertisementUpdateView(SuccessMessageMixin, LoginRequiredMixin, UpdateVie
         return context
 
 
-# it's use
 class AjaxAPIAdmarkView(APIView):
     authentication_classes = (authentication.SessionAuthentication,)
     permission_classes = (permissions.IsAuthenticated,)
@@ -425,3 +424,13 @@ class AdvertisementDeactivateView(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('archive_advertisements')
+
+
+# APIViews
+
+# class AdvViewSet(viewsets.ModelViewSet):
+#     """
+#     API endpoint that allows users to be viewed or edited.
+#     """
+#     queryset = User.objects.all().order_by('-date_joined')
+#     serializer_class = UserSerializer

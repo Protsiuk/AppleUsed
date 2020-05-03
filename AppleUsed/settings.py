@@ -53,6 +53,8 @@ INSTALLED_APPS = [
     # 3-d generation
     'solo',
     'rest_framework',
+    'rest_framework.authtoken',
+    'djoser',
     'captcha',
 ]
 
@@ -188,8 +190,19 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication'
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
+    # 'DEFAULT_PAGINATION_CLASSES':
 }
+# REST_AUTH_SERIALIZERS = {
+#     "USER_DETAILS_SERIALIZER": "users.serializers.CustomUserDetailsSerializer",
+# }
+# REST_AUTH_REGISTER_SERIALIZERS = {
+#     "REGISTER_SERIALIZER": "users.serializers.CustomRegisterSerializer",
+# }
+
 
 try:
     from .local_settings import *

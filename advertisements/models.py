@@ -71,6 +71,9 @@ class Advertisement(models.Model):
     def get_absolute_url(self):
         return reverse("advertisement:detail", kwargs={'slug': self.slug})
 
+    # def set_is_visible(self):
+    #     self.is_visible = True
+    #     super(Advertisement).save()
 
     class Meta:
         verbose_name = 'Advertisement'

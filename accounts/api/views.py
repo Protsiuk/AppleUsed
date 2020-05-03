@@ -19,6 +19,35 @@ from accounts.forms import MyCustomUserCreationForm
 from accounts.models import MyCustomUser
 from accounts.tokens import account_activation_token
 
+from django.http import Http404
+from rest_framework import permissions, status
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListAPIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authtoken.models import Token
+
+from accounts.api.serializers import LoginSerialiser
+from django.views.decorators.csrf import csrf_exempt
+
+
+class LoginUserApiView(APIView):
+
+    def post(self, request, ):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            if Token.objects.filter(user=serializer.validated_data['user']).exists():
+                token = Token.objects.get(user=serializer.validated_data['user'])
+            else:
+                token = Token.objects.create(user=serializer.validated_data['user'])
+            return Response({'success': True,
+                             'token': token.key})
+        else:
+            return Response(serializer.errors)
+
+
 
 class LoginUserView(LoginView):
 
