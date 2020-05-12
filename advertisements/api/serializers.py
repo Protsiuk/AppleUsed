@@ -2,12 +2,12 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField, H
     HyperlinkedModelSerializer, ReadOnlyField
 
 from accounts.api.serializers import UserSerializer
-from advertisements.models import Advertisement, AdvertisementImage
+from advertisements.models import Advertisement, AdvertisementImage, AdvertisementFollowing
 
 
 class AdsListSerializer(ModelSerializer):
     author = SerializerMethodField('get_author_details')
-    url = HyperlinkedIdentityField(view_name='ad-api-detail')
+    # url = HyperlinkedIdentityField(view_name='ad-api-detail')
 
     def get_author_details(self, obj):
         return UserSerializer(obj.author).data
@@ -17,7 +17,8 @@ class AdsListSerializer(ModelSerializer):
 
     class Meta:
         model = Advertisement
-        fields = ('id', 'url', 'title', 'main_image', 'price', 'created', 'author')
+        fields = ('id', 'title', 'main_image', 'price', 'created', 'author')
+        # fields = ('id', 'url', 'title', 'main_image', 'price', 'created', 'author')
 
 
 # class ImagesAssociatedAdvertisementSerializer(ModelSerializer):
@@ -204,3 +205,23 @@ class AdvertisementCreateSerializer(HyperlinkedModelSerializer):
         for image_data in images_data.values():
             AdvertisementImage.objects.create(advertisement=advertisement, image=image_data)
         return advertisement
+
+
+class FavoriteAdvertisementSerializer(ModelSerializer):
+    advertisement = SerializerMethodField('get_ads_details')
+    follower = SerializerMethodField('get_follower_details')
+
+    def get_ads_details(self, obj):
+        return AdsListSerializer(obj.advertisement).data
+
+    def get_follower_details(self, obj):
+        follower = obj.user
+        return UserSerializer(follower).data
+
+    class Meta:
+        model = AdvertisementFollowing
+        fields = (
+            'id',
+            'follower',
+            'advertisement'
+        )

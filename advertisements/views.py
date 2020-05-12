@@ -74,8 +74,8 @@ class MyAdvertisementActiveView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         ctx = super(MyAdvertisementActiveView, self).get_queryset()
         author = self.request.user
-        ctx = ctx.filter(author=author, is_active=True).order_by('-created')
-        return ctx
+        qs = ctx.filter(author=author, is_active=True).order_by('-created')
+        return qs
 
 
 class MyAdvertisementArchiveView(LoginRequiredMixin, ListView):
@@ -347,7 +347,6 @@ class AdvertisementDetailView(SuccessMessageMixin, FormMixin, DetailView):
         data-filled forms and errors.
         """
         return self.render_to_response(self.get_context_data(form=form))
-
 
     def hit_count(self, user, advertisement):
         """

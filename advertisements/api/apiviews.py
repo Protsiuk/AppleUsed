@@ -27,9 +27,10 @@ from advertisements.api.serializers import (
     SingleAdsSerializer,
     ImagesAssociatedAdvertisementSerializer,
     AdvertisementCreateSerializer,
-    AdvertisementCreateUpdateSerializer
+    AdvertisementCreateUpdateSerializer,
+    FavoriteAdvertisementSerializer
 )
-from advertisements.models import Advertisement, AdvertisementImage
+from advertisements.models import Advertisement, AdvertisementImage, AdvertisementFollowing
 
 
 # from advertisements.forms import AdvertisementCreationForm, AdvertisementImageFormSet
@@ -69,8 +70,7 @@ class AdsListAPIView(ListAPIView):
     # """
     model = Advertisement
     serializer_class = AdsListSerializer
-    queryset = model.objects.filter(is_visible=True, is_active=True)
-    # pagination_class = 2
+    # queryset = model.objects.filter(is_visible=True, is_active=True)
 
     # def get(self, request):
     #     advertisements = self.model.objects.filter(is_visible=True, is_active=True)
@@ -82,7 +82,9 @@ class AdsListAPIView(ListAPIView):
     get:
     Get search list of advertisements
     """
+
     def get_queryset(self):
+        # print('1')
         query = self.request.GET.get('q')
         result = Advertisement.objects.search(query).filter(is_visible=True)
         from_min_price = self.request.GET.get('min_price')
@@ -108,7 +110,6 @@ class AdsListAPIView(ListAPIView):
 
 class AdDetailAPIView(APIView):
     model = Advertisement
-    # queryset = Advertisement.objects.all()
     # queryset = Advertisement.objects.filter(pk='pk')
     serializer_class = SingleAdsSerializer
     # permission_classes = (permissions.IsAuthenticated,)
@@ -149,7 +150,6 @@ class AdDetailAPIView(APIView):
         advertisement = get_object_or_404(Advertisement.objects.all(), pk=pk)
         user = self.request.user
         # advertisement = self.get_object(pk)
-        print(advertisement.description)
         serializer = SingleAdsSerializer(advertisement, data=request.data)
         if serializer.is_valid() and self.request.user.is_authenticated:
             serializer.save()
@@ -463,6 +463,60 @@ class AdRetrieveUpdateDeleteAPIView(RetrieveUpdateDestroyAPIView):
     #     advertisement = self.get_object(pk)
     #     advertisement.delete()
     #     return Response(status=status.HTTP_204_NO_CONTENT)
+
+# ---------
+
+
+class AdvertisementsListMarksViewAPIView(ListAPIView):
+    """
+    Get list of favorites ads current user
+    """
+    model = AdvertisementFollowing
+    serializer_class = FavoriteAdvertisementSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    """
+    get_queryset:
+    Get list of favorites ads current user
+    """
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(user=self.request.user)#, is_visible=True)
+        return qs
+
+
+class MyAdvertisementActiveAPIView(ListAPIView, IsOwnerPermission):
+    """
+    Get a list of current user's ads
+    """
+    model = Advertisement
+    serializer_class = AdsListSerializer
+
+    """
+    get_queryset:
+    Get a list of current user's ads
+    """
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(author=self.request.user, is_active=True).order_by('-created')
+        return qs
+
+
+class MyAdvertisementArchiveAPIView(ListAPIView, IsOwnerPermission):
+    """
+    Get a list of current user's ads
+    """
+    model = Advertisement
+    serializer_class = AdsListSerializer
+
+    """
+    get_queryset:
+    Get a list of current user's ads
+    """
+
+    def get_queryset(self):
+        qs = self.model.objects.filter(author=self.request.user, is_active=False).order_by('-created')
+        return qs
 
 
 class GetSinglePublicationView(APIView):
